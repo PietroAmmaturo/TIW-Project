@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Song</title>
+    <!-- Add your CSS and JavaScript files here -->
+</head>
+<body>
+    <h1>Song Details</h1>
+    <h2 th:text="${song.title}"></h2>
+    <img th:src="${song.albumImage}" />
+    <!-- Display other details of the song such as artist, album, year, genre, etc. -->
+    <p>Artist: <span th:text="${song.artist}"></span></p>
+    <p>Album: <span th:text="${song.album}"></span></p>
+    <p>Year: <span th:text="${song.year}"></span></p>
+    <p>Genre: <span th:text="${song.genre}"></span></p>
+    <!-- Add an audio player for song playback -->
+    <audio th:src="${song.audioFile}" controls></audio>
+</body>
+</html>

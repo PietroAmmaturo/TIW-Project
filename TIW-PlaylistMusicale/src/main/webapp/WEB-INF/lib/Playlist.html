@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Playlist Page</title>
+</head>
+<body>
+    <h1>Playlist Page</h1>
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Album</th>
+            <th>Artist</th>
+            <th>Year</th>
+            <th>Genre</th>
+        </tr>
+        <tr th:each="song : ${playlist}">
+            <td th:text="${song.title}"></td>
+            <td th:text="${song.album.title}"></td>
+            <td th:text="${song.album.artist}"></td>
+            <td th:text="${song.album.year}"></td>
+            <td th:text="${song.album.genre}"></td>
+        </tr>
+    </table>
+    <h2>Add Song to Playlist</h2>
+    <form th:action="@{/playlist/add}" method="post">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required><br>
+        <label for="album">Album:</label>
+        <div id="album">
+        	<label for="existing">Choose Existing Album</label>
+        	<input type="radio" id="existing" name="album_creation" value="existing">
+        	<div>
+        	    <select id="existingAlbum" name="album" required>
+            		<option value="">-- Choose Existing Album --</option>
+            		<option th:each="album : ${albums}" th:text="${album.title}" th:value="${album.id}"></option>
+        		</select>
+        	</div>
+        	<label for="new">Create new album</label>
+        	<input type="radio" id="new" name="album_creation" value="new">
+        	<div>
+        		<label for="newAlbumTitle">New Album Title:</label>
+        		<input type="text" id="newAlbumTitle" name="newAlbumTitle"><br>
+        		<label for="newAlbumArtist">New Album Artist:</label>
+        		<input type="text" id="newAlbumArtist" name="newAlbumArtist"><br>
+        		<label for="newAlbumYear">New Album Year:</label>
+        		<input type="number" id="newAlbumYear" name="newAlbumYear"><br>
+        		<label for="newAlbumGenre">New Album Genre:</label>
+        		<input type="text" id="newAlbumGenre" name="newAlbumGenre"><br>
+        		<input type="submit" value="Add Song">
+        	</div>
+        </div>
+    </form>
+</body>
+</html>
