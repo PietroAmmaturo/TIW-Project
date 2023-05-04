@@ -1,35 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Playlist Page</title>
+    <title>Playlist</title>
 </head>
 <body>
-    <h1>Playlist Page</h1>
-    <table>
-        <tr>
-            <th>Title</th>
-            <th>Album</th>
-            <th>Artist</th>
-            <th>Year</th>
-            <th>Genre</th>
-        </tr>
-        <tr th:each="song : ${playlist}">
-            <td th:text="${song.title}"></td>
-            <td th:text="${song.album.title}"></td>
-            <td th:text="${song.album.artist}"></td>
-            <td th:text="${song.album.year}"></td>
-            <td th:text="${song.album.genre}"></td>
-        </tr>
-    </table>
+    <h1>Playlist</h1>
+
+	<div th:if="${not #maps.isEmpty(playlistSongsWithAlbum)}">
+	    <table>
+	        <thead>
+	            <tr>
+	                <th>Title</th>
+	                <th>Album</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            <tr th:each="entry : ${playlistSongsWithAlbum}">
+	                <td th:text="${entry.key.title}"></td>
+	                <td>
+	                    <img th:src="${entry.value.image}" th:alt="${entry.value.title}" th:title="${entry.value.title}">
+	                </td>
+	            </tr>
+	        </tbody>
+	    </table>
+	
+	    <div th:if="${page > 0}">
+	        <a th:href="@{/playlist?id=${playlistId}&page=${page-1}}">Previous</a>
+	    </div>
+	
+	    <div th:if="${page < maxPage}">
+	        <a th:href="@{/playlist?id=${playlistId}&page=${page+1}}">Next</a>
+	    </div>
+	</div>
+
     <h2>Add Song to Playlist</h2>
-    <form th:action="@{/playlist/add}" method="post">
-        <label for="existing">Choose Song</label>
+    <form method="post" action="/AddToPlaylistServlet">
         <div>
-        	<select id="existingAlbum" name="album" required>
-            	<option value="">-- Choose Song  --</option>
-            	<option th:each="song : ${songs}" th:text="${song.title}" th:value="${song.id}"></option>
-        	</select>
+            <label for="song">Song:</label>
+            <select id="song" name="songId">
+                <option value="">-- Select a song --</option>
+                <option th:each="song : ${userSongs}" th:value="${song.id}" th:text="${song.title}"></option>
+            </select>
         </div>
+        <button type="submit">Add to Playlist</button>
     </form>
 </body>
 </html>
