@@ -23,6 +23,19 @@ public class SongDetailsDAO {
 		this.connection = con;
 	}
 	
+	public int countSongsByPlaylistId(int playlistId) throws SQLException {
+	    String sql = "SELECT COUNT(*) FROM SongPlaylist WHERE playlist_id = ?";
+	    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+	        statement.setInt(1, playlistId);
+	        try (ResultSet resultSet = statement.executeQuery()) {
+	            if (resultSet.next()) {
+	                return resultSet.getInt(1);
+	            }
+	        }
+	    }
+	    return 0;
+	}
+	
 	public Map<Song, Album> findAllSongsWithAlbumByPlaylistId(int playlistId) throws SQLException {
 	    Map<Song, Album> songAlbumMap = new HashMap<>();
 	    String sql = "SELECT s.*, a.* FROM Song s " +
@@ -45,6 +58,40 @@ public class SongDetailsDAO {
 	                album.setInterpreter(resultSet.getString("a.interpreter"));
 	                album.setPublicationYear(resultSet.getInt("a.publication_year"));
 
+	                songAlbumMap.put(song, album);
+	            }
+	        }
+	    }
+	    return songAlbumMap;
+	}
+	
+
+	public Map<Song, Album> findSongsWithAlbumByPlaylistId(int playlistId, int offset, int limit) throws SQLException {
+	    Map<Song, Album> songAlbumMap = new HashMap<>();
+	    String sql = "SELECT s.*, a.* FROM Song s " +
+	                 "INNER JOIN SongPlaylist sp ON s.id = sp.song_id " +
+	                 "INNER JOIN Album a ON s.album_id = a.id " +
+	                 "WHERE sp.playlist_id = ? " +
+	                 "ORDER BY a.publication_year DESC " +
+	                 "LIMIT ? OFFSET ?";
+	    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+	        statement.setInt(1, playlistId);
+	        statement.setInt(2, limit);
+	        statement.setInt(3, offset);
+	        try (ResultSet resultSet = statement.executeQuery()) {
+	            while (resultSet.next()) {
+	                Song song = new Song();
+	                song.setId(resultSet.getInt("s.id"));
+	                song.setTitle(resultSet.getString("s.title"));
+	                song.setAudio(resultSet.getString("s.audio"));
+	
+	                Album album = new Album();
+	                album.setId(resultSet.getInt("a.id"));
+	                album.setTitle(resultSet.getString("a.title"));
+	                album.setImage(resultSet.getString("a.image"));
+	                album.setInterpreter(resultSet.getString("a.interpreter"));
+	                album.setPublicationYear(resultSet.getInt("a.publication_year"));
+	
 	                songAlbumMap.put(song, album);
 	            }
 	        }

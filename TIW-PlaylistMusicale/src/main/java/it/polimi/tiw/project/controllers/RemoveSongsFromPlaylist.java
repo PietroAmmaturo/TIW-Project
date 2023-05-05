@@ -91,7 +91,7 @@ public class RemoveSongsFromPlaylist extends HttpServlet{
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Some of the selected songs were not found in the playlist. The remaining valid songs were successfully removed.");
 			return;
 		}
-		String path = getServletContext().getContextPath() + "/GoToPlaylist?playlistId=" + playlistId;
+		String path = getServletContext().getContextPath() + "/GoToPlaylist?playlistId=" + playlistId + "&page=1";
 		response.sendRedirect(path);
 	}
 

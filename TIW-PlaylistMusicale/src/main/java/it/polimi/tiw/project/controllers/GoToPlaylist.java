@@ -78,28 +78,53 @@ public class GoToPlaylist extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		HttpSession session = request.getSession(false);
 		int userId = ((User) session.getAttribute("currentUser")).getId();
 		int playlistId = Integer.parseInt(request.getParameter("playlistId"));
-		
+	    int songsPerPage = 5;
+		int totalSongs;
+	    int currentPage;
+	    // page validation
+        try{
+        	currentPage = Integer.parseInt(request.getParameter("page"));
+        }catch (Exception e) {
+        	response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'page' must be a valid Integer");
+			return;
+        }
 		SongDAO songDAO = new SongDAO(connection);
 		SongDetailsDAO songDetailsDAO = new SongDetailsDAO(connection);
 		Map<Song, Album> playlistSongsWithAlbum;
 		List<Song> userSongs;
-		try {
-			playlistSongsWithAlbum = songDetailsDAO.findAllSongsWithAlbumByPlaylistId(playlistId);
+	    try {
+	        totalSongs = songDetailsDAO.countSongsByPlaylistId(playlistId);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
+	        return;
+	    }
+	    // is page too big or too small
+	    int maxPage = (int) Math.ceil(totalSongs * 1.0 / songsPerPage);
+	    if (maxPage < currentPage || currentPage <= 0) {
+	        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The requested page does not exist.");
+	        return;
+	    }
+	    int offset = (currentPage - 1) * songsPerPage;
+	    try {
+	        playlistSongsWithAlbum = songDetailsDAO.findSongsWithAlbumByPlaylistId(playlistId, offset, songsPerPage);
 			userSongs = songDAO.findAllSongsByUserIdNotBelongingToPlaylist(userId, playlistId);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
-			return;
-		}
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
+	        return;
+	    }
 		String path = "/WEB-INF/Playlist.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("playlistSongsWithAlbum", playlistSongsWithAlbum);
 		ctx.setVariable("userSongs", userSongs);
+		ctx.setVariable("maxPage", maxPage);
+		ctx.setVariable("currentPage", currentPage);
+		ctx.setVariable("playlistId", playlistId);
 		templateEngine.process(path, ctx, response.getWriter());
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
