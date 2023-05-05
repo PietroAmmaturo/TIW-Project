@@ -78,39 +78,11 @@ public class GoToPlaylist extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		/*
+		
 		HttpSession session = request.getSession(false);
-		if (session == null || session.getAttribute("currentUser") == null) {
-			String path = getServletContext().getContextPath();
-			response.sendRedirect(path);
-			return;
-		}
 		int userId = ((User) session.getAttribute("currentUser")).getId();
-		*/
-		int userId = 1; // temporary user id for testing
-		int playlistId;
-        try{
-        	playlistId = Integer.parseInt(request.getParameter("playlist_id"));
-        }
-        catch (NumberFormatException e){
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'playlist_id' must be a valid integer");
-			return;
-        }
-        PlaylistDAO playlistDAO = new PlaylistDAO(connection);
-		Boolean found;
-		try {
-			found = playlistDAO.doesPlaylistBelongToUser(playlistId, userId);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
-			return;
-		}	
-		if(!found) {
-			// Purposely not differentiating between playlist not belonging to user and playlist not existing
-			// to avoid attacker being able to use that information to infer the existence of a playlist with a specific ID
-			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Couldn't find a playlist with the provided ID that belongs to your account");
-			return;
-		}
+		int playlistId = Integer.parseInt(request.getParameter("playlistId"));
+		
 		SongDAO songDAO = new SongDAO(connection);
 		SongDetailsDAO songDetailsDAO = new SongDetailsDAO(connection);
 		Map<Song, Album> playlistSongsWithAlbum;
@@ -141,4 +113,13 @@ public class GoToPlaylist extends HttpServlet {
 		doGet(request, response);
 	}
 
+	public void destroy() {
+		if (connection != null) {
+			try {
+				connection.close();
+			} catch (SQLException e){
+				
+			}
+		}
+	}
 }

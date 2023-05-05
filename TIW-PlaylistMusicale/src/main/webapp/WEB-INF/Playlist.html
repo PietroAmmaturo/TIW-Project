@@ -34,7 +34,7 @@
 	</div>
 
     <h2>Add Song to Playlist</h2>
-    <form method="post" action="/AddToPlaylistServlet">
+    <form method="post" th:action="@{/CreateSongPlaylist(playlistId=${param.playlistId})}">
         <div>
             <label for="song">Song:</label>
             <select id="song" name="songId">

@@ -10,6 +10,7 @@ import java.util.Map;
 import it.polimi.tiw.project.beans.Album;
 import it.polimi.tiw.project.beans.Song;
 
+// class used for query operations that do not include
 public class SongDetailsDAO {
 	
 	private Connection connection;
