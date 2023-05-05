@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
@@ -18,13 +22,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import it.polimi.tiw.project.DAO.PlaylistDAO;
 import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.beans.User;
 
-@WebFilter(filterName = "PlaylistAuthorizationFilter", urlPatterns = { "/GoToPlaylist", "/RemoveSongsFromPlaylist", "/AddSongsToPlaylist" })
-@Priority(11)
-public class PlaylistAuthorizationFilter implements Filter {
+@WebFilter(filterName = "SongsValidationFilter", urlPatterns = { "/RemoveSongsFromPlaylist", "/AddSongsToPlaylist" })
+@Priority(21)
+public class SongsValidationFilter implements Filter {
 
     private Connection connection;
 
@@ -53,36 +56,30 @@ public class PlaylistAuthorizationFilter implements Filter {
 
         HttpSession session = httpRequest.getSession(false);
         int userId = ((User) session.getAttribute("currentUser")).getId();
-        int playlistId;
+        Set<Integer> songIds;
         try{
-        	playlistId = Integer.parseInt(request.getParameter("playlistId"));
+        	songIds = Arrays.stream(request.getParameterValues("songIds"))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toSet());
         }catch (NullPointerException e) {
-        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'playlistId' is missing");
+        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'songIds' is missing");
 			return;
         }
         catch (NumberFormatException e) {
-        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'playlistId' must be a valid integer");
+        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Some elements inside the parameter 'songIds' are not a valid integer");
 			return;
         }
-        catch (Exception e){
-        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'playlistId' must be a valid integer");
+        catch (ArrayIndexOutOfBoundsException e) {
+        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'songIds' is an empty string");
 			return;
         }
-        PlaylistDAO playlistDAO = new PlaylistDAO(connection);
-		Boolean found;
-		try {
-			found = playlistDAO.doesPlaylistBelongToUser(playlistId, userId);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			httpResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
+        catch (IllegalArgumentException e) {
+        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'songIds' contains more than one comma in a row or it contains whitespace");
 			return;
-		}	
-		if(!found) {
-			// Purposely not differentiating between playlist not belonging to user and playlist not existing
-			// to avoid attacker being able to use that information to infer the existence of a playlist with a specific ID
-			httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND, "Couldn't find a playlist with the provided ID that belongs to your account");
+        } catch (Exception e) {
+        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'songIds' must be a valid array of integers");
 			return;
-		}
+        }
         chain.doFilter(request, response);
     }
     

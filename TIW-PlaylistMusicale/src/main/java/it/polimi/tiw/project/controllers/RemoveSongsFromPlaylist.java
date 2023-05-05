@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -14,17 +19,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import it.polimi.tiw.project.DAO.PlaylistDAO;
 import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.DAO.SongPlaylistDAO;
 import it.polimi.tiw.project.beans.User;
 
-@WebServlet("/CreateSongPlaylist")
-public class CreateSongPlaylist extends HttpServlet {
+@WebServlet("/RemoveSongsFromPlaylist")
+public class RemoveSongsFromPlaylist extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 
-	public CreateSongPlaylist() {
+	public RemoveSongsFromPlaylist() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -53,24 +57,38 @@ public class CreateSongPlaylist extends HttpServlet {
 			throws ServletException, IOException {
 		
 		HttpSession session = request.getSession(false);
-		int userId = ((User) session.getAttribute("currentUser")).getId();
-    	int songId = Integer.parseInt(request.getParameter("songId"));
     	int playlistId = Integer.parseInt(request.getParameter("playlistId"));
-		// a different design (having UserId in the SongPlaylist table as example), might have allowed for us to do all 3 checks at the same time (one query)
-		// this would have prevented the user from knowing the reason why the operation wasn't successful though, which is not ideal,
-		// unless that information could be used to infer other informations, but in this case an attacker would not be able to infer any information from the given responses
-		// the only informations given are related to his personal account
-        SongPlaylistDAO songPlaylistDAO = new SongPlaylistDAO(connection);
-		Boolean found;
+    	
+    	Set<Integer> songIds = Arrays.stream(request.getParameterValues("songIds"))
+                .map(Integer::parseInt)
+                .collect(Collectors.toSet());
+    	Set<Integer> validSongIds = new HashSet();
+        Boolean foundInvalidId = false;
+		SongPlaylistDAO songPlaylistDAO = new SongPlaylistDAO(connection);
+		Boolean foundPlaylist;
+		for (Integer songId : songIds) {
+			try {
+				foundPlaylist = songPlaylistDAO.doesSongBelongToPlaylist(songId, playlistId);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed.");
+				return;
+			}
+			if(!foundPlaylist) {
+				foundInvalidId = true;
+				continue;
+			}
+			validSongIds.add(songId);
+		}
 		try {
-			found = songPlaylistDAO.doesSongBelongToPlaylist(songId, playlistId);
+			songPlaylistDAO.removeSongsFromPlaylist(validSongIds, playlistId);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed.");
 			return;
-		}	
-		if(found) {
-			response.sendError(HttpServletResponse.SC_CONFLICT, "Song is already in playlist");
+		}
+		if (foundInvalidId) {
+			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Some of the selected songs were not found in the playlist. The remaining valid songs were successfully removed.");
 			return;
 		}
 		String path = getServletContext().getContextPath() + "/GoToPlaylist?playlistId=" + playlistId;

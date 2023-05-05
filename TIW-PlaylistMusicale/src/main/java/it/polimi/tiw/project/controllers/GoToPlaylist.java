@@ -89,7 +89,7 @@ public class GoToPlaylist extends HttpServlet {
 		List<Song> userSongs;
 		try {
 			playlistSongsWithAlbum = songDetailsDAO.findAllSongsWithAlbumByPlaylistId(playlistId);
-			userSongs = songDAO.findAllSongsByUserId(userId);
+			userSongs = songDAO.findAllSongsByUserIdNotBelongingToPlaylist(userId, playlistId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");

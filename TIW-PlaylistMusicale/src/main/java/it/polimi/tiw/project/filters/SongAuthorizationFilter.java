@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
 import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.beans.User;
 
-@WebFilter(filterName = "SongAuthorizationFilter", urlPatterns = { "/CreateSongPlaylist" })
+@WebFilter(filterName = "SongAuthorizationFilter", urlPatterns = { "/GoToSong" })
 @Priority(12)
 public class SongAuthorizationFilter implements Filter {
 
@@ -55,8 +55,15 @@ public class SongAuthorizationFilter implements Filter {
         int songId;
         try{
         	songId = Integer.parseInt(request.getParameter("songId"));
+        }catch (NullPointerException e) {
+        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'songId' is missing");
+			return;
         }
-        catch (NullPointerException | NumberFormatException e){
+        catch (NumberFormatException e) {
+        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'songId' must be a valid integer");
+			return;
+        }
+        catch (Exception e){
         	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'songId' must be a valid integer");
 			return;
         }

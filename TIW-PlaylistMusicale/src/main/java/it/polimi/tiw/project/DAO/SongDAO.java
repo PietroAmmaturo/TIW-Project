@@ -91,4 +91,27 @@ public class SongDAO {
 	    }
 	}
 	
+	public List<Song> findAllSongsByUserIdNotBelongingToPlaylist(int userId, int playlistId) throws SQLException {
+	    List<Song> songs = new ArrayList<>();
+	    String sql = "SELECT s.* FROM Song s " +
+	                 "INNER JOIN Album a ON s.album_id = a.id " +
+	                 "WHERE a.user_id = ? AND s.id NOT IN " +
+	                 "(SELECT song_id FROM SongPlaylist WHERE playlist_id = ?)";
+	    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+	        statement.setInt(1, userId);
+	        statement.setInt(2, playlistId);
+	        try (ResultSet resultSet = statement.executeQuery()) {
+	            while (resultSet.next()) {
+	                Song song = new Song();
+	                song.setId(resultSet.getInt("id"));
+	                song.setTitle(resultSet.getString("title"));
+	                song.setAudio(resultSet.getString("audio"));
+	                song.setAlbumId(resultSet.getInt("album_id"));
+	                songs.add(song);
+	            }
+	        }
+	    }
+	    return songs;
+	}
+	
 }

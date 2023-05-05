@@ -7,42 +7,53 @@
     <h1>Playlist</h1>
 
 	<div th:if="${not #maps.isEmpty(playlistSongsWithAlbum)}">
-	    <table>
-	        <thead>
-	            <tr>
-	                <th>Title</th>
-	                <th>Album</th>
-	            </tr>
-	        </thead>
-	        <tbody>
-	            <tr th:each="entry : ${playlistSongsWithAlbum}">
-	                <td th:text="${entry.key.title}"></td>
-	                <td>
-	                    <img th:src="${entry.value.image}" th:alt="${entry.value.title}" th:title="${entry.value.title}">
-	                </td>
-	            </tr>
-	        </tbody>
-	    </table>
-	
-	    <div th:if="${page > 0}">
-	        <a th:href="@{/playlist?id=${playlistId}&page=${page-1}}">Previous</a>
-	    </div>
-	
-	    <div th:if="${page < maxPage}">
-	        <a th:href="@{/playlist?id=${playlistId}&page=${page+1}}">Next</a>
-	    </div>
+		<form th:action="@{/RemoveSongsFromPlaylist(playlistId=${param.playlistId})}" method="post">
+		    <input type="hidden" name="playlistId" th:value="${playlistId}"/>
+		    <table>
+		        <thead>
+		            <tr>
+		                <th>Select</th>
+		                <th>Title</th>
+		                <th>Album</th>
+		            </tr>
+		        </thead>
+		        <tbody>
+		            <tr th:each="entry : ${playlistSongsWithAlbum}">
+		                <td><input type="checkbox" name="songIds" th:value="${entry.key.id}"/></td>
+		                <td th:text="${entry.key.title}"></td>
+		                <td>
+		                    <img th:src="${entry.value.image}" th:alt="${entry.value.title}" th:title="${entry.value.title}">
+		                </td>
+		            </tr>
+		        </tbody>
+		    </table>
+		    <button type="submit">Remove selected songs</button>
+		    
+			<div th:if="${page > 0}">
+		        <a th:href="@{/playlist?id=${playlistId}&page=${page-1}}">Previous</a>
+		    </div>
+		
+		    <div th:if="${page < maxPage}">
+		        <a th:href="@{/playlist?id=${playlistId}&page=${page+1}}">Next</a>
+		    </div>
+		</form>
 	</div>
 
     <h2>Add Song to Playlist</h2>
-    <form method="post" th:action="@{/CreateSongPlaylist(playlistId=${param.playlistId})}">
-        <div>
-            <label for="song">Song:</label>
-            <select id="song" name="songId">
-                <option value="">-- Select a song --</option>
-                <option th:each="song : ${userSongs}" th:value="${song.id}" th:text="${song.title}"></option>
-            </select>
-        </div>
-        <button type="submit">Add to Playlist</button>
-    </form>
+	<form method="post" th:action="@{/AddSongsToPlaylist(playlistId=${param.playlistId})}">
+	    <div>
+	        <label for="song">Songs:</label>
+	        <br>
+	        <select id="song"
+	                name="songIds"
+	                multiple>
+	            <option value="">-- Select songs --</option>
+	            <option th:each="song : ${userSongs}"
+	                    th:value="${song.id}"
+	                    th:text="${song.title}"></option>
+	        </select>
+	    </div>
+	    <button type="submit">Add to Playlist</button>
+	</form>
 </body>
 </html>
