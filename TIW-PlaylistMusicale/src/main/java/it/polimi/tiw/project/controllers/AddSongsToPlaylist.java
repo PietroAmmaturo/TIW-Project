@@ -67,6 +67,7 @@ public class AddSongsToPlaylist extends HttpServlet {
         SongDAO songDAO = new SongDAO(connection);
 		SongPlaylistDAO songPlaylistDAO = new SongPlaylistDAO(connection);
 		Boolean foundUser;
+		Boolean foundPlaylist;
 		for (Integer songId : songIds) {
 			try {
 				foundUser = songDAO.doesSongBelongToUser(songId, userId);
@@ -76,6 +77,17 @@ public class AddSongsToPlaylist extends HttpServlet {
 				return;
 			}
 			if(!foundUser) {
+				foundInvalidId = true;
+				continue;
+			}
+			try {
+				foundPlaylist = songPlaylistDAO.doesSongBelongToPlaylist(songId, playlistId);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed.");
+				return;
+			}
+			if(foundPlaylist) {
 				foundInvalidId = true;
 				continue;
 			}
@@ -89,7 +101,7 @@ public class AddSongsToPlaylist extends HttpServlet {
 			return;
 		}
 		if (foundInvalidId) {
-			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Some of the selected songs could not be found or did not belong to the user, the valid songs were added successfully.");
+			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Some of the selected songs could not be found, did not belong to the user  or were already in the playlist, the valid songs were added successfully.");
 			return;
 		}
 		String path = getServletContext().getContextPath() + "/GoToPlaylist?playlistId=" + playlistId;
