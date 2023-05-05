@@ -17,8 +17,10 @@
 				    <tr>
 				        <td th:each="entry : ${playlistSongsWithAlbum}">
 				        	<div>
-				        		<label for="songIds" th:text="${entry.key.title}"></label>
-				        		<input type="checkbox" name="songIds" th:value="${entry.key.id}"/>
+				       			<input type="checkbox" name="songIds" th:value="${entry.key.id}"/>
+				       			<label for="songIds">
+				        			<a th:href="@{/GoToPlayer(songId=${songId})}" th:text="${entry.key.title}"></a>
+				        		</label>
 				        	</div>
 				        	<img th:src="${entry.value.image}" th:alt="${entry.value.title}">
 				        </td>

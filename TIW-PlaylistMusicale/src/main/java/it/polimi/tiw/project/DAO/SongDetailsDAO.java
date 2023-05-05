@@ -65,7 +65,34 @@ public class SongDetailsDAO {
 	    return songAlbumMap;
 	}
 	
+	public Map<Song, Album> findSongWithAlbumById(int songId) throws SQLException {
+	    Map<Song, Album> songAlbumMap = new HashMap<>();
+	    String sql = "SELECT s.*, a.* FROM Song s " +
+	                 "INNER JOIN Album a ON s.album_id = a.id " +
+	                 "WHERE s.id = ?";
+	    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+	        statement.setInt(1, songId);
+	        try (ResultSet resultSet = statement.executeQuery()) {
+	            while (resultSet.next()) {
+	                Song song = new Song();
+	                song.setId(resultSet.getInt("s.id"));
+	                song.setTitle(resultSet.getString("s.title"));
+	                song.setAudio(resultSet.getString("s.audio"));
 
+	                Album album = new Album();
+	                album.setId(resultSet.getInt("a.id"));
+	                album.setTitle(resultSet.getString("a.title"));
+	                album.setImage(resultSet.getString("a.image"));
+	                album.setInterpreter(resultSet.getString("a.interpreter"));
+	                album.setPublicationYear(resultSet.getInt("a.publication_year"));
+
+	                songAlbumMap.put(song, album);
+	            }
+	        }
+	    }
+	    return songAlbumMap;
+	}
+	
 	public Map<Song, Album> findSongsWithAlbumByPlaylistId(int playlistId, int offset, int limit) throws SQLException {
 	    Map<Song, Album> songAlbumMap = new HashMap<>();
 	    String sql = "SELECT s.*, a.* FROM Song s " +
