@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +26,7 @@ import it.polimi.tiw.project.DAO.SongDetailsDAO;
 import it.polimi.tiw.project.beans.Album;
 import it.polimi.tiw.project.beans.Song;
 import it.polimi.tiw.project.beans.User;
+@WebServlet("/GoToPlayer")
 
 public class GoToPlayer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -82,7 +84,8 @@ public class GoToPlayer extends HttpServlet {
 		String path = "/WEB-INF/Player.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		ctx.setVariable("songWithAlbum", songWithAlbum);
+		ctx.setVariable("song", songWithAlbum.keySet().toArray()[0]);
+		ctx.setVariable("album", songWithAlbum.values().toArray()[0]);
 		templateEngine.process(path, ctx, response.getWriter());
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());

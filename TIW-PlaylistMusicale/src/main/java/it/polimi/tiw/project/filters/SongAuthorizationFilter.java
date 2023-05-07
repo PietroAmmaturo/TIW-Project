@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
 import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.beans.User;
 
-@WebFilter(filterName = "SongAuthorizationFilter", urlPatterns = { "/GoToSong" })
+@WebFilter(filterName = "SongAuthorizationFilter", urlPatterns = { "/GoToPlayer" })
 @Priority(12)
 public class SongAuthorizationFilter implements Filter {
 
