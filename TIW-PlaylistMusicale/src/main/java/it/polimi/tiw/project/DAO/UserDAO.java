@@ -16,11 +16,11 @@ public class UserDAO{
 	}
 	
 	public void addUser(String username, String password) throws SQLException {
-		String sql = "INSERT INTO User (id, nickname, password) VALUES (?, ?, ?)";
+		String sql = "INSERT INTO User (nickname, password) VALUES (?, ?)";
 		try(PreparedStatement statement = connection.prepareStatement(sql)) {
 			connection.setAutoCommit(false);
-			statement.setString(2, username);
-			statement.setString(3, password);
+			statement.setString(1, username);
+			statement.setString(2, password);
 			int affectedRows = statement.executeUpdate();
 			if (affectedRows == 0) {
                 throw new SQLException("Failed to add user");
@@ -37,7 +37,7 @@ public class UserDAO{
 	    User user = null;
 	    String query = "SELECT * FROM User WHERE nickname = ?";
 	    try (PreparedStatement statement = connection.prepareStatement(query)) {
-	        statement.setString(2, username);
+	        statement.setString(1, username);
 	        try (ResultSet result = statement.executeQuery()) {
 	            if (result.next()) {
 	                user = new User();
@@ -56,10 +56,10 @@ public class UserDAO{
 	
 	public User findUserByUsernameAndPassword(String username, String password) throws SQLException {
 	    User user = null;
-	    String query = "SELECT * FROM User WHERE nickname = ?";
+	    String query = "SELECT * FROM User WHERE nickname = ? AND password = ?";
 	    try (PreparedStatement statement = connection.prepareStatement(query)) {
-	        statement.setString(2, username);
-	        statement.setString(3, password);
+	        statement.setString(1, username);
+	        statement.setString(2, password);
 	        try (ResultSet result = statement.executeQuery()) {
 	            if (result.next()) {
 	                user = new User();
@@ -74,5 +74,28 @@ public class UserDAO{
 	        }
 	    }
 	    return user;
+	}
+	
+	/**
+	 *  Return true if the username is already used, false otherwise
+	 * @param username that needs to be checked
+	 * @return
+	 */
+	public boolean usernameAlreadyInUse(String username) {
+		String query = "SELECT COUNT(*) FROM User WHERE nickname = ?";
+		try(PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setString(1, username);
+			try(ResultSet resultSet = statement.executeQuery()){
+				resultSet.next();
+				int count = resultSet.getInt(1);
+				return count > 1;
+			}catch(SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

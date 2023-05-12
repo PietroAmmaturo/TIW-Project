@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
@@ -64,7 +65,7 @@ public class RegisterUser extends HttpServlet {
 			username = request.getParameter("username");
 			password = request.getParameter("password");
 			
-			if(username.isBlank() || username.isEmpty())
+			if(username.isBlank() || username.isEmpty() | password.isBlank() || password.isEmpty())
 				valid = false;
 		}catch(NullPointerException e) {
 			valid = false;
@@ -77,7 +78,17 @@ public class RegisterUser extends HttpServlet {
 		
 		UserDAO userDao = new UserDAO(connection);
 		try {
-			userDao.addUser(username, password);
+			boolean usernameUsed = userDao.usernameAlreadyInUse(username);
+			if(usernameUsed) {
+				request.setAttribute("usernameInUse", true);
+			}
+			else {
+				userDao.addUser(username, password);
+				//response.sendRedirect("Home.html"); ///per andare alla homepage
+			}
+			RequestDispatcher dispatcher = request.getRequestDispatcher("UsernameOccupied");
+	        dispatcher.forward(request, response);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
@@ -85,7 +96,6 @@ public class RegisterUser extends HttpServlet {
 			return;
 		}
 		
-		response.sendRedirect("Home.html");
 	}
 	
 	@Override

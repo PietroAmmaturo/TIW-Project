@@ -7,19 +7,12 @@
 	<h1>Authentication page</h1>
 	<div class="formdiv">
 		<h2>Sign-in module</h2>
-		<form action="#" th:action="@{user/checkPresence}" method="POST">
+		<form action="#" th:action="@{/LoginUser}" method="POST">
 			<fieldset>
 				<p> Username: <input type="text" name="username" required /> </p>
 				<p> Password: <input type="password" name="password" required /> </p>
 				<input type="submit" name="Login" value="Sign in">
 			</fieldset>
-			<!-- 
-			 <label for="username">Insert username:</label><br>
-       		<input type="text" id="username" name="username"><br>
-        	<label for="password">Insert password:</label><br>
-        	<input type="password" id="password" name="password"><br>
-        	<input type="submit" value="Sign in"><br>
-        	-->
         </form>
 	</div>
 	<div class="formdiv">
@@ -30,13 +23,6 @@
 				<p> Select password: <input type="password" name="password" required /> </p>
 				<input type="submit" name="Login" value="Sign up">
 			</fieldset>
-		<!--
-		<label for="username">Select username:</label><br>
-        <input type="text" id="username" name="username"><br>
-        <label for="password">Select password:</label><br>
-        <input type="password" id="password" name="password"><br>
-		<input type="submit" value="Sign up"><br>
-		  -->
 		</form>  
 	</div>	
 </body>
