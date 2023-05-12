@@ -15,11 +15,10 @@ public class UserDAO{
 		this.connection = connection;
 	}
 	
-	public void addUser(int userID, String username, String password) throws SQLException {
+	public void addUser(String username, String password) throws SQLException {
 		String sql = "INSERT INTO User (id, nickname, password) VALUES (?, ?, ?)";
 		try(PreparedStatement statement = connection.prepareStatement(sql)) {
 			connection.setAutoCommit(false);
-			statement.setInt(1, userID);
 			statement.setString(2, username);
 			statement.setString(3, password);
 			int affectedRows = statement.executeUpdate();
@@ -46,6 +45,10 @@ public class UserDAO{
 	                user.setUsername(result.getString("nickname"));
 	                user.setPassword(result.getString("password"));
 	            }
+	            else {
+	            	//se non c'è nessun utente con quel username ritorna null
+	            	return null;
+	            }
 	        }
 	    }
 	    return user;
@@ -63,6 +66,10 @@ public class UserDAO{
 	                user.setId(result.getInt("id"));
 	                user.setUsername(result.getString("nickname"));
 	                user.setPassword(result.getString("password"));
+	            }
+	            else {
+	            	//se non c'è nessun utente con quel username ritorna null
+	            	return null;
 	            }
 	        }
 	    }
