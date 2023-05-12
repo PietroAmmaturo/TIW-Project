@@ -30,11 +30,11 @@
 		    <button type="submit">Remove selected songs</button>
 		    
 			<div th:if="${currentPage > 1}">
-		        <a th:href="@{/GoToPlaylist(playlistId=${playlistId}, page=${currentPage - 1})}">Previous</a>
+		        <a th:href="@{/GoToPlaylist(playlistId=${playlistId}, playlistPage=${currentPage - 1})}">Previous</a>
 		    </div>
 		
 		    <div th:if="${currentPage < maxPage}">
-		        <a th:href="@{/GoToPlaylist(playlistId=${playlistId}, page=${currentPage + 1})}">Next</a>
+		        <a th:href="@{/GoToPlaylist(playlistId=${playlistId}, playlistPage=${currentPage + 1})}">Next</a>
 		    </div>
 		</form>
 	</div>

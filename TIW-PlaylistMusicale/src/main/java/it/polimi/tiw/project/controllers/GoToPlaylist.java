@@ -86,10 +86,9 @@ public class GoToPlaylist extends HttpServlet {
 	    int currentPage;
 	    // page validation
         try{
-        	currentPage = Integer.parseInt(request.getParameter("page"));
+        	currentPage = Integer.parseInt(request.getParameter("playlistPage"));
         }catch (Exception e) {
-        	response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'page' must be a valid Integer");
-			return;
+        	currentPage = 1;
         }
 		SongDAO songDAO = new SongDAO(connection);
 		SongDetailsDAO songDetailsDAO = new SongDetailsDAO(connection);
