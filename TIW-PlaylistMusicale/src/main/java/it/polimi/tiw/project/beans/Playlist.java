@@ -1,9 +1,14 @@
 package it.polimi.tiw.project.beans;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Playlist {
-    private int id;
+public class Playlist implements Serializable{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int id;
     private String title;
     private LocalDateTime publicationDate;
     private String description;

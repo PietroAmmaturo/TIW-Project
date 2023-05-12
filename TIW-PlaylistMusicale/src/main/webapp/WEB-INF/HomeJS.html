@@ -41,7 +41,7 @@
 		</div>
 	
 	    <h2>Add Song to Playlist</h2>
-		<form method="post" th:action="@{/AddSongsToPlaylist(playlistId=${playlistId})}">
+		<form id="addSongsToPlaylistForm" method="post" th:action="@{/AddSongsToPlaylist(playlistId=${playlistId})}">
 		    <div>
 		        <label for="song">Songs:</label>
 		        <br>

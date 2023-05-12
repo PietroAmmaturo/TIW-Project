@@ -1,7 +1,13 @@
 package it.polimi.tiw.project.beans;
 
-public class Album{
+import java.io.Serializable;
+
+public class Album implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String title;
 	private String image;

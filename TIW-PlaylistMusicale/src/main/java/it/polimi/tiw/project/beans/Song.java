@@ -1,7 +1,13 @@
 package it.polimi.tiw.project.beans;
 
-public class Song {
-    private int id;
+import java.io.Serializable;
+
+public class Song implements Serializable {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int id;
     private String title;
     private String audio;
     private int albumId;
