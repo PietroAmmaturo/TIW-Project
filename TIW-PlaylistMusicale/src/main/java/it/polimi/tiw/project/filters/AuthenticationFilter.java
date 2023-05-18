@@ -11,7 +11,7 @@ import it.polimi.tiw.project.beans.User;
 
 import java.io.IOException;
 
-@WebFilter(filterName = "AuthenticationFilter", urlPatterns = { "/GoToPlaylist", "/RemoveSongsFromPlaylist", "/AddSongsToPlaylist", "/GoToPlayer",  "/GoToHomeJS" })
+@WebFilter(filterName = "AuthenticationFilter", urlPatterns = { "/GoToPlaylist", "/RemoveSongsFromPlaylist", "/AddSongsToPlaylist", "/GoToPlayer",  "/GoToHomeJS", "/GoToHome" })
 @Priority(1)
 public class AuthenticationFilter implements Filter {
 
@@ -25,12 +25,7 @@ public class AuthenticationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        // TODO: set create to false after authentication is done
-        HttpSession session = httpRequest.getSession(true);
-        User user = new User();
-        user.setId(1);
-        // TODO: remove this line after authentication is done
-        session.setAttribute("currentUser", user);
+        HttpSession session = httpRequest.getSession();
         boolean isAuthenticated = session != null && session.getAttribute("currentUser") != null;
         if (isAuthenticated) {
             // User is authenticated, continue processing the request

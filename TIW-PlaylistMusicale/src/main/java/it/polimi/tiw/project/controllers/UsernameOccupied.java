@@ -26,10 +26,9 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 public class UsernameOccupied extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        boolean isUsernameInUse = (boolean) request.getAttribute("usernameInUse");
-        
-        if (isUsernameInUse) {
+
+			response.setContentType("text/html");
             response.getWriter().println("<div class=\"banner\">Username is already in use.</div>");
-        }
+        
     }
 }

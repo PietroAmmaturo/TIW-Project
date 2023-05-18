@@ -81,21 +81,18 @@ public class UserDAO{
 	 * @param username that needs to be checked
 	 * @return
 	 */
-	public boolean usernameAlreadyInUse(String username) {
+	public boolean usernameAlreadyInUse(String username) throws SQLException {
 		String query = "SELECT COUNT(*) FROM User WHERE nickname = ?";
-		try(PreparedStatement statement = connection.prepareStatement(query)){
+		PreparedStatement statement = connection.prepareStatement(query);
 			statement.setString(1, username);
 			try(ResultSet resultSet = statement.executeQuery()){
 				resultSet.next();
 				int count = resultSet.getInt(1);
-				return count > 1;
+				return count >= 1;
 			}catch(SQLException e) {
 				e.printStackTrace();
-				return false;
+				throw e;
 			}
-		}catch(SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+	
 	}
 }

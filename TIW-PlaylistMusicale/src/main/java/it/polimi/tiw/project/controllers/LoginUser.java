@@ -25,12 +25,12 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import it.polimi.tiw.project.DAO.UserDAO;
 import it.polimi.tiw.project.beans.User;
 
-@WebServlet("/RegisterUser")
-public class RegisterUser extends HttpServlet {
+@WebServlet("/LoginUser")
+public class LoginUser extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 	
-	public RegisterUser() {
+	public LoginUser() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -85,45 +85,22 @@ public class RegisterUser extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Missing or incorrect parameters");
 			return;
 		}
+		
 		try {
 			if(usernameUsed) {
-				//response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Username alredy in use");
-				RequestDispatcher dispatcher = request.getRequestDispatcher("/UsernameOccupied");
-		        dispatcher.include(request, response);
-		        String path = getServletContext().getContextPath() + "/GoToLogin";
-				response.sendRedirect(path);
-				return;
+				User user = userDao.findUserByUsername(username);
+				if(password.equals(user.getPassword())) {
+					//accedi
+				}
+				else {
+					//password non corretta
+				}
 			}
-			else {
-				userDao.addUser(username, password);
-				HttpSession session = request.getSession(true);
-		        User user = userDao.findUserByUsername(username);
-		        session.setAttribute("currentUser", user);
-		        String path = getServletContext().getContextPath() + "/GoToHome";
-				response.sendRedirect(path);
-				//response.sendRedirect("Home.html"); ///per andare alla homepage
-			}
-			//RequestDispatcher dispatcher = request.getRequestDispatcher("UsernameOccupied");
-	        //dispatcher.forward(request, response);
-			
-		} catch (Exception e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Error in creating the account");
+					"Error in login");
 			return;
-		}
-		//
-		
-	}
-	
-	@Override
-	public void destroy() {
-		if (connection != null) {
-			try {
-				connection.close();
-			} catch (SQLException e){
-				
-			}
 		}
 	}
 }
