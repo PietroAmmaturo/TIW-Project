@@ -104,8 +104,6 @@ public class AddSongsToPlaylist extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Some of the selected songs could not be found, did not belong to the user  or were already in the playlist, the valid songs were added successfully.");
 			return;
 		}
-		String path = getServletContext().getContextPath() + "/GoToPlaylist?playlistId=" + playlistId + "&playlistPage=1";
-		response.sendRedirect(path);
 	}
 
 

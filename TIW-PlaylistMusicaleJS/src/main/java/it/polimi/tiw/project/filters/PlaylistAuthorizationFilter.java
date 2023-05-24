@@ -22,7 +22,7 @@ import it.polimi.tiw.project.DAO.PlaylistDAO;
 import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.beans.User;
 
-@WebFilter(filterName = "PlaylistAuthorizationFilter", urlPatterns = { "/GoToPlaylist", "/RemoveSongsFromPlaylist", "/AddSongsToPlaylist", "/GoToHomeJS" })
+@WebFilter(filterName = "PlaylistAuthorizationFilter", urlPatterns = { "/GoToHome", "/RemoveSongsFromPlaylist", "/AddSongsToPlaylist" })
 @Priority(11)
 public class PlaylistAuthorizationFilter implements Filter {
 

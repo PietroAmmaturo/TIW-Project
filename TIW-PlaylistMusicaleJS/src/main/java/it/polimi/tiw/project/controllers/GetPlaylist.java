@@ -100,7 +100,7 @@ public class GetPlaylist extends HttpServlet{
 		 // Convert objects to JSON strings
 	    String playlistSongsWithAlbumSerialized = gson.toJson(playlistSongsWithAlbum.entrySet()
 	            .stream()
-	            .map(e -> Set.of(Set.of("key", e.getKey()), Set.of("value", e.getValue())))
+	            .map(e -> Set.of(e.getKey(), e.getValue()))
 	            .collect(Collectors.toList()));
 	    String userSongsSerialized = gson.toJson(userSongs);
 	
@@ -109,12 +109,9 @@ public class GetPlaylist extends HttpServlet{
 	
 		 // Write the response JSON string to the response output stream
 		 response.getWriter().write(
-				 "playlistSongsWithAlbum:" + playlistSongsWithAlbumSerialized + "," +
-				 "userSongs:" + userSongsSerialized
+				 "{\"playlistSongsWithAlbum\":" + playlistSongsWithAlbumSerialized + "," +
+				 "\"userSongs\":" + userSongsSerialized + "}"
 				 );
-
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**

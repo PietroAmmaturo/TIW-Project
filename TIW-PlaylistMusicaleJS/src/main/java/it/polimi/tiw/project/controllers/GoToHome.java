@@ -1,11 +1,11 @@
 package it.polimi.tiw.project.controllers;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -14,17 +14,21 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-import org.thymeleaf.templateresolver.ITemplateResolver;
-/**
- * Servlet implementation class GoToHome
- */
+
+import it.polimi.tiw.project.DAO.SongDAO;
+import it.polimi.tiw.project.DAO.SongDetailsDAO;
+import it.polimi.tiw.project.beans.Album;
+import it.polimi.tiw.project.beans.Song;
+import it.polimi.tiw.project.beans.User;
+
 @WebServlet("/GoToHome")
-public class GoToHome extends HttpServlet {
+public class GoToHome extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 	private TemplateEngine templateEngine;
@@ -66,14 +70,32 @@ public class GoToHome extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Redirect to the Home page and add missions to the parameters
+		HttpSession session = request.getSession(false);
+		int userId = ((User) session.getAttribute("currentUser")).getId();
+		int playlistId = Integer.parseInt(request.getParameter("playlistId"));
 		
+		SongDAO songDAO = new SongDAO(connection);
+		SongDetailsDAO songDetailsDAO = new SongDetailsDAO(connection);
+		Map<Song, Album> playlistSongsWithAlbum;
+		List<Song> userSongs;
+		
+	    try {
+	        playlistSongsWithAlbum = songDetailsDAO.findAllSongsWithAlbumByPlaylistId(playlistId);
+			userSongs = songDAO.findAllSongsByUserIdNotBelongingToPlaylist(userId, playlistId);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
+	        return;
+	    }
 		String path = "/WEB-INF/Home.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		ctx.setVariable("playlistSongsWithAlbum", playlistSongsWithAlbum);
+		ctx.setVariable("userSongs", userSongs);
+		ctx.setVariable("playlistId", playlistId);
 		templateEngine.process(path, ctx, response.getWriter());
 		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -84,4 +106,13 @@ public class GoToHome extends HttpServlet {
 		doGet(request, response);
 	}
 
+	public void destroy() {
+		if (connection != null) {
+			try {
+				connection.close();
+			} catch (SQLException e){
+				
+			}
+		}
+	}
 }

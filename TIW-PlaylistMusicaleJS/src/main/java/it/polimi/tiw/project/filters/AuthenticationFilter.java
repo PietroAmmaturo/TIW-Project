@@ -11,7 +11,7 @@ import it.polimi.tiw.project.beans.User;
 
 import java.io.IOException;
 
-@WebFilter(filterName = "AuthenticationFilter", urlPatterns = { "/GoToPlaylist", "/RemoveSongsFromPlaylist", "/AddSongsToPlaylist", "/GoToPlayer",  "/GoToHomeJS", "/GoToHome", "/FileHandler" })
+@WebFilter(filterName = "AuthenticationFilter", urlPatterns = { "/RemoveSongsFromPlaylist", "/AddSongsToPlaylist", "/GoToHome", "/FileHandler" })
 @Priority(1)
 public class AuthenticationFilter implements Filter {
 
