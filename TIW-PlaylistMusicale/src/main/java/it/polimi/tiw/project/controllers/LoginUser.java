@@ -91,10 +91,16 @@ public class LoginUser extends HttpServlet {
 				User user = userDao.findUserByUsername(username);
 				if(password.equals(user.getPassword())) {
 					//accedi
+					HttpSession session = request.getSession(true);
+			        session.setAttribute("currentUser", user);
+			        String path = getServletContext().getContextPath() + "/GoToHome";
+					response.sendRedirect(path);
 				}
 				else {
 					//password non corretta
 				}
+			} else {
+				//utente non esistente
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
