@@ -14,11 +14,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+
+import it.polimi.tiw.project.beans.User;
+
 import org.thymeleaf.templateresolver.ITemplateResolver;
 /**
  * Servlet implementation class GoToHome
@@ -67,6 +71,9 @@ public class GoToHome extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Redirect to the Home page and add missions to the parameters
+		HttpSession session = request.getSession(false);
+		int userId = ((User) session.getAttribute("currentUser")).getId();
+		//se serve l'id dell'utente è questo
 		
 		String path = "/WEB-INF/Home.html";
 		ServletContext servletContext = getServletContext();

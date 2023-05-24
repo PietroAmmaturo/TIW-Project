@@ -23,14 +23,15 @@
     </table> -->
     <div class="formdiv">
     <h2>Add new song from existing album</h2>
-    <form action="#" th:action="@{/AddSongExistingAlbum}" method="POST"	enctype="multipart/form-data">
+    <form action="#" th:action="@{/AddSongExistingAlbum}" method="post"	enctype="multipart/form-data">
     	<fieldset>
-    		<p> Title: <input type="text" name="song_title" required /></p>
+    		<p> Title: <input type="text" name="songTitle" required /></p>
     		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
-    		<select id="existingAlbum" name="album" required>
+    		<p><select id="existingAlbum" name="albumId" required>
             	<option value="">-- Choose Existing Album --</option>
+            	<option value="album"> Album </option>
             	<option th:each="album : ${albums}" th:text="${album.title}" th:value="${album.id}"></option>
-        	</select>
+        	</select></p>
     		<input type="submit" name="add_song" value="Add song">
     	</fieldset>
     </form>

@@ -114,4 +114,38 @@ public class SongDAO {
 	    return songs;
 	}
 	
+	public void addSong(String titleSong, String audio ,int albumId) throws SQLException {
+		String sql = "INSERT INTO Song (title, audio, album_id) VALUES (?, ?)";
+		try(PreparedStatement statement = connection.prepareStatement(sql)) {
+			connection.setAutoCommit(false);
+			statement.setString(1, titleSong);
+			statement.setString(2, audio);
+			statement.setInt(3, albumId);
+			int affectedRows = statement.executeUpdate();
+			if (affectedRows == 0) {
+                throw new SQLException("Failed to add song");
+            }
+		}catch(SQLException e){
+			connection.rollback();
+            throw e;
+		}finally {
+			connection.setAutoCommit(true);
+		}
+	}
+	
+	public boolean titleInAlbumAlreadyInUse(String titleSong, int albumId) throws SQLException {
+		String query = "SELECT COUNT(*) FROM Song WHERE title = ? AND album_id = ?";
+		PreparedStatement statement = connection.prepareStatement(query);
+		statement.setString(1, titleSong);
+		statement.setInt(2, albumId);
+		try(ResultSet resultSet = statement.executeQuery()){
+			resultSet.next();
+			int count = resultSet.getInt(1);
+			return count >= 1;
+		}catch(SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
 }

@@ -11,26 +11,30 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.polimi.tiw.project.DAO.UserDAO;
+import it.polimi.tiw.project.DAO.AlbumDAO;
+import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.beans.User;
 
-@WebServlet("/RegisterUser")
-public class RegisterUser extends HttpServlet {
+@WebServlet("/AddSongExistingAlbum")
+@MultipartConfig
+public class AddSongExistingAlbum extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 	
-	public RegisterUser() {
+	public AddSongExistingAlbum() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -57,16 +61,20 @@ public class RegisterUser extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		HttpSession session = request.getSession(false);
+		Integer userId = ((User) session.getAttribute("currentUser")).getId();
 		
-		String username = null;
-		String password = null;
+		String albumId = null;
+		String songTitle = null;
+		Part audioFile = null;
 		boolean valid = true;
 		
+		
 		try {
-			username = request.getParameter("username");
-			password = request.getParameter("password");
-			
-			if(username.isBlank() || username.isEmpty() || password.isBlank() || password.isEmpty())
+			audioFile = request.getPart("audioFile");
+			songTitle = request.getParameter("songTitle");
+			albumId = request.getParameter("album");
+			if(songTitle.isBlank() || songTitle.isEmpty() || albumId.isBlank() || albumId.isEmpty() || audioFile.equals(null))
 				valid = false;
 		}catch(NullPointerException e) {
 			valid = false;
@@ -77,53 +85,41 @@ public class RegisterUser extends HttpServlet {
 			return;
 		}
 		
-		UserDAO userDao = new UserDAO(connection);
-		boolean usernameUsed = true;
+		boolean songTitleInUse = true;
+		boolean albumIdValid = false;
+		SongDAO songDao = new SongDAO(connection);
+		AlbumDAO albumDao = new AlbumDAO(connection);
 		try {
-			usernameUsed = userDao.usernameAlreadyInUse(username);
+			//TODO aggiungere filtro per assicurarsi sia intero valido
+			albumIdValid = albumDao.idInUse(Integer.parseInt(albumId));
+			if(albumIdValid)
+				songTitleInUse = songDao.titleInAlbumAlreadyInUse(songTitle, Integer.parseInt(albumId));
 		}catch(SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Missing or incorrect parameters");
 			return;
 		}
+		
 		try {
-			if(usernameUsed) {
-				//response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Username alredy in use");
-				RequestDispatcher dispatcher = request.getRequestDispatcher("/UsernameOccupied");
-		        dispatcher.include(request, response);
-		        String path = getServletContext().getContextPath() + "/GoToLogin";
-				response.sendRedirect(path);
-				return;
+			if(albumIdValid) {
+				if(!songTitleInUse) {
+					FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), songTitle);
+					songDao.addSong(songTitle, albumId+"_"+songTitle, Integer.parseInt(albumId));
+			        String path = getServletContext().getContextPath() + "/GoToHome";
+					response.sendRedirect(path);
+				}else {
+					//TODO titolo in uso nell'album
+				}
+			}else {
+				//TODO schermata che qualcuno ha manomesso l'id inviato
 			}
-			else {
-				userDao.addUser(username, password);
-				HttpSession session = request.getSession(true);
-		        User user = userDao.findUserByUsername(username);
-		        session.setAttribute("currentUser", user);
-		        String path = getServletContext().getContextPath() + "/GoToHome";
-				response.sendRedirect(path);
-				//response.sendRedirect("Home.html"); ///per andare alla homepage
-			}
-			//RequestDispatcher dispatcher = request.getRequestDispatcher("UsernameOccupied");
-	        //dispatcher.forward(request, response);
-			
-		} catch (Exception e) {
+		}catch (IOException | SQLException e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Error in creating the account");
+					"Error in adding the song");
 			return;
 		}
-		//
+		
 		
 	}
 	
-	@Override
-	public void destroy() {
-		if (connection != null) {
-			try {
-				connection.close();
-			} catch (SQLException e){
-				
-			}
-		}
 	}
-}

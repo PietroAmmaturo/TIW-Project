@@ -97,10 +97,10 @@ public class LoginUser extends HttpServlet {
 					response.sendRedirect(path);
 				}
 				else {
-					//password non corretta
+					//TODO password non corretta
 				}
 			} else {
-				//utente non esistente
+				//TODO utente non esistente
 			}
 		}catch(Exception e) {
 			e.printStackTrace();

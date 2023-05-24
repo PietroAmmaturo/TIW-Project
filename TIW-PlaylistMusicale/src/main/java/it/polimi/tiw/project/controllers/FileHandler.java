@@ -78,10 +78,13 @@ public class FileHandler extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
-    private static void saveFile(ServletContext servletContext, Part filePart, String userId, String fileName) throws IOException {
+    public static void saveFile(ServletContext servletContext, Part filePart, String userId, String fileName) throws IOException {
         // Construct the file path
         String filePath = getFilePath(servletContext, userId, fileName);
-
+        
+        //TODO togliere
+        System.out.println("QUALCOSA AAAAAAAA" + filePath);
+        
         // Create a file object
         File file = new File(filePath);
 
