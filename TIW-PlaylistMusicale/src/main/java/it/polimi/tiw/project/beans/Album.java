@@ -13,6 +13,7 @@ public class Album implements Serializable{
 	private String image;
 	private String interpreter;
 	private int publicationYear;
+	private int userId;
 	
 	public int getId() {
 		return this.id;
@@ -28,6 +29,10 @@ public class Album implements Serializable{
 	
 	public String getInterpreter() {
 		return this.interpreter;
+	}
+	
+	public int getUserId() {
+		return this.userId;
 	}
 	
 	public int getPublicationYear() {
@@ -52,5 +57,9 @@ public class Album implements Serializable{
 	
 	public void setPublicationYear(int publicationYear) {
 		this.publicationYear = publicationYear;
+	}
+	
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 }

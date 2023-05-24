@@ -73,7 +73,7 @@ public class AddSongExistingAlbum extends HttpServlet {
 		try {
 			audioFile = request.getPart("audioFile");
 			songTitle = request.getParameter("songTitle");
-			albumId = request.getParameter("album");
+			albumId = request.getParameter("albumId");
 			if(songTitle.isBlank() || songTitle.isEmpty() || albumId.isBlank() || albumId.isEmpty() || audioFile.equals(null))
 				valid = false;
 		}catch(NullPointerException e) {
@@ -95,13 +95,14 @@ public class AddSongExistingAlbum extends HttpServlet {
 			if(albumIdValid)
 				songTitleInUse = songDao.titleInAlbumAlreadyInUse(songTitle, Integer.parseInt(albumId));
 		}catch(SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Missing or incorrect parameters");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in contacting the db");
 			return;
 		}
 		
 		try {
 			if(albumIdValid) {
 				if(!songTitleInUse) {
+					//TODO dà problema, aggiustare
 					FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), songTitle);
 					songDao.addSong(songTitle, albumId+"_"+songTitle, Integer.parseInt(albumId));
 			        String path = getServletContext().getContextPath() + "/GoToHome";

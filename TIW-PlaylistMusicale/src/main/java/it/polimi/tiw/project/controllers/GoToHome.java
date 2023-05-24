@@ -21,6 +21,10 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import it.polimi.tiw.project.DAO.AlbumDAO;
+import it.polimi.tiw.project.DAO.PlaylistDAO;
+import it.polimi.tiw.project.beans.Album;
+import it.polimi.tiw.project.beans.Playlist;
 import it.polimi.tiw.project.beans.User;
 
 import org.thymeleaf.templateresolver.ITemplateResolver;
@@ -75,9 +79,25 @@ public class GoToHome extends HttpServlet {
 		int userId = ((User) session.getAttribute("currentUser")).getId();
 		//se serve l'id dell'utente è questo
 		
+		AlbumDAO albumDao = new AlbumDAO(connection);
+		PlaylistDAO playlistDao = new PlaylistDAO(connection);
+		List<Album> albums;
+		List<Playlist> playlists;
+		try {
+	        albums = albumDao.findAlbumsByUserId(userId);
+			playlists = playlistDao.findPlaylistsByUserId(userId);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
+	        return;
+	    }
+		
+		
 		String path = "/WEB-INF/Home.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		ctx.setVariable("albums", albums);
+		ctx.setVariable("playlists", playlists);
 		templateEngine.process(path, ctx, response.getWriter());
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());

@@ -82,9 +82,6 @@ public class FileHandler extends HttpServlet {
         // Construct the file path
         String filePath = getFilePath(servletContext, userId, fileName);
         
-        //TODO togliere
-        System.out.println("QUALCOSA AAAAAAAA" + filePath);
-        
         // Create a file object
         File file = new File(filePath);
 

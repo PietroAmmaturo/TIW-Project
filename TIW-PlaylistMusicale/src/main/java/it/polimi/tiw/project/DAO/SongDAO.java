@@ -115,7 +115,7 @@ public class SongDAO {
 	}
 	
 	public void addSong(String titleSong, String audio ,int albumId) throws SQLException {
-		String sql = "INSERT INTO Song (title, audio, album_id) VALUES (?, ?)";
+		String sql = "INSERT INTO Song (title, audio, album_id) VALUES (?, ?, ?)";
 		try(PreparedStatement statement = connection.prepareStatement(sql)) {
 			connection.setAutoCommit(false);
 			statement.setString(1, titleSong);
