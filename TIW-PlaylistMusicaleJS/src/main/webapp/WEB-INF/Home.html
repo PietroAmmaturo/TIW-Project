@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home page</title>
+</head>
+<body>
+    <h1>Home page</h1>
+   <!-- <table>
+        <tr>
+            <th>Title</th>
+            <th>Album</th>
+            <th>Artist</th>
+            <th>Year</th>
+            <th>Genre</th>
+        </tr>
+        <tr th:each="song : ${playlist}">
+            <td th:text="${song.title}"></td>
+            <td th:text="${song.album.title}"></td>
+            <td th:text="${song.album.artist}"></td>
+            <td th:text="${song.album.year}"></td>
+            <td th:text="${song.album.genre}"></td>
+        </tr>
+    </table> -->
+    <div class="formdiv">
+    <h2>Add new song from existing album</h2>
+    <form action="#" th:action="@{/AddSongExistingAlbum}" method="POST"	enctype="multipart/form-data">
+    	<fieldset>
+    		<p> Title: <input type="text" name="song_title" required /></p>
+    		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
+    		<select id="existingAlbum" name="album" required>
+            	<option value="">-- Choose Existing Album --</option>
+            	<option th:each="album : ${albums}" th:text="${album.title}" th:value="${album.id}"></option>
+        	</select>
+    		<input type="submit" name="add_song" value="Add song">
+    	</fieldset>
+    </form>
+    </div>
+    
+    <div class="formdiv">
+    <h2>Add new song and new album</h2>
+    <form action="#" th:action="@{/AddSongNewAlbum}" method="post" enctype="multipart/form-data">
+    	<fieldset>
+    		<p> Song title: <input type="text" name="song_title" required /></p>
+    		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
+    		<p> Album title: <input type="text" name="album_title" required /></p>
+    		<p> Album artist: <input type="text" name="album_artist" required /></p>
+    		<p> Album year: <input type="number" name="album_year" required /></p>
+    		<p> Album genre: <input type="text" name="album_genre" required /></p>
+    		<p> Album cover: <input type="file" name="album_cover" accept="image/*" required /></p>
+    		<input type="submit" name="add_song" value="Add song">
+    	</fieldset>
+    </form>
+    </div>
+    <br>
+    <h2>Add new playlist</h2>
+    <!-- <form action="select_songs" method="post">
+     <ul>
+      <% List<String> items = (List<String>) request.getAttribute("items");
+         if (items != null) {
+           for (String item : items) { %>
+             <li>
+               <input type="checkbox" name="select_songs" value="<%= item %>">
+               <%= item %>
+             </li>
+           <% }
+         } %>
+     </ul>
+  </form><br> -->
+     <form action="@{/playlist/add}" method="post">
+     <label for="input_title_playlist">Enter title of playlist:</label><br>
+     <input type="text" id="input_title_playlist" name="playlist_title"><br>
+     <input type="submit" value="Add playlist"><br>
+    </form>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Playlist</title>
+</head>
+<body>
+    <h1>Playlist</h1>
+
+	<div th:if="${not #maps.isEmpty(playlistSongsWithAlbum)}">
+		<form th:action="@{/RemoveSongsFromPlaylist(playlistId=${playlistId})}" method="post">
+		    <input type="hidden" name="playlistId" th:value="${playlistId}"/>
+		    <table>
+		        <tbody>
+				    <tr>
+				        <td th:each="entry : ${playlistSongsWithAlbum}"></td>
+				    </tr>
+				    <tr>
+				        <td th:each="entry : ${playlistSongsWithAlbum}">
+				        	<div>
+				       			<input type="checkbox" name="songIds" th:value="${entry.key.id}"/>
+				       			<label for="songIds">
+				        			<a th:href="@{/GoToPlayer(songId=${songId})}" th:text="${entry.key.title}"></a>
+				        		</label>
+				        	</div>
+				        	<img th:src="@{/FileHandler(fileName=${entry.value.image})}" th:alt="${entry.value.title}">
+				        </td>
+				    </tr>
+		        </tbody>
+		    </table>
+		    <button type="submit">Remove selected songs</button>
+		    
+			<div th:if="${currentPage > 1}">
+		        <a th:href="@{/GoToPlaylist(playlistId=${playlistId}, playlistPage=${currentPage - 1})}">Previous</a>
+		    </div>
+		
+		    <div th:if="${currentPage < maxPage}">
+		        <a th:href="@{/GoToPlaylist(playlistId=${playlistId}, playlistPage=${currentPage + 1})}">Next</a>
+		    </div>
+		</form>
+	</div>
+
+    <h2>Add Song to Playlist</h2>
+	<form method="post" th:action="@{/AddSongsToPlaylist(playlistId=${playlistId})}">
+	    <div>
+	        <label for="song">Songs:</label>
+	        <br>
+	        <select id="song"
+	                name="songIds"
+	                multiple>
+	            <option value="">-- Select songs --</option>
+	            <option th:each="song : ${userSongs}"
+	                    th:value="${song.id}"
+	                    th:text="${song.title}"></option>
+	        </select>
+	    </div>
+	    <button type="submit">Add to Playlist</button>
+	</form>
+</body>
+</html>
