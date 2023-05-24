@@ -22,7 +22,7 @@
 				        			<a th:href="@{/GoToPlayer(songId=${songId})}" th:text="${entry.key.title}"></a>
 				        		</label>
 				        	</div>
-				        	<img th:src="${entry.value.image}" th:alt="${entry.value.title}">
+				        	<img th:src="@{/FileHandler(fileName=${entry.value.image})}" th:alt="${entry.value.title}">
 				        </td>
 				    </tr>
 		        </tbody>
