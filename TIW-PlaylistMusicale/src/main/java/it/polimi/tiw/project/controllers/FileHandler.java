@@ -28,7 +28,7 @@ public class FileHandler extends HttpServlet {
         String fileName = request.getParameter("fileName");
 
         // Construct the file path
-        String filePath = getFilePath(userId.toString(), fileName);
+        String filePath = getFilePath(getServletContext(), userId.toString(), fileName);
         System.out.println(filePath);
         // Create a file object
         File file = new File(filePath);
@@ -64,12 +64,23 @@ public class FileHandler extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession(false);
-		Integer userId = ((User) session.getAttribute("currentUser")).getId();
+        HttpSession session = request.getSession(false);
+        Integer userId = ((User) session.getAttribute("currentUser")).getId();
         String fileName = request.getParameter("fileName");
 
+        // Get the uploaded file part from the request
+        Part filePart = request.getPart("file");
+
+        // Save the file
+        saveFile(getServletContext(), filePart, userId.toString(), fileName);
+
+        // Send a success response
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    private static void saveFile(ServletContext servletContext, Part filePart, String userId, String fileName) throws IOException {
         // Construct the file path
-        String filePath = getFilePath(userId.toString(), fileName);
+        String filePath = getFilePath(servletContext, userId, fileName);
 
         // Create a file object
         File file = new File(filePath);
@@ -79,9 +90,6 @@ public class FileHandler extends HttpServlet {
         if (!parentDir.exists()) {
             parentDir.mkdirs();
         }
-
-        // Get the uploaded file part from the request
-        Part filePart = request.getPart("file");
 
         // Create input stream from the uploaded file part
         InputStream inputStream = filePart.getInputStream();
@@ -99,14 +107,9 @@ public class FileHandler extends HttpServlet {
         // Close the streams
         inputStream.close();
         outputStream.close();
-
-        // Send a success response
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 
-    private String getFilePath(String userId, String filename) {
-        // Get the servlet context
-        ServletContext servletContext = getServletContext();
+    private static String getFilePath(ServletContext servletContext, String userId, String filename) {
 
         // Get the absolute path of the directory containing the JavaScript file
         String directoryPath = servletContext.getRealPath("/static");
