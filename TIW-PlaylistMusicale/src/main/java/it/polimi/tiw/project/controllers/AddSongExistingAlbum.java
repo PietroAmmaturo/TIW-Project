@@ -56,7 +56,7 @@ public class AddSongExistingAlbum extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		Integer userId = ((User) session.getAttribute("currentUser")).getId();
 		
-		String albumId = null;
+		int albumId = 0;
 		String songTitle = null;
 		String songGenre = null;
 		Part audioFile = null;
@@ -65,10 +65,10 @@ public class AddSongExistingAlbum extends HttpServlet {
 		
 		try {
 			audioFile = request.getPart("audioFile");
-			songTitle = request.getParameter("songTitle");
+			songTitle = request.getParameter("song_title");
 			songGenre = request.getParameter("song_genre");
-			albumId = request.getParameter("albumId");
-			if(songTitle.isBlank() || songTitle.isEmpty() || albumId.isBlank() || albumId.isEmpty() || audioFile.equals(null))
+			albumId = Integer.parseInt(request.getParameter("albumId"));
+			if(songTitle.isBlank() || songTitle.isEmpty() || audioFile.equals(null))
 				valid = false;
 		}catch(NullPointerException e) {
 			valid = false;
@@ -85,9 +85,9 @@ public class AddSongExistingAlbum extends HttpServlet {
 		AlbumDAO albumDao = new AlbumDAO(connection);
 		try {
 			//TODO aggiungere filtro per assicurarsi sia intero valido
-			albumIdValid = albumDao.idInUse(Integer.parseInt(albumId));
+			albumIdValid = albumDao.idInUse(albumId);
 			if(albumIdValid)
-				songTitleInUse = songDao.titleInAlbumAlreadyInUse(songTitle, Integer.parseInt(albumId));
+				songTitleInUse = songDao.titleInAlbumAlreadyInUse(songTitle, albumId);
 		}catch(SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in contacting the db");
 			return;
@@ -98,7 +98,7 @@ public class AddSongExistingAlbum extends HttpServlet {
 				if(!songTitleInUse) {
 					//TODO dà problema, aggiustare
 					FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), songTitle);
-					songDao.addSong(songTitle, songGenre, albumId+"_"+songTitle, Integer.parseInt(albumId));
+					songDao.addSong(songTitle, songGenre, albumId+"_"+songTitle, albumId);
 			        String path = getServletContext().getContextPath() + "/GoToHome";
 					response.sendRedirect(path);
 				}else {
