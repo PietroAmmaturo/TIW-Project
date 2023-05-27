@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
@@ -61,6 +62,8 @@ public class AddSongExistingAlbum extends HttpServlet {
 		String songGenre = null;
 		Part audioFile = null;
 		boolean valid = true;
+		boolean showPopup = false;
+		String errorMessage = "null";
 		
 		
 		try {
@@ -68,17 +71,23 @@ public class AddSongExistingAlbum extends HttpServlet {
 			songTitle = request.getParameter("song_title");
 			songGenre = request.getParameter("song_genre");
 			albumId = Integer.parseInt(request.getParameter("albumId"));
-			if(songTitle.isBlank() || songTitle.isEmpty() || audioFile.equals(null))
+			if(songTitle.isBlank() || songTitle.isEmpty() || audioFile.equals(null)) {
 				valid = false;
+				showPopup = true;
+				errorMessage = "Missing or incorrect parameters";
+			}
 		}catch(NullPointerException e) {
 			valid = false;
+			showPopup = true;
+			errorMessage = "Missing or incorrect parameters";
 		}
 		
 		if(!valid) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or incorrect parameters");
+		    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or incorrect parameters");
 			return;
 		}
 		
+		if(valid) {
 		boolean songTitleInUse = true;
 		boolean albumIdValid = false;
 		SongDAO songDao = new SongDAO(connection);
@@ -103,9 +112,13 @@ public class AddSongExistingAlbum extends HttpServlet {
 					response.sendRedirect(path);
 				}else {
 					//TODO titolo in uso nell'album
+					showPopup = true;
+					errorMessage = "Title already in use in the album";
 				}
 			}else {
 				//TODO schermata che qualcuno ha manomesso l'id inviato
+				showPopup = true;
+				errorMessage = "You shouldn't see this...";
 			}
 		}catch (IOException | SQLException e) {
 			e.printStackTrace();
@@ -113,7 +126,12 @@ public class AddSongExistingAlbum extends HttpServlet {
 					"Error in adding the song");
 			return;
 		}
+		}
 		
+		/*request.setAttribute("showPopup", showPopup);
+	    request.setAttribute("inputValue", errorMessage);
+	    RequestDispatcher dispatcher = request.getRequestDispatcher("src/main/webapp/WEB-INF/Home.html");
+	    dispatcher.forward(request, response);*/
 		
 	}
 	

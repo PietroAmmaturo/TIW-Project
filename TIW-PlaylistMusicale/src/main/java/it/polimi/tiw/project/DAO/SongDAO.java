@@ -75,6 +75,7 @@ public class SongDAO {
 	                song.setTitle(result.getString("title"));
 	                song.setAudio(result.getString("audio"));
 	                song.setGenre(result.getString("genre"));
+	                song.setAlbumTitle(result.getString("Album.title"));
 	                songs.add(song);
 	            }
 	        }

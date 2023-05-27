@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Home page</title>
 </head>
 <body>
@@ -68,7 +69,6 @@
     </form>
     </div>
     <br>
-    <h2>Add new playlist</h2>
     <!-- <form action="select_songs" method="post">
      <ul>
       <% List<String> items = (List<String>) request.getAttribute("items");
@@ -82,10 +82,23 @@
          } %>
      </ul>
   </form><br> -->
+  <div>
+  <h2>Create new playlist</h2>
      <form action="@{/playlist/add}" method="post">
-     <label for="input_title_playlist">Enter title of playlist:</label><br>
-     <input type="text" id="input_title_playlist" name="playlist_title"><br>
-     <input type="submit" value="Add playlist"><br>
+     <fieldset>
+     <p>Enter title of playlist: <input type="text" name="playlist_title" required /></p>
+     <th:block th:each="song : ${songs}">
+     <p><input type="checkbox" name="selected_songs" th:text="${song.title + ' - ' + song.albumTitle}" th:value="${song.id}" /></p>
+     </th:block> 
+     <input type="submit" name="add_song" value="Create playlist">
+     </fieldset>
     </form>
+   </div>
+    
+    <div th:if="${showPopup}">
+        <p><span th:text="${inputValue}"></span></p>
+        <a href="/">Close</a>
+    </div>
+    
 </body>
 </html>
