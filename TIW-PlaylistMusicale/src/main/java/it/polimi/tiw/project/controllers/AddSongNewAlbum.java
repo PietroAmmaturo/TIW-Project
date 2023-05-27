@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.Year;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -18,6 +19,7 @@ import javax.servlet.http.Part;
 
 import it.polimi.tiw.project.DAO.AlbumDAO;
 import it.polimi.tiw.project.DAO.SongDAO;
+import it.polimi.tiw.project.beans.Album;
 import it.polimi.tiw.project.beans.User;
 
 @WebServlet("/AddSongNewAlbum")
@@ -55,6 +57,72 @@ public class AddSongNewAlbum extends HttpServlet {
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
 		Integer userId = ((User) session.getAttribute("currentUser")).getId();
+		
+		Year currentYear = Year.now();
+		
+		String songTitle = null;
+		Part audioFile = null;
+		String albumTitle = null;
+		String albumArtist = null;
+		Integer albumYear = null;
+		String songGenre = null;
+		Part albumCover = null;
+		boolean valid = true;
+		
+		
+		try {
+			songTitle = request.getParameter("song_title");
+			audioFile = request.getPart("audioFile");
+			albumTitle = request.getParameter("album_title");
+			albumArtist = request.getParameter("album_artist");
+			albumYear = Integer.parseInt(request.getParameter("album_year"));
+			songGenre = request.getParameter("song_genre");
+			albumCover = request.getPart("album_cover");
+			if(songTitle.isBlank() || songTitle.isEmpty() || albumTitle.isBlank() || albumTitle.isEmpty() ||
+			   audioFile.equals(null) || albumCover.equals(null) || albumArtist.isBlank() || albumArtist.isEmpty() ||
+			   albumYear> currentYear.getValue() || songGenre.isBlank() || songGenre.isEmpty())
+				valid = false;
+		}catch(NullPointerException e) {
+			valid = false;
+		}
+		
+		if(!valid) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or incorrect parameters");
+			return;
+		}
+		
+		boolean titleInUse = true;
+		SongDAO songDao = new SongDAO(connection);
+		AlbumDAO albumDao = new AlbumDAO(connection);
+		int idAlbum = 0;
+		
+			try {
+				titleInUse = albumDao.albumTitleInUseForUser(albumTitle, userId);
+				if(!titleInUse) {
+					FileHandler.saveFile(getServletContext(), albumCover,  userId.toString(), albumTitle);
+					albumDao.addAlbum(albumTitle, /*nome della copertina dell'album*/albumTitle, albumArtist, (int)albumYear, (int)userId);
+				}else {
+				//TODO titolo dell'album già in uso per l'utente + return
+				}
+			}catch(SQLException e) {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in adding the album");
+				return;
+			}
+			try {
+				idAlbum = albumDao.getAlbumIdByTitleAndUser(albumTitle, userId);
+				//TODO dà problema, aggiustare
+				FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), songTitle);
+				songDao.addSong(songTitle, songGenre, String.valueOf(idAlbum)+"_"+songTitle, idAlbum);
+			    String path = getServletContext().getContextPath() + "/GoToHome";
+				response.sendRedirect(path);
+			}catch (IOException | SQLException e) {
+				e.printStackTrace();
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in adding the song");
+			return;
+			}
+		
+		
 		
 	}
 }

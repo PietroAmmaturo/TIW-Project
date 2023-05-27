@@ -58,6 +58,7 @@ public class AddSongExistingAlbum extends HttpServlet {
 		
 		String albumId = null;
 		String songTitle = null;
+		String songGenre = null;
 		Part audioFile = null;
 		boolean valid = true;
 		
@@ -65,6 +66,7 @@ public class AddSongExistingAlbum extends HttpServlet {
 		try {
 			audioFile = request.getPart("audioFile");
 			songTitle = request.getParameter("songTitle");
+			songGenre = request.getParameter("song_genre");
 			albumId = request.getParameter("albumId");
 			if(songTitle.isBlank() || songTitle.isEmpty() || albumId.isBlank() || albumId.isEmpty() || audioFile.equals(null))
 				valid = false;
@@ -96,7 +98,7 @@ public class AddSongExistingAlbum extends HttpServlet {
 				if(!songTitleInUse) {
 					//TODO dà problema, aggiustare
 					FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), songTitle);
-					songDao.addSong(songTitle, albumId+"_"+songTitle, Integer.parseInt(albumId));
+					songDao.addSong(songTitle, songGenre, albumId+"_"+songTitle, Integer.parseInt(albumId));
 			        String path = getServletContext().getContextPath() + "/GoToHome";
 					response.sendRedirect(path);
 				}else {

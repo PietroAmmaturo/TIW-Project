@@ -53,22 +53,6 @@ public class AlbumDAO{
 		}
 	}
 	
-	public boolean albumTitleInUseForUser(String title, int userId) throws SQLException {
-		String query = "SELECT COUNT(*) FROM Album WHERE title = ? AND user_id = ?";
-		try(PreparedStatement statement = connection.prepareStatement(query)){
-			statement.setString(1, title);
-			statement.setInt(2, userId);
-			try(ResultSet resultSet = statement.executeQuery()){
-				resultSet.next();
-				int count = resultSet.getInt(1);
-				return count >= 1;
-			}catch(SQLException e) {
-				e.printStackTrace();
-				throw e;
-			}
-		}
-	}
-	
 	public List<Album> findAlbumsByUserId(int userId) throws SQLException{
 		String query = "SELECT * FROM Album WHERE user_id = ?";
 		List<Album> albumsList = new ArrayList<>();
@@ -106,18 +90,31 @@ public class AlbumDAO{
 		}
 	}
 	
-	public boolean albumTitleUsed(String title, int userId) throws SQLException {
+	public boolean albumTitleInUseForUser(String title, int userId) throws SQLException {
 		String query = "SELECT COUNT(*) FROM Album WHERE title = ? AND user_id = ?";
-		PreparedStatement statement = connection.prepareStatement(query);
-		statement.setString(1, title);
-		statement.setInt(2, userId);
-		try(ResultSet resultSet = statement.executeQuery()){
-			resultSet.next();
-			int count = resultSet.getInt(1);
-			return count >= 1;
-		}catch(SQLException e) {
-			e.printStackTrace();
-			throw e;
+		try(PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setString(1, title);
+			statement.setInt(2, userId);
+			try(ResultSet resultSet = statement.executeQuery()){
+				resultSet.next();
+				int count = resultSet.getInt(1);
+				return count >= 1;
+			}catch(SQLException e) {
+				e.printStackTrace();
+				throw e;
+			}
+		}
+	}
+	
+	public int getAlbumIdByTitleAndUser(String title, int userId) throws SQLException{
+		String query = "SELECT * FROM Album WHERE title = ? AND user_id = ?";
+		try(PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setString(1, title);
+			statement.setInt(2, userId);
+			try(ResultSet resultSet = statement.executeQuery()){
+				resultSet.next();
+				return resultSet.getInt("id");
+			}
 		}
 	}
 }

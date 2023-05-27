@@ -32,6 +32,7 @@ public class SongDAO {
 	                song.setTitle(result.getString("title"));
 	                song.setAudio(result.getString("audio"));
 	                song.setAlbumId(result.getInt("album_id"));
+	                song.setGenre(result.getString("genre"));
 	                return song;
 	            } else {
 	                return null;
@@ -54,6 +55,7 @@ public class SongDAO {
 	                song.setTitle(resultSet.getString("title"));
 	                song.setAudio(resultSet.getString("audio"));
 	                song.setAlbumId(resultSet.getInt("album_id"));
+	                song.setGenre(resultSet.getString("genre"));
 	                songs.add(song);
 	            }
 	        }
@@ -72,6 +74,7 @@ public class SongDAO {
 	                song.setId(result.getInt("id"));
 	                song.setTitle(result.getString("title"));
 	                song.setAudio(result.getString("audio"));
+	                song.setGenre(result.getString("genre"));
 	                songs.add(song);
 	            }
 	        }
@@ -107,6 +110,7 @@ public class SongDAO {
 	                song.setTitle(resultSet.getString("title"));
 	                song.setAudio(resultSet.getString("audio"));
 	                song.setAlbumId(resultSet.getInt("album_id"));
+	                song.setGenre(resultSet.getString("genre"));
 	                songs.add(song);
 	            }
 	        }
@@ -114,13 +118,14 @@ public class SongDAO {
 	    return songs;
 	}
 	
-	public void addSong(String titleSong, String audio ,int albumId) throws SQLException {
-		String sql = "INSERT INTO Song (title, audio, album_id) VALUES (?, ?, ?)";
+	public void addSong(String titleSong,String genre, String audio ,int albumId) throws SQLException {
+		String sql = "INSERT INTO Song (title, genre, audio, album_id) VALUES (?, ?, ?, ?)";
 		try(PreparedStatement statement = connection.prepareStatement(sql)) {
 			connection.setAutoCommit(false);
 			statement.setString(1, titleSong);
-			statement.setString(2, audio);
-			statement.setInt(3, albumId);
+			statement.setString(2, genre);
+			statement.setString(3, audio);
+			statement.setInt(4, albumId);
 			int affectedRows = statement.executeUpdate();
 			if (affectedRows == 0) {
                 throw new SQLException("Failed to add song");

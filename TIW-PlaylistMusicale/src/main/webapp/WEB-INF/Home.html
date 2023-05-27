@@ -25,8 +25,16 @@
     <h2>Add new song from existing album</h2>
     <form action="#" th:action="@{/AddSongExistingAlbum}" method="post"	enctype="multipart/form-data">
     	<fieldset>
-    		<p> Title: <input type="text" name="songTitle" required /></p>
-    		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
+    		<p> Title: <input type="text" name="song_title" required /></p>
+    		<p><select id="genre" name="song_genre" required>
+            	<option value="">-- Choose genre --</option>
+            	<option value="Rock"> Rock </option>
+            	<option value="Pop"> Pop </option>
+            	<option value="Country"> Country </option>
+            	<option value="Indie"> Indie </option>
+            	<option value="Classical"> Classical </option>
+        	</select></p>
+    		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required>
     		<p><select id="existingAlbum" name="albumId" required>
             	<option value="">-- Choose Existing Album --</option>
             	<option value="album"> Album </option>
@@ -42,11 +50,18 @@
     <form action="#" th:action="@{/AddSongNewAlbum}" method="post" enctype="multipart/form-data">
     	<fieldset>
     		<p> Song title: <input type="text" name="song_title" required /></p>
+    		<p><select id="genre" name="song_genre" required>
+            	<option value="">-- Choose genre --</option>
+            	<option value="Rrock"> Rock </option>
+            	<option value="Pop"> Pop </option>
+            	<option value="Country"> Country </option>
+            	<option value="Indie"> Indie </option>
+            	<option value="Classical"> Classical </option>
+        	</select></p>
     		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
     		<p> Album title: <input type="text" name="album_title" required /></p>
     		<p> Album artist: <input type="text" name="album_artist" required /></p>
     		<p> Album year: <input type="number" name="album_year" required /></p>
-    		<p> Album genre: <input type="text" name="album_genre" required /></p>
     		<p> Album cover: <input type="file" name="album_cover" accept="image/*" required /></p>
     		<input type="submit" name="add_song" value="Add song">
     	</fieldset>
