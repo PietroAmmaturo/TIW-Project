@@ -8,26 +8,62 @@ class PlaylistManager {
         this.addForm = document.getElementById('addSongsToPlaylistForm');
         this.removeForm = document.getElementById('removeSongsFromPlaylistForm');
         this.songs = document.getElementsByClassName('playlistSong');
-		
-        this.addForm.addEventListener('submit', this.handleAddFormSubmit);
-        this.removeForm.addEventListener('submit', this.handleRemoveFormSubmit);
 
+		this.setPageNumber = function(pageNumber) {
+			this.pageNumber = pageNumber;
+		};
+		
+        this.hideAndShow = function() {
+            for (let i = 0; i < this.songs.length; i++) {
+                if (i < (this.pageNumber - 1) * 5 || i >= this.pageNumber * 5) {
+                    this.songs[i].hidden = true;
+                } else {
+                    this.songs[i].hidden = false;
+                }
+            }
+        };
+        
+        this.updateQueryParams = function() {
+            const updatedUrlParams = new URLSearchParams(window.location.search);
+            updatedUrlParams.set('playlistPage', this.pageNumber.toString());
+
+            const newUrl = window.location.pathname + '?' + updatedUrlParams.toString();
+            window.history.pushState({ path: newUrl }, '', newUrl);
+        };
+        
         this.nextButton.addEventListener('click', () => {
             if (this.pageNumber * this.pageSize < this.songs.length) {
                 this.pageNumber++;
-                this.hideAndShow();
                 this.updateQueryParams();
+                this.hideAndShow();
             }
         });
 
         this.previousButton.addEventListener('click', () => {
             if (this.pageNumber > 1) {
                 this.pageNumber--;
-                this.hideAndShow();
                 this.updateQueryParams();
+                this.hideAndShow();
             }
         });
 
+        this.handleFormSubmit = function(event, formData) {
+            fetch(event.target.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams(formData).toString()
+            })
+                .then(response => {
+                    console.log('Request succeeded with response:', response);
+                    this.show();
+                })
+                .catch(error => {
+                    console.error('Request failed:', error);
+                });
+        };
+        
         this.handleAddFormSubmit = function(event) {
             event.preventDefault();
             const selectedSongs = Array.from(document.querySelectorAll('#addSongsToPlaylistForm option:checked')).map(option => option.value);
@@ -50,60 +86,17 @@ class PlaylistManager {
             this.handleFormSubmit(event, formData);
         };
 
-        this.handleFormSubmit = function(event, formData) {
-            fetch(event.target.action, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams(formData).toString()
-            })
-                .then(response => {
-                    console.log('Request succeeded with response:', response);
-                    this.show();
-                })
-                .catch(error => {
-                    console.error('Request failed:', error);
-                });
-        };
-
-        this.updateQueryParams = function() {
-            const updatedUrlParams = new URLSearchParams(window.location.search);
-            updatedUrlParams.set('playlistPage', this.pageNumber.toString());
-
-            const newUrl = window.location.pathname + '?' + updatedUrlParams.toString();
-            window.history.pushState({ path: newUrl }, '', newUrl);
-        };
-
-        this.hideAndShow = function() {
-            for (let i = 0; i < this.songs.length; i++) {
-                if (i < (this.pageNumber - 1) * 5 || i >= this.pageNumber * 5) {
-                    this.songs[i].hidden = true;
-                } else {
-                    this.songs[i].hidden = false;
-                }
-            }
-        };
+        this.addForm.addEventListener('submit', this.handleAddFormSubmit.bind(this));
+        this.removeForm.addEventListener('submit', this.handleRemoveFormSubmit.bind(this));
         
-        this.show = function() {
-            fetch("http://localhost:8080/TIW-PlaylistMusicale/GetPlaylist?playlistId=" + urlParams.get('playlistId'), {
-                method: 'GET'
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const playlistSongsWithAlbum = data.playlistSongsWithAlbum;
-                    const userSongs = data.userSongs;
-
-                    console.log(playlistSongsWithAlbum);
-                    console.log(userSongs);
-
-                    this.update({ playlistSongsWithAlbum, userSongs });
-                })
-                .catch(error => {
-                    console.error('Request failed:', error);
-                });
-        };
-
+        this.handleSongClick = function(songId) {
+			console.log("clicked", songId)
+			let songPageNumber = this.songManager.getSongPageNumber(songId);
+			this.songManager.setPageNumber(songPageNumber);
+			this.songManager.updateQueryParams();
+			this.songManager.hideAndShow();
+		};
+		
         this.update = function(playlistData) {
             console.log("updating...", playlistData);
             const removeSongsForm = document.getElementById('removeSongsFromPlaylistForm');
@@ -164,18 +157,29 @@ class PlaylistManager {
 
 			this.songManager.update(playlistData.playlistSongsWithAlbum)
             this.songs = document.getElementsByClassName('playlistSong');
-            this.hideAndShow();
+            this.setPageNumber(1);
             this.updateQueryParams();
+            this.hideAndShow();
         };
         
-        this.handleSongClick = function(songId) {
-			console.log("clicked", songId)
-			let songPageNumber = this.songManager.getSongPageNumber(songId);
-			this.songManager.setPageNumber(songPageNumber);
-			this.songManager.updateQueryParams();
-			this.songManager.hideAndShow();
-		    this.songManager.updateQueryParams();
-		};
+        this.show = function() {
+            fetch("http://localhost:8080/TIW-PlaylistMusicale/GetPlaylist?playlistId=" + urlParams.get('playlistId'), {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const playlistSongsWithAlbum = data.playlistSongsWithAlbum;
+                    const userSongs = data.userSongs;
+
+                    console.log(playlistSongsWithAlbum);
+                    console.log(userSongs);
+
+                    this.update({ playlistSongsWithAlbum, userSongs });
+                })
+                .catch(error => {
+                    console.error('Request failed:', error);
+                });
+        };
 		
 		this.show();
     }

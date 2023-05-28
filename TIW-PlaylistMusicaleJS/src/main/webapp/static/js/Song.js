@@ -28,16 +28,16 @@ class SongManager {
             if (this.pageNumber < this.songs.length) {
                 console.log("nxt s");
                 this.pageNumber++;
-                this.hideAndShow();
                 this.updateQueryParams();
+                this.hideAndShow();
             }
         });
 
         this.previousButton.addEventListener('click', () => {
             if (this.pageNumber > 1) {
                 this.pageNumber--;
-                this.hideAndShow();
                 this.updateQueryParams();
+                this.hideAndShow();
             }
         });
 		
@@ -107,6 +107,8 @@ class SongManager {
 		        playerContainer.appendChild(playerSong);
 		        
 		        this.songs = document.getElementsByClassName('playerSong');
+		        this.setPageNumber(1);
+		        this.updateQueryParams();
 		        this.hideAndShow();
 		    });
 		};
