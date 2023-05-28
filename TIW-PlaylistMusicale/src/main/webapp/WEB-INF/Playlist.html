@@ -19,7 +19,7 @@
 				        	<div>
 				       			<input type="checkbox" name="songIds" th:value="${entry.key.id}"/>
 				       			<label for="songIds">
-				        			<a th:href="@{/GoToPlayer(songId=${songId})}" th:text="${entry.key.title}"></a>
+				        			<a th:href="@{/GoToPlayer(songId=${entry.key.id})}" th:text="${entry.key.title}"></a>
 				        		</label>
 				        	</div>
 				        	<img th:src="@{/FileHandler(fileName=${entry.value.image})}" th:alt="${entry.value.title}">

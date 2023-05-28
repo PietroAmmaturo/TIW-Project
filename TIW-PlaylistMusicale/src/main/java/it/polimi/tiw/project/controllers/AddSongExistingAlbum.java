@@ -105,9 +105,12 @@ public class AddSongExistingAlbum extends HttpServlet {
 		try {
 			if(albumIdValid) {
 				if(!songTitleInUse) {
-					//TODO dà problema, aggiustare
-					FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), songTitle);
-					songDao.addSong(songTitle, songGenre, albumId+"_"+songTitle, albumId);
+					//TODO il nome del file dovebbe essere albumTitle_songTitle.extension, adesso è albumId_songTitle.extension
+					String audioFileExtension = FileHandler.getFileExtension(audioFile);
+					//TODO controllare che l'estensione non sia null
+					String audioFileName = albumId + "_" + songTitle + "." + audioFileExtension;
+					FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
+					songDao.addSong(songTitle, songGenre, audioFileName, albumId);
 			        String path = getServletContext().getContextPath() + "/GoToHome";
 					response.sendRedirect(path);
 				}else {

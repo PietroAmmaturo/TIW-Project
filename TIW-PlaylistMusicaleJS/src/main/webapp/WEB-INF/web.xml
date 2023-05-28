@@ -20,6 +20,10 @@
 		<param-name>dbDriver</param-name>
 		<param-value>com.mysql.cj.jdbc.Driver</param-value>
 	</context-param>
+	<context-param>
+		<param-name>userFilesDirectory</param-name>
+		<param-value>C:\Users\Pietro Ammaturo\github\TIW-Project\TIW-PlaylistMusicaleJS\user</param-value>
+	</context-param>
 	<welcome-file-list>
 		<welcome-file>GoToLogin</welcome-file>
 	</welcome-file-list>

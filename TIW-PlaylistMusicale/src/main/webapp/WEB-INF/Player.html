@@ -7,12 +7,13 @@
 <body>
     <h1>Song Details</h1>
     <h2 th:text="${song.title}"></h2>
-    <img th:src="${album.image}" />
+    <img th:src="@{/FileHandler(fileName=${album.image})}" />
     <!-- Display other details of the song such as artist, album, year, genre, etc. -->
     <p>Artist: <span th:text="${album.interpreter}"></span></p>
     <p>Album: <span th:text="${album.title}"></span></p>
-    <p>Year: <span th:text="${album.publicationYear}"></span></p>
+    <p>Album Year: <span th:text="${album.publicationYear}"></span></p>
+    <p>Genre: <span th:text="${song.genre}"></span></p>
     <!-- Add an audio player for song playback -->
-    <audio th:src="${song.audio}" controls></audio>
+    <audio th:src="@{/FileHandler(fileName=${song.audio})}" controls></audio>
 </body>
 </html>

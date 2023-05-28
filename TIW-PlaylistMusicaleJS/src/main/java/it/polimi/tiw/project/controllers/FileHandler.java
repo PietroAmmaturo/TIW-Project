@@ -1,5 +1,7 @@
 package it.polimi.tiw.project.controllers;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 
 import javax.servlet.*;
@@ -28,7 +30,7 @@ public class FileHandler extends HttpServlet {
         String fileName = request.getParameter("fileName");
 
         // Construct the file path
-        String filePath = getFilePath(userId.toString(), fileName);
+        String filePath = getFilePath(getServletContext(), userId.toString(), fileName);
         System.out.println(filePath);
         // Create a file object
         File file = new File(filePath);
@@ -64,54 +66,81 @@ public class FileHandler extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession(false);
-		Integer userId = ((User) session.getAttribute("currentUser")).getId();
+        HttpSession session = request.getSession(false);
+        Integer userId = ((User) session.getAttribute("currentUser")).getId();
         String fileName = request.getParameter("fileName");
-
-        // Construct the file path
-        String filePath = getFilePath(userId.toString(), fileName);
-
-        // Create a file object
-        File file = new File(filePath);
-
-        // Create parent directories if they don't exist
-        File parentDir = file.getParentFile();
-        if (!parentDir.exists()) {
-            parentDir.mkdirs();
-        }
 
         // Get the uploaded file part from the request
         Part filePart = request.getPart("file");
 
-        // Create input stream from the uploaded file part
-        InputStream inputStream = filePart.getInputStream();
-
-        // Create output stream to write the file content
-        OutputStream outputStream = new FileOutputStream(file);
-
-        // Read from the input stream and write to the output stream
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, bytesRead);
-        }
-
-        // Close the streams
-        inputStream.close();
-        outputStream.close();
+        // Save the file
+        saveFile(getServletContext(), filePart, userId.toString(), fileName);
 
         // Send a success response
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
-    private String getFilePath(String userId, String filename) {
-        // Get the servlet context
-        ServletContext servletContext = getServletContext();
+    public static void saveFile(ServletContext servletContext, Part filePart, String userId, String fileName) throws IOException {
+        // Construct the file path
+        String filePath = getFilePath(servletContext, userId, fileName);
+        
+        // Create a file object
+        Path path = Path.of(filePath);
+        System.out.println(filePath);
+        System.out.println(filePart);
+
+        // Create parent directories if they don't exist
+        Files.createDirectories(path.getParent());
+
+        // Create input stream from the uploaded file part
+        InputStream inputStream = filePart.getInputStream();
+
+        // Create output stream to write the file content
+        try (OutputStream outputStream = Files.newOutputStream(path);
+             BufferedWriter writer = new BufferedWriter(new FileWriter(path.toFile()))) {
+            // Read from the input stream and write to the output stream
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            
+            System.out.println("File saved successfully.");
+        } catch (IOException e) {
+            System.out.println("An error occurred while saving the file: " + e.getMessage());
+            throw e;
+        } finally {
+            // Close the input stream
+            inputStream.close();
+        }
+    }
+
+    private static String getFilePath(ServletContext servletContext, String userId, String filename) {
 
         // Get the absolute path of the directory containing the JavaScript file
-        String directoryPath = servletContext.getRealPath("/static");
+		String baseDirectory = servletContext.getInitParameter("userFilesDirectory");
 
         // Construct the file path
-        return directoryPath + File.separator + "user" + File.separator + userId + File.separator + filename;
+        return baseDirectory + File.separator + userId + File.separator + filename;
+    }
+    
+    public static String getFileExtension(Part part) {
+        String fileName = getFileName(part);
+        if (fileName != null) {
+            int dotIndex = fileName.lastIndexOf(".");
+            if (dotIndex >= 0 && dotIndex < fileName.length() - 1) {
+                return fileName.substring(dotIndex + 1);
+            }
+        }
+        return null;
+    }
+
+    private static String getFileName(Part part) {
+        for (String contentDisposition : part.getHeader("content-disposition").split(";")) {
+            if (contentDisposition.trim().startsWith("filename")) {
+                return contentDisposition.substring(contentDisposition.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
+        return null;
     }
 }
