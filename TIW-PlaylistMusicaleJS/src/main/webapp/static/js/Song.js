@@ -1,73 +1,114 @@
-// Get references to all playlist elements
-const songs = document.getElementsByClassName('playerSong');
-{
-	console.log("song started");
-	// Set the initial display count to 5 if not present in the query string
-	let pageNumber = parseInt(urlParams.get('songPage')) || 1;
-	
-	// Get references to the previous and next buttons
-	const previousButton = document.getElementById('previousSongButton');
-	const nextButton = document.getElementById('nextSongButton');
-	
-	// Get references to all playlist elements
-	const songs = document.getElementsByClassName('playerSong');
-	
-	
-	// Function to update the URL search params without reloading the page
-	function updateQueryParams() {
-	  const updatedUrlParams = new URLSearchParams(window.location.search);
-	  updatedUrlParams.set('songPage', pageNumber.toString());
-	
-	  const newUrl = window.location.pathname + '?' + updatedUrlParams.toString();
-	  window.history.pushState({ path: newUrl }, '', newUrl);
-	}
-	
-	// Hide all playlists except the first pageNumber number of playlists
-	function hideSongs() {
-	  for (let i = 0; i < songs.length; i++) {
-	    if (i < pageNumber - 1 || i >= pageNumber) {
-	      songs[i].hidden = true;
-	    } else {
-	      songs[i].hidden = false;
-	    }
-	  }
-	}
-	
-	// Event listener for "Next" button
-	nextButton.addEventListener('click', () => {
-	  if (pageNumber < songs.length) {
-		  console.log("nxt s")
-	    pageNumber++;
-	    hideSongs();
-	    updateQueryParams();
-	  }
-	});
-	
-	// Event listener for "Previous" button
-	previousButton.addEventListener('click', () => {
-	  if (pageNumber > 1) {
-	    pageNumber--;
-	    hideSongs();
-	    updateQueryParams();
-	  }
-	});
-	
-	// Hide all songs except the initial pageNumber number of playlists on page load
-	hideSongs();
-}
-function goToSong(songId) {
-  console.log("going to song")
-  for (let i = 0; i < songs.length; i++) {
-    const song = songs[i];
-    const id = song.getAttribute("data-id");
-    console.log("going to song", songId, song, id)
-    if (id == songId) {
-	  pageNumber = i;
-	  console.log("really going to song", songId)
-	  updateQueryParams();
-	  hideSongs();
-      return;
+class SongManager {
+    constructor() {
+		this.pageSize = 1;
+        this.pageNumber = parseInt(urlParams.get('songPage')) || 1;
+        this.previousButton = document.getElementById('previousSongButton');
+        this.nextButton = document.getElementById('nextSongButton');
+        this.songs = document.getElementsByClassName('playerSong');
+
+        this.updateQueryParams = function() {
+            const updatedUrlParams = new URLSearchParams(window.location.search);
+            updatedUrlParams.set('songPage', this.pageNumber.toString());
+
+            const newUrl = window.location.pathname + '?' + updatedUrlParams.toString();
+            window.history.pushState({ path: newUrl }, '', newUrl);
+        };
+
+        this.hideAndShow = function() {
+            for (let i = 0; i < this.songs.length; i++) {
+                if (i < this.pageNumber - this.pageSize || i >= this.pageNumber) {
+                    this.songs[i].hidden = true;
+                } else {
+                    this.songs[i].hidden = false;
+                }
+            }
+        };
+
+        this.nextButton.addEventListener('click', () => {
+            if (this.pageNumber < this.songs.length) {
+                console.log("nxt s");
+                this.pageNumber++;
+                this.hideAndShow();
+                this.updateQueryParams();
+            }
+        });
+
+        this.previousButton.addEventListener('click', () => {
+            if (this.pageNumber > 1) {
+                this.pageNumber--;
+                this.hideAndShow();
+                this.updateQueryParams();
+            }
+        });
+		
+		this.getSongPageNumber = function(songId) {
+			for (let i = 0; i < this.songs.length; i++) {
+                const song = this.songs[i];
+                const id = song.getAttribute("data-id");
+                console.log("going to song", songId, song, id);
+                if (id == songId) {
+					return Math.floor(i / this.pageSize) + 1;
+                }
+            }
+            return null;
+		};
+		
+		this.setPageNumber = function(pageNumber) {
+			this.pageNumber = pageNumber;
+		};
+		
+		this.update = function(playlistSongsWithAlbum) {		
+		    const playerContainer = document.getElementById('playerContainer');
+		    playerContainer.innerHTML = '';
+		
+		    playlistSongsWithAlbum.forEach((entry) => {
+		        const songId = entry[0].id;
+		        const songTitle = entry[0].title;
+		        const songGenre = entry[0].genre;
+		        const songAudio = entry[0].audio;
+		        const imageSrc = entry[1].image;
+		        const imageAlt = entry[1].title;
+		
+		        const playerSong = document.createElement('div');
+		        playerSong.classList.add('playerSong');
+				playerSong.setAttribute('data-id', songId);
+				
+		        const image = document.createElement('img');
+		        image.src = `http://localhost:8080/TIW-PlaylistMusicale/FileHandler?fileName=${imageSrc}`;
+		        image.alt = imageAlt;
+		        playerSong.appendChild(image);
+		
+		        const title = document.createElement('p');
+		        title.innerHTML = `Title: <span>${songTitle}</span>`;
+		        playerSong.appendChild(title);
+		
+		        const artist = document.createElement('p');
+		        artist.innerHTML = `Artist: <span>${entry[1].interpreter}</span>`;
+		        playerSong.appendChild(artist);
+		
+		        const album = document.createElement('p');
+		        album.innerHTML = `Album: <span>${entry[1].title}</span>`;
+		        playerSong.appendChild(album);
+		
+		        const albumYear = document.createElement('p');
+		        albumYear.innerHTML = `Album Year: <span>${entry[1].publicationYear}</span>`;
+		        playerSong.appendChild(albumYear);
+		
+		        const genre = document.createElement('p');
+		        genre.innerHTML = `Genre: <span>${songGenre}</span>`;
+		        playerSong.appendChild(genre);
+		
+				const audio = document.createElement('audio');
+				audio.setAttribute('preload', 'none');
+				audio.setAttribute('controls', '');
+				audio.src = `http://localhost:8080/TIW-PlaylistMusicale/FileHandler?fileName=${songAudio}`;
+		        playerSong.appendChild(audio);
+		        
+		        playerContainer.appendChild(playerSong);
+		        
+		        this.songs = document.getElementsByClassName('playerSong');
+		        this.hideAndShow();
+		    });
+		};
     }
-  }
-  return; // Song not found
 }

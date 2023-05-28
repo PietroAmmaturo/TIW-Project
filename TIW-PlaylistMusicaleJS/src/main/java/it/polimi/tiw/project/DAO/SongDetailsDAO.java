@@ -42,8 +42,8 @@ public class SongDetailsDAO {
 	    String sql = "SELECT s.*, a.* FROM Song s " +
 	                 "INNER JOIN SongPlaylist sp ON s.id = sp.song_id " +
 	                 "INNER JOIN Album a ON s.album_id = a.id " +
-	                 "ORDER BY sp.precedence ASC, a.publication_year DESC, a.title ASC, s.title ASC " +
-	                 "WHERE sp.playlist_id = ?";
+	                 "WHERE sp.playlist_id = ? " +
+	                 "ORDER BY sp.precedence ASC, a.publication_year DESC, a.title ASC, s.title ASC ";
 	    try (PreparedStatement statement = connection.prepareStatement(sql)) {
 	        statement.setInt(1, playlistId);
 	        try (ResultSet resultSet = statement.executeQuery()) {

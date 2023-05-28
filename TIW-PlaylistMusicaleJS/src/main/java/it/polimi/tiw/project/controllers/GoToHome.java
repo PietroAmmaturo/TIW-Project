@@ -94,6 +94,7 @@ public class GoToHome extends HttpServlet{
 		ctx.setVariable("playlistSongsWithAlbum", playlistSongsWithAlbum);
 		ctx.setVariable("userSongs", userSongs);
 		ctx.setVariable("playlistId", playlistId);
+		System.out.println("PLAYID" + playlistId);
 		templateEngine.process(path, ctx, response.getWriter());
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());

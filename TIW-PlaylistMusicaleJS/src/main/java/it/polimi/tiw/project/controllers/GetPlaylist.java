@@ -100,7 +100,7 @@ public class GetPlaylist extends HttpServlet{
 		 // Convert objects to JSON strings
 	    String playlistSongsWithAlbumSerialized = gson.toJson(playlistSongsWithAlbum.entrySet()
 	            .stream()
-	            .map(e -> Set.of(e.getKey(), e.getValue()))
+	            .map(e -> List.of(e.getKey(), e.getValue())) //List because of order
 	            .collect(Collectors.toList()));
 	    String userSongsSerialized = gson.toJson(userSongs);
 	

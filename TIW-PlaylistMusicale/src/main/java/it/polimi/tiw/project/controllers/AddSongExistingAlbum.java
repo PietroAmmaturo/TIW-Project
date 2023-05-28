@@ -1,6 +1,7 @@
 package it.polimi.tiw.project.controllers;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -105,10 +106,10 @@ public class AddSongExistingAlbum extends HttpServlet {
 		try {
 			if(albumIdValid) {
 				if(!songTitleInUse) {
-					//TODO il nome del file dovebbe essere albumTitle_songTitle.extension, adesso è albumId_songTitle.extension
+					//TODO il nome del file dovebbe essere albumTitle-songTitle.extension, adesso è albumId-songTitle.extension
 					String audioFileExtension = FileHandler.getFileExtension(audioFile);
 					//TODO controllare che l'estensione non sia null
-					String audioFileName = albumId + "_" + songTitle + "." + audioFileExtension;
+					String audioFileName = URLEncoder.encode(albumId + "_" + songTitle + "." + audioFileExtension, "UTF-8");
 					FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
 					songDao.addSong(songTitle, songGenre, audioFileName, albumId);
 			        String path = getServletContext().getContextPath() + "/GoToHome";
