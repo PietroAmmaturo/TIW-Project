@@ -10,13 +10,16 @@ public class Song implements Serializable {
 	private int id;
     private String title;
     private String audio;
+    private String genre;
     private int albumId;
+    private String albumTitle;
 
-    public Song(int id, String title, String audio, int albumId) {
+    public Song(int id, String title, String audio, int albumId, String genre) {
         this.id = id;
         this.title = title;
         this.audio = audio;
         this.albumId = albumId;
+        this.genre = genre;
     }
 
     public Song() {
@@ -33,9 +36,17 @@ public class Song implements Serializable {
     public String getTitle() {
         return title;
     }
-
+    
     public void setTitle(String title) {
         this.title = title;
+    }
+    
+    public String getGenre() {
+    	return genre;
+    }
+    
+    public void setGenre(String genre) {
+    	this.genre = genre;
     }
 
     public String getAudio() {
@@ -53,4 +64,13 @@ public class Song implements Serializable {
     public void setAlbumId(int albumId) {
         this.albumId = albumId;
     }
+    
+    public String getAlbumTitle() {
+    	return albumTitle;
+    }
+    
+    public void setAlbumTitle(String albumTitle) {
+    	this.albumTitle = albumTitle;
+    }
+    
 }

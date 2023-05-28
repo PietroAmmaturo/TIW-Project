@@ -117,10 +117,11 @@ UNLOCK TABLES;
 --
 -- Table structure for table `SongPlaylist`
 --
-
+DROP TABLE IF EXISTS `SongPlaylist`;
 CREATE TABLE `SongPlaylist` (
   `song_id` int NOT NULL,
   `playlist_id` int NOT NULL,
+  `precedence` int NOT NULL DEFAULT 0,
   FOREIGN KEY (`song_id`) REFERENCES Song(`id`),
   FOREIGN KEY (`playlist_id`) REFERENCES Playlist(`id`),
   CONSTRAINT pk_song_playlist PRIMARY KEY (song_id, playlist_id)
@@ -140,4 +141,3 @@ INSERT INTO SongPlaylist (song_id, playlist_id) VALUES
 (5, 3);
 
 UNLOCK TABLES;
-

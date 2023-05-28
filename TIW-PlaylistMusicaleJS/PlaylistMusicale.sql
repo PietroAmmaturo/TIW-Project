@@ -62,6 +62,7 @@ DROP TABLE IF EXISTS `Song`;
 CREATE TABLE `Song` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(64) NOT NULL,
+  `genre` varchar(64) NOT NULL,
   `audio` varchar(256) NOT NULL,
   `album_id` int NOT NULL, 
   PRIMARY KEY (`id`),
@@ -75,12 +76,12 @@ CREATE TABLE `Song` (
 LOCK TABLES `Song` WRITE;
 
 -- Insert songs
-INSERT INTO `Song` (`title`, `audio`, `album_id`) VALUES
-('S1', 'audio1.mp3', 1),
-('S2', 'audio2.mp3', 1),
-('S3', 'audio3.mp3', 2),
-('S4', 'audio4.mp3', 3),
-('S5', 'audio5.mp3', 3);
+INSERT INTO `Song` (`title`,`genre`, `audio`, `album_id`) VALUES
+('S1','Country', 'audio1.mp3', 1),
+('S2','Rock', 'audio2.mp3', 1),
+('S3','Pop', 'audio3.mp3', 2),
+('S4','Pop', 'audio4.mp3', 3),
+('S5','Classical', 'audio5.mp3', 3);
 
 UNLOCK TABLES;
 
@@ -116,10 +117,11 @@ UNLOCK TABLES;
 --
 -- Table structure for table `SongPlaylist`
 --
-
+DROP TABLE IF EXISTS `SongPlaylist`;
 CREATE TABLE `SongPlaylist` (
   `song_id` int NOT NULL,
   `playlist_id` int NOT NULL,
+  `precedence` int NOT NULL DEFAULT 0,
   FOREIGN KEY (`song_id`) REFERENCES Song(`id`),
   FOREIGN KEY (`playlist_id`) REFERENCES Playlist(`id`),
   CONSTRAINT pk_song_playlist PRIMARY KEY (song_id, playlist_id)
@@ -139,4 +141,3 @@ INSERT INTO SongPlaylist (song_id, playlist_id) VALUES
 (5, 3);
 
 UNLOCK TABLES;
-

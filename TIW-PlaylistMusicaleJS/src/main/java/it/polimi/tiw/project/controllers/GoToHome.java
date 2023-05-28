@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,7 +77,7 @@ public class GoToHome extends HttpServlet{
 		
 		SongDAO songDAO = new SongDAO(connection);
 		SongDetailsDAO songDetailsDAO = new SongDetailsDAO(connection);
-		Map<Song, Album> playlistSongsWithAlbum;
+		LinkedHashMap<Song, Album> playlistSongsWithAlbum;
 		List<Song> userSongs;
 		
 	    try {

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import it.polimi.tiw.project.beans.Album;
@@ -36,11 +37,12 @@ public class SongDetailsDAO {
 	    return 0;
 	}
 	
-	public Map<Song, Album> findAllSongsWithAlbumByPlaylistId(int playlistId) throws SQLException {
-	    Map<Song, Album> songAlbumMap = new HashMap<>();
+	public LinkedHashMap<Song, Album> findAllSongsWithAlbumByPlaylistId(int playlistId) throws SQLException {
+		LinkedHashMap<Song, Album> songAlbumMap = new LinkedHashMap<>();
 	    String sql = "SELECT s.*, a.* FROM Song s " +
 	                 "INNER JOIN SongPlaylist sp ON s.id = sp.song_id " +
 	                 "INNER JOIN Album a ON s.album_id = a.id " +
+	                 "ORDER BY sp.precedence ASC, a.publication_year DESC, a.title ASC, s.title ASC " +
 	                 "WHERE sp.playlist_id = ?";
 	    try (PreparedStatement statement = connection.prepareStatement(sql)) {
 	        statement.setInt(1, playlistId);
@@ -50,7 +52,8 @@ public class SongDetailsDAO {
 	                song.setId(resultSet.getInt("s.id"));
 	                song.setTitle(resultSet.getString("s.title"));
 	                song.setAudio(resultSet.getString("s.audio"));
-
+	                song.setGenre(resultSet.getString("s.genre"));
+	                
 	                Album album = new Album();
 	                album.setId(resultSet.getInt("a.id"));
 	                album.setTitle(resultSet.getString("a.title"));
@@ -65,8 +68,8 @@ public class SongDetailsDAO {
 	    return songAlbumMap;
 	}
 	
-	public Map<Song, Album> findSongWithAlbumById(int songId) throws SQLException {
-	    Map<Song, Album> songAlbumMap = new HashMap<>();
+	public LinkedHashMap<Song, Album> findSongWithAlbumById(int songId) throws SQLException {
+		LinkedHashMap<Song, Album> songAlbumMap = new LinkedHashMap<>();
 	    String sql = "SELECT s.*, a.* FROM Song s " +
 	                 "INNER JOIN Album a ON s.album_id = a.id " +
 	                 "WHERE s.id = ?";
@@ -78,7 +81,8 @@ public class SongDetailsDAO {
 	                song.setId(resultSet.getInt("s.id"));
 	                song.setTitle(resultSet.getString("s.title"));
 	                song.setAudio(resultSet.getString("s.audio"));
-
+	                song.setGenre(resultSet.getString("s.genre"));
+	                
 	                Album album = new Album();
 	                album.setId(resultSet.getInt("a.id"));
 	                album.setTitle(resultSet.getString("a.title"));
@@ -93,13 +97,13 @@ public class SongDetailsDAO {
 	    return songAlbumMap;
 	}
 	
-	public Map<Song, Album> findSongsWithAlbumByPlaylistId(int playlistId, int offset, int limit) throws SQLException {
-	    Map<Song, Album> songAlbumMap = new HashMap<>();
+	public LinkedHashMap<Song, Album> findSongsWithAlbumByPlaylistId(int playlistId, int offset, int limit) throws SQLException {
+		LinkedHashMap<Song, Album> songAlbumMap = new LinkedHashMap<>();
 	    String sql = "SELECT s.*, a.* FROM Song s " +
 	                 "INNER JOIN SongPlaylist sp ON s.id = sp.song_id " +
 	                 "INNER JOIN Album a ON s.album_id = a.id " +
 	                 "WHERE sp.playlist_id = ? " +
-	                 "ORDER BY a.publication_year DESC " +
+	                 "ORDER BY sp.precedence ASC, a.publication_year DESC, a.title ASC, s.title ASC " +
 	                 "LIMIT ? OFFSET ?";
 	    try (PreparedStatement statement = connection.prepareStatement(sql)) {
 	        statement.setInt(1, playlistId);
@@ -111,7 +115,8 @@ public class SongDetailsDAO {
 	                song.setId(resultSet.getInt("s.id"));
 	                song.setTitle(resultSet.getString("s.title"));
 	                song.setAudio(resultSet.getString("s.audio"));
-	
+	                song.setGenre(resultSet.getString("s.genre"));
+	                
 	                Album album = new Album();
 	                album.setId(resultSet.getInt("a.id"));
 	                album.setTitle(resultSet.getString("a.title"));
