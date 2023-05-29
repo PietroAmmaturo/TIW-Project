@@ -30,7 +30,11 @@ class SongManager {
                 this.pageNumber++;
                 this.updateQueryParams();
                 this.hideAndShow();
-            }
+            } else {
+				this.pageNumber = 1;
+                this.updateQueryParams();
+                this.hideAndShow();
+			}
         });
 
         this.previousButton.addEventListener('click', () => {
@@ -38,7 +42,11 @@ class SongManager {
                 this.pageNumber--;
                 this.updateQueryParams();
                 this.hideAndShow();
-            }
+            } else {
+				this.pageNumber = Math.ceil(this.songs.length / this.pageSize);
+                this.updateQueryParams();
+                this.hideAndShow();
+			}
         });
 		
 		this.getSongPageNumber = function(songId) {

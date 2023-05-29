@@ -7,8 +7,7 @@ class PlaylistManager {
         this.nextButton = document.getElementById('nextPlaylistButton');
         this.addForm = document.getElementById('addSongsToPlaylistForm');
         this.removeForm = document.getElementById('removeSongsFromPlaylistForm');
-        this.songs = document.getElementsByClassName('playlistSong');
-
+		
 		this.setPageNumber = function(pageNumber) {
 			this.pageNumber = pageNumber;
 		};
@@ -21,17 +20,48 @@ class PlaylistManager {
                     this.songs[i].hidden = false;
                 }
             }
+            let isLastPage = this.pageNumber * this.pageSize >= this.songs.length;
+            let isLastBlock = this.currentBlock == this.maxBlock;
+            let isFirstPage = this.pageNumber == 1;
+            let isFirstBlock = this.currentBlock == 1;
+            if (!(isLastPage && isLastBlock) && !(isFirstPage && isFirstBlock)) {
+				this.nextButton.style.display = "block";
+				this.previousButton.style.display = "block";
+				return;
+			}
+            if ((isLastPage && isLastBlock) && !(isFirstPage && isFirstBlock)) {
+				this.nextButton.style.display = "none";
+				this.previousButton.style.display = "block";
+				return;
+			}
+			if (!(isLastPage && isLastBlock) && (isFirstPage && isFirstBlock)) {
+				this.nextButton.style.display = "block";
+				this.previousButton.style.display = "none";
+				return;
+			}
+			if ((isLastPage && isLastBlock) && (isFirstPage && isFirstBlock)) {
+				this.nextButton.style.display = "none";
+				this.previousButton.style.display = "none";
+				return;
+			}
+			return;
         };
         
         this.updateQueryParams = function() {
             const updatedUrlParams = new URLSearchParams(window.location.search);
             updatedUrlParams.set('playlistPage', this.pageNumber.toString());
+            updatedUrlParams.set('playlistBlock', this.currentBlock.toString());
 
             const newUrl = window.location.pathname + '?' + updatedUrlParams.toString();
             window.history.pushState({ path: newUrl }, '', newUrl);
         };
         
         this.nextButton.addEventListener('click', () => {
+			let isLastPage = this.pageNumber * this.pageSize >= this.songs.length;
+			if (isLastPage) {
+				this.show(this.currentBlock + 1);
+				return;
+			}
             if (this.pageNumber * this.pageSize < this.songs.length) {
                 this.pageNumber++;
                 this.updateQueryParams();
@@ -40,6 +70,11 @@ class PlaylistManager {
         });
 
         this.previousButton.addEventListener('click', () => {
+			let isFirstPage = this.pageNumber == 1;
+			if (isFirstPage) {
+				this.show(this.currentBlock - 1);
+				return;
+			}
             if (this.pageNumber > 1) {
                 this.pageNumber--;
                 this.updateQueryParams();
@@ -90,7 +125,6 @@ class PlaylistManager {
         this.removeForm.addEventListener('submit', this.handleRemoveFormSubmit.bind(this));
         
         this.handleSongClick = function(songId) {
-			console.log("clicked", songId)
 			let songPageNumber = this.songManager.getSongPageNumber(songId);
 			this.songManager.setPageNumber(songPageNumber);
 			this.songManager.updateQueryParams();
@@ -98,6 +132,9 @@ class PlaylistManager {
 		};
 		
         this.update = function(playlistData) {
+			this.currentBlock = playlistData.currentBlock;
+			this.maxBlock = playlistData.maxBlock;
+			this.songsPerBlock = playlistData.songsPerBlock;
             console.log("updating...", playlistData);
             const removeSongsForm = document.getElementById('removeSongsFromPlaylistForm');
             const addSongsForm = document.getElementById('addSongsToPlaylistForm');
@@ -131,7 +168,6 @@ class PlaylistManager {
 
                 const image = document.createElement('img');
                 image.setAttribute('loading', 'lazy');
-                console.log(imageSrc)
                 image.src = `http://localhost:8080/TIW-PlaylistMusicale/FileHandler?fileName=${imageSrc}`;
                 image.alt = imageAlt;
 
@@ -162,19 +198,19 @@ class PlaylistManager {
             this.hideAndShow();
         };
         
-        this.show = function() {
-            fetch("http://localhost:8080/TIW-PlaylistMusicale/GetPlaylist?playlistId=" + urlParams.get('playlistId'), {
+        this.show = function(nextBlock) {
+            fetch("http://localhost:8080/TIW-PlaylistMusicale/GetPlaylist?playlistId=" + urlParams.get('playlistId') + "&playlistBlock=" + nextBlock, {
                 method: 'GET'
             })
                 .then(response => response.json())
                 .then(data => {
                     const playlistSongsWithAlbum = data.playlistSongsWithAlbum;
                     const userSongs = data.userSongs;
+                    const currentBlock = data.currentBlock;
+                    const maxBlock = data.maxBlock;
+                    const songsPerBlock = data.songsPerBlock;
 
-                    console.log(playlistSongsWithAlbum);
-                    console.log(userSongs);
-
-                    this.update({ playlistSongsWithAlbum, userSongs });
+                    this.update({ playlistSongsWithAlbum, userSongs, currentBlock, maxBlock, songsPerBlock });
                 })
                 .catch(error => {
                     console.error('Request failed:', error);

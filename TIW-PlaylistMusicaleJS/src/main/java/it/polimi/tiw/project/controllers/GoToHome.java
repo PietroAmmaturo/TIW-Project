@@ -74,14 +74,35 @@ public class GoToHome extends HttpServlet{
 		HttpSession session = request.getSession(false);
 		int userId = ((User) session.getAttribute("currentUser")).getId();
 		int playlistId = Integer.parseInt(request.getParameter("playlistId"));
-		
+	    int songsPerBlock = 100;
+		int totalSongs;
+	    int currentBlock;
+	    // page validation
+        try{
+        	currentBlock = Integer.parseInt(request.getParameter("playlistBlock"));
+        }catch (Exception e) {
+        	currentBlock = 1;
+        }
 		SongDAO songDAO = new SongDAO(connection);
 		SongDetailsDAO songDetailsDAO = new SongDetailsDAO(connection);
 		LinkedHashMap<Song, Album> playlistSongsWithAlbum;
 		List<Song> userSongs;
-		
 	    try {
-	        playlistSongsWithAlbum = songDetailsDAO.findAllSongsWithAlbumByPlaylistId(playlistId);
+	        totalSongs = songDetailsDAO.countSongsByPlaylistId(playlistId);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
+	        return;
+	    }
+	    // is page too big or too small
+	    int maxBlock = (int) Math.ceil(totalSongs * 1.0 / songsPerBlock);
+	    if (maxBlock < currentBlock || currentBlock <= 0) {
+	        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The requested block does not exist.");
+	        return;
+	    }
+	    int offset = (currentBlock - 1) * songsPerBlock;
+	    try {
+	        playlistSongsWithAlbum = songDetailsDAO.findSongsWithAlbumByPlaylistId(playlistId, offset, songsPerBlock);
 			userSongs = songDAO.findAllSongsByUserIdNotBelongingToPlaylist(userId, playlistId);
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -93,8 +114,10 @@ public class GoToHome extends HttpServlet{
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("playlistSongsWithAlbum", playlistSongsWithAlbum);
 		ctx.setVariable("userSongs", userSongs);
+		ctx.setVariable("maxBlock", maxBlock);
+		ctx.setVariable("currentBlock", currentBlock);
 		ctx.setVariable("playlistId", playlistId);
-		System.out.println("PLAYID" + playlistId);
+		ctx.setVariable("songsPerBlock", songsPerBlock);
 		templateEngine.process(path, ctx, response.getWriter());
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());

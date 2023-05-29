@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,20 +80,42 @@ public class GetPlaylist extends HttpServlet{
 		HttpSession session = request.getSession(false);
 		int userId = ((User) session.getAttribute("currentUser")).getId();
 		int playlistId = Integer.parseInt(request.getParameter("playlistId"));
-		
+	    int songsPerBlock = 100;
+		int totalSongs;
+	    int currentBlock;
+	    // page validation
+        try{
+        	currentBlock = Integer.parseInt(request.getParameter("playlistBlock"));
+        }catch (Exception e) {
+        	currentBlock = 1;
+        }
 		SongDAO songDAO = new SongDAO(connection);
 		SongDetailsDAO songDetailsDAO = new SongDetailsDAO(connection);
-		Map<Song, Album> playlistSongsWithAlbum;
+		LinkedHashMap<Song, Album> playlistSongsWithAlbum;
 		List<Song> userSongs;
-		
 	    try {
-	        playlistSongsWithAlbum = songDetailsDAO.findAllSongsWithAlbumByPlaylistId(playlistId);
+	        totalSongs = songDetailsDAO.countSongsByPlaylistId(playlistId);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
+	        return;
+	    }
+	    // is page too big or too small
+	    int maxBlock = (int) Math.ceil(totalSongs * 1.0 / songsPerBlock);
+	    if (maxBlock < currentBlock || currentBlock <= 0) {
+	        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The requested block does not exist.");
+	        return;
+	    }
+	    int offset = (currentBlock - 1) * songsPerBlock;
+	    try {
+	        playlistSongsWithAlbum = songDetailsDAO.findSongsWithAlbumByPlaylistId(playlistId, offset, songsPerBlock);
 			userSongs = songDAO.findAllSongsByUserIdNotBelongingToPlaylist(userId, playlistId);
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
 	        return;
 	    }
+	    
 	    Gson gson = new GsonBuilder()
 	    		.setLenient()
                 .create();
@@ -110,7 +133,10 @@ public class GetPlaylist extends HttpServlet{
 		 // Write the response JSON string to the response output stream
 		 response.getWriter().write(
 				 "{\"playlistSongsWithAlbum\":" + playlistSongsWithAlbumSerialized + "," +
-				 "\"userSongs\":" + userSongsSerialized + "}"
+				 "\"userSongs\":" + userSongsSerialized + "," +
+				 "\"currentBlock\":" + currentBlock + "," +
+				 "\"maxBlock\":" + maxBlock + "," +
+				 "\"songsPerBlock\":" + songsPerBlock + "}"
 				 );
 	}
 

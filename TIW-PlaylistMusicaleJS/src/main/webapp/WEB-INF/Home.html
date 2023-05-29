@@ -57,25 +57,28 @@
 		    <button type="submit">Add to Playlist</button>
 		</form>
 	</div>
-	<div id = "playerContainer">
-		<!-- Iterate through each song in the playlist -->
-		<div th:each="entry, iter : ${playlistSongsWithAlbum}">
-			<th:block th:with="song=${entry.key}, album=${entry.value}">
-			    <!-- Hide all other song elements -->
-			    <div th:data-id="${song.id}" class = "playerSong" hidden>
-			        <!-- Extract the Song and Album from the Map entry -->
-			        <h2 th:text="${song.title}"></h2>
-			        <img th:src="@{/FileHandler(fileName=${album.image})}" />
-			        <!-- Display other details of the song such as artist, album, year, genre, etc. -->
-				    <p>Artist: <span th:text="${album.interpreter}"></span></p>
-				    <p>Album: <span th:text="${album.title}"></span></p>
-				    <p>Album Year: <span th:text="${album.publicationYear}"></span></p>
-				    <p>Genre: <span th:text="${song.genre}"></span></p>
-		            <!-- Add an audio player for song playback -->
-		            <audio preload="none" th:src="@{/FileHandler(fileName=${song.audio})}" controls></audio>
-			    </div>
-		    </th:block>
+	<div >
+		<div id = "playerContainer">
+			<!-- Iterate through each song in the playlist -->
+			<div th:each="entry, iter : ${playlistSongsWithAlbum}">
+				<th:block th:with="song=${entry.key}, album=${entry.value}">
+				    <!-- Hide all other song elements -->
+				    <div th:data-id="${song.id}" class = "playerSong" hidden>
+				        <!-- Extract the Song and Album from the Map entry -->
+				        <h2 th:text="${song.title}"></h2>
+				        <img th:src="@{/FileHandler(fileName=${album.image})}" />
+				        <!-- Display other details of the song such as artist, album, year, genre, etc. -->
+					    <p>Artist: <span th:text="${album.interpreter}"></span></p>
+					    <p>Album: <span th:text="${album.title}"></span></p>
+					    <p>Album Year: <span th:text="${album.publicationYear}"></span></p>
+					    <p>Genre: <span th:text="${song.genre}"></span></p>
+			            <!-- Add an audio player for song playback -->
+			            <audio preload="none" th:src="@{/FileHandler(fileName=${song.audio})}" controls></audio>
+				    </div>
+			    </th:block>
+			</div>
 		</div>
+
 		<div id="previousSongButton">
 		    <a>Previous</a>
 		</div>
