@@ -6,24 +6,23 @@
 <body>
     <h1>Playlist</h1>
 
-	<div th:if="${not #maps.isEmpty(playlistSongsWithAlbum)}">
 		<form th:action="@{/RemoveSongsFromPlaylist(playlistId=${playlistId})}" method="post">
 		    <input type="hidden" name="playlistId" th:value="${playlistId}"/>
 		    <table>
 		        <tbody>
 				    <tr>
-				        <td th:each="entry : ${playlistSongsWithAlbum}"></td>
-				    </tr>
-				    <tr>
-				        <td th:each="entry : ${playlistSongsWithAlbum}">
-				        	<div>
-				       			<input type="checkbox" name="songIds" th:value="${entry.key.id}"/>
-				       			<label for="songIds">
+						<td th:if="${playlistSongsWithAlbum == null or #maps.isEmpty(playlistSongsWithAlbum)}">La playlist non contiene brani.</td>
+						<th:block th:if="${not #maps.isEmpty(playlistSongsWithAlbum)}" th:each="entry, iter : ${playlistSongsWithAlbum}">
+						  <td class="playlistSong">
+						      <div>
+						        <input type="checkbox" name="songIds" th:value="${entry.key.id}"/>
+						        <label for="songIds">
 				        			<a th:href="@{/GoToPlayer(songId=${entry.key.id})}" th:text="${entry.key.title}"></a>
-				        		</label>
-				        	</div>
-				        	<img th:src="@{/FileHandler(fileName=${entry.value.image})}" th:alt="${entry.value.title}">
-				        </td>
+						        </label>
+						      </div>
+						      <img loading="lazy" th:src="@{/FileHandler(fileName=${entry.value.image})}" th:alt="${entry.value.title}">
+						  </td>
+						</th:block>
 				    </tr>
 		        </tbody>
 		    </table>
@@ -37,7 +36,6 @@
 		        <a th:href="@{/GoToPlaylist(playlistId=${playlistId}, playlistPage=${currentPage + 1})}">Next</a>
 		    </div>
 		</form>
-	</div>
 
     <h2>Add Song to Playlist</h2>
 	<form method="post" th:action="@{/AddSongsToPlaylist(playlistId=${playlistId})}">

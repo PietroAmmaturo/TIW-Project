@@ -102,9 +102,9 @@ public class GoToPlaylist extends HttpServlet {
 	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
 	        return;
 	    }
-	    // is page too big or too small
+	    // is page too big or too small. NB: if maxPage is 0, there are no songs in playlist, but the page should be shown
 	    int maxPage = (int) Math.ceil(totalSongs * 1.0 / songsPerPage);
-	    if (maxPage < currentPage || currentPage <= 0) {
+	    if (maxPage != 0 && (maxPage < currentPage || currentPage <= 0)) {
 	        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The requested page does not exist.");
 	        return;
 	    }

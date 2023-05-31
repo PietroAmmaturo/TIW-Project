@@ -140,41 +140,46 @@ class PlaylistManager {
             const addSongsForm = document.getElementById('addSongsToPlaylistForm');
             const playlistSongsRow = removeSongsForm.querySelector('table tr');
             playlistSongsRow.innerHTML = '';
-
-            playlistData.playlistSongsWithAlbum.forEach((entry) => {
-                const songId = entry[0].id;
-                const songTitle = entry[0].title;
-                const imageSrc = entry[1].image;
-                const imageAlt = entry[1].title;
-
-                const cell = document.createElement('td');
-                cell.classList.add('playlistSong');
-                cell.hidden = true;
-
-                const wrapper = document.createElement('div');
-
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.name = 'songIds';
-                checkbox.value = songId;
-
-                const label = document.createElement('label');
-                label.setAttribute("data-id", songId);
-                label.textContent = songTitle;
-                label.addEventListener('click', this.handleSongClick.bind(this, songId));
-
-                wrapper.appendChild(checkbox);
-                wrapper.appendChild(label);
-
-                const image = document.createElement('img');
-                image.setAttribute('loading', 'lazy');
-                image.src = contextPath + `FileHandler?fileName=${imageSrc}`;
-                image.alt = imageAlt;
-
-                cell.appendChild(wrapper);
-                cell.appendChild(image);
-                playlistSongsRow.appendChild(cell);
-            });
+			if (this.maxBlock == 0) {
+				const cell = document.createElement('td');
+                cell.textContent = "La playlist non contiene brani.";
+				playlistSongsRow.appendChild(cell);
+			} else {
+				playlistData.playlistSongsWithAlbum.forEach((entry) => {
+	                const songId = entry[0].id;
+	                const songTitle = entry[0].title;
+	                const imageSrc = entry[1].image;
+	                const imageAlt = entry[1].title;
+	
+	                const cell = document.createElement('td');
+	                cell.classList.add('playlistSong');
+	                cell.hidden = true;
+	
+	                const wrapper = document.createElement('div');
+	
+	                const checkbox = document.createElement('input');
+	                checkbox.type = 'checkbox';
+	                checkbox.name = 'songIds';
+	                checkbox.value = songId;
+	
+	                const label = document.createElement('label');
+	                label.setAttribute("data-id", songId);
+	                label.textContent = songTitle;
+	                label.addEventListener('click', this.handleSongClick.bind(this, songId));
+	
+	                wrapper.appendChild(checkbox);
+	                wrapper.appendChild(label);
+	
+	                const image = document.createElement('img');
+	                image.setAttribute('loading', 'lazy');
+	                image.src = contextPath + `FileHandler?fileName=${imageSrc}`;
+	                image.alt = imageAlt;
+	
+	                cell.appendChild(wrapper);
+	                cell.appendChild(image);
+	                playlistSongsRow.appendChild(cell);
+            	});
+			}
 
             const songSelect = addSongsForm.querySelector('select#song');
             songSelect.innerHTML = '';
@@ -217,7 +222,7 @@ class PlaylistManager {
                 });
         };
 		
-		this.show();
+		this.show(1);
     }
 }
 

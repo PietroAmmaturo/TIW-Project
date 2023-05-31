@@ -100,9 +100,9 @@ public class GetPlaylist extends HttpServlet{
 	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
 	        return;
 	    }
-	    // is page too big or too small
+	    // is block too big or too small. NB: if maxBlock is 0, there are no songs in playlist, but the block should be shown
 	    int maxBlock = (int) Math.ceil(totalSongs * 1.0 / songsPerBlock);
-	    if (maxBlock < currentBlock || currentBlock <= 0) {
+	    if (maxBlock != 0 && (maxBlock < currentBlock || currentBlock <= 0)) {
 	        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The requested block does not exist.");
 	        return;
 	    }
