@@ -6,33 +6,15 @@
 </head>
 <body>
     <h1>Home page</h1>
-   <!-- <table>
-        <tr>
-            <th>Title</th>
-            <th>Album</th>
-            <th>Artist</th>
-            <th>Year</th>
-            <th>Genre</th>
-        </tr>
-        <tr th:each="song : ${playlist}">
-            <td th:text="${song.title}"></td>
-            <td th:text="${song.album.title}"></td>
-            <td th:text="${song.album.artist}"></td>
-            <td th:text="${song.album.year}"></td>
-            <td th:text="${song.album.genre}"></td>
-        </tr>
-    </table> -->
     
     <div>
     <h2>Select playlist</h2>
-    <form th:action="@{/GoToPlaylist}" method="post">
-        <fieldset>
+    <div>
             <p th:each="playlist : ${playlists}">
-                <input type="submit" th:name="playlistId" th:value="${playlist.title}" />
+                <a th:href="@{/GoToPlaylist(playlistId=${playlist.id})}" th:text="${playlist.title}"></a>
                 <br>
             </p>
-        </fieldset>
-    </form>
+    </div>
 	</div>
     
     <div class="formdiv">
@@ -85,11 +67,17 @@
 
   <div>
   <h2>Create new playlist</h2>
-     <form action="@{/playlist/add}" method="post">
+     <form action="#" th:action="@{/AddPlaylist}" method="post">
      <fieldset>
      <p>Enter title of playlist: <input type="text" name="playlist_title" required /></p>
-     <th:block th:each="song : ${songs}">
-     <p><input type="checkbox" name="selected_songs" th:text="${song.title + ' - ' + song.albumTitle}" th:value="${song.id}" /></p>
+     <p>Playlist description: <input type="text" name="playlist_description" required />
+     	<legend>Select songs:</legend>
+    <p th:each="song : ${songs}">
+        <label>
+            <input type="checkbox" name="songIds" th:value="${song.id}">
+            <span th:text="${song.title}"></span>
+        </label>
+    </p>
      </th:block> 
      <input type="submit" name="add_song" value="Create playlist">
      </fieldset>

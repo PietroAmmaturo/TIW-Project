@@ -95,6 +95,7 @@ public class AddSongExistingAlbum extends HttpServlet {
 		AlbumDAO albumDao = new AlbumDAO(connection);
 		try {
 			//TODO aggiungere filtro per assicurarsi sia intero valido
+			//TODO controllare che l'album sia dell'utente
 			albumIdValid = albumDao.idInUse(albumId);
 			if(albumIdValid)
 				songTitleInUse = songDao.titleInAlbumAlreadyInUse(songTitle, albumId);

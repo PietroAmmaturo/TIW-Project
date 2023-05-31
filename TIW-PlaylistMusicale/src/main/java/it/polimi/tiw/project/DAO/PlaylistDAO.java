@@ -55,6 +55,56 @@ public class PlaylistDAO {
 	    }
 	}
 	
+	public boolean playlistTitleUsed(String playlistTitle, int userId) throws SQLException{
+		try (PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM Playlist WHERE title=? AND user_id=?")) {
+	        statement.setString(1, playlistTitle);
+	        statement.setInt(2, userId);
+	        try (ResultSet result = statement.executeQuery()) {
+	            result.next();
+	            int count = result.getInt(1);
+	            return count > 0;
+	        }
+	    }
+	}
+	
+	public int addPlaylist(String title, String description, int userId) throws SQLException {
+	    String query = "INSERT INTO Playlist (title, description, user_id) VALUES (?, ?, ?)";
+	    //ResultSet resultSet = null;
+	    int playlistId = 0; // Initialize the playlistId variable
+
+	    try (PreparedStatement statement = connection.prepareStatement(query)) {
+	        connection.setAutoCommit(false);
+	        statement.setString(1, title);
+	        statement.setString(2, description);
+	        statement.setInt(3, userId);
+	        int affectedRows = statement.executeUpdate();
+	        if (affectedRows == 0) {
+	            throw new SQLException("Failed to create playlist");
+	        }
+
+	        String sql = "SELECT id FROM Playlist WHERE title=? AND user_id=?";
+	        try (PreparedStatement newStatement = connection.prepareStatement(sql)) {
+	            newStatement.setString(1, title);
+	            newStatement.setInt(2, userId);
+	            try (ResultSet resultSet = newStatement.executeQuery()) {
+	                if (resultSet.next()) {
+	                    playlistId = resultSet.getInt("id");
+	                }
+	            }
+	        }
+
+	        connection.commit(); // Commit the transaction since no exception occurred
+	    } catch (SQLException e) {
+	        connection.rollback(); // Rollback the transaction if an exception occurred
+	        throw e;
+	    } finally {
+	        connection.setAutoCommit(true);
+	    }
+
+	    return playlistId; // Return the playlistId
+	}
+
+	
 	public List<Playlist> findPlaylistsByUserId(int userId) throws SQLException{
 		String query = "SELECT * FROM Playlist WHERE user_id = ?";
 		List<Playlist> playlistList = new ArrayList<>();
