@@ -82,7 +82,7 @@ class SongManager {
 				playerSong.setAttribute('data-id', songId);
 				
 		        const image = document.createElement('img');
-		        image.src = `http://localhost:8080/TIW-PlaylistMusicale/FileHandler?fileName=${imageSrc}`;
+		        image.src = contextPath + `FileHandler?fileName=${imageSrc}`;
 		        image.alt = imageAlt;
 		        playerSong.appendChild(image);
 		
@@ -109,7 +109,7 @@ class SongManager {
 				const audio = document.createElement('audio');
 				audio.setAttribute('preload', 'none');
 				audio.setAttribute('controls', '');
-				audio.src = `http://localhost:8080/TIW-PlaylistMusicale/FileHandler?fileName=${songAudio}`;
+				audio.src = contextPath + `FileHandler?fileName=${songAudio}`;
 		        playerSong.appendChild(audio);
 		        
 		        playerContainer.appendChild(playerSong);

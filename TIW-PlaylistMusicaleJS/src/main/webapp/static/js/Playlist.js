@@ -168,7 +168,7 @@ class PlaylistManager {
 
                 const image = document.createElement('img');
                 image.setAttribute('loading', 'lazy');
-                image.src = `http://localhost:8080/TIW-PlaylistMusicale/FileHandler?fileName=${imageSrc}`;
+                image.src = contextPath + `FileHandler?fileName=${imageSrc}`;
                 image.alt = imageAlt;
 
                 cell.appendChild(wrapper);
@@ -199,7 +199,7 @@ class PlaylistManager {
         };
         
         this.show = function(nextBlock) {
-            fetch("http://localhost:8080/TIW-PlaylistMusicale/GetPlaylist?playlistId=" + urlParams.get('playlistId') + "&playlistBlock=" + nextBlock, {
+            fetch(contextPath + "GetPlaylist?playlistId=" + urlParams.get('playlistId') + "&playlistBlock=" + nextBlock, {
                 method: 'GET'
             })
                 .then(response => response.json())
