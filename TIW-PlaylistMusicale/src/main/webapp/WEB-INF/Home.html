@@ -22,6 +22,19 @@
             <td th:text="${song.album.genre}"></td>
         </tr>
     </table> -->
+    
+    <div>
+    <h2>Select playlist</h2>
+    <form th:action="@{/GoToPlaylist}" method="post">
+        <fieldset>
+            <p th:each="playlist : ${playlists}">
+                <input type="submit" th:name="playlistId" th:value="${playlist.title}" />
+                <br>
+            </p>
+        </fieldset>
+    </form>
+	</div>
+    
     <div class="formdiv">
     <h2>Add new song from existing album</h2>
     <form action="#" th:action="@{/AddSongExistingAlbum}" method="post"	enctype="multipart/form-data">
@@ -69,19 +82,7 @@
     </form>
     </div>
     <br>
-    <!-- <form action="select_songs" method="post">
-     <ul>
-      <% List<String> items = (List<String>) request.getAttribute("items");
-         if (items != null) {
-           for (String item : items) { %>
-             <li>
-               <input type="checkbox" name="select_songs" value="<%= item %>">
-               <%= item %>
-             </li>
-           <% }
-         } %>
-     </ul>
-  </form><br> -->
+
   <div>
   <h2>Create new playlist</h2>
      <form action="@{/playlist/add}" method="post">

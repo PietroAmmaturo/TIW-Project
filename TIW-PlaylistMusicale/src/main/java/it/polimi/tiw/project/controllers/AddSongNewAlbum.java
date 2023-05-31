@@ -1,6 +1,7 @@
 package it.polimi.tiw.project.controllers;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -111,7 +112,9 @@ public class AddSongNewAlbum extends HttpServlet {
 			try {
 				idAlbum = albumDao.getAlbumIdByTitleAndUser(albumTitle, userId);
 				//TODO dà problema, aggiustare
-				FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), songTitle);
+				String audioFileExtension = FileHandler.getFileExtension(audioFile);
+				String audioFileName = URLEncoder.encode(idAlbum + "_" + songTitle + "." + audioFileExtension, "UTF-8");
+				FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
 				songDao.addSong(songTitle, songGenre, String.valueOf(idAlbum)+"_"+songTitle, idAlbum);
 			    String path = getServletContext().getContextPath() + "/GoToHome";
 				response.sendRedirect(path);
