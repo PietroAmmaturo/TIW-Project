@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reorder</title>
+    <style>
+        .drag-item {
+            cursor: move;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+        var draggedItem;
+        
+        function handleDragStart(event) {
+            draggedItem = event.target;
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/html', draggedItem.innerHTML);
+            event.target.style.opacity = '0.4';
+        }
+        
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+        
+        function handleDragEnter(event) {
+            event.target.classList.add('drag-over');
+        }
+        
+        function handleDragLeave(event) {
+            event.target.classList.remove('drag-over');
+        }
+        
+        function handleDrop(event) {
+            event.stopPropagation();
+            event.target.classList.remove('drag-over');
+            if (draggedItem !== event.target) {
+                draggedItem.innerHTML = event.target.innerHTML;
+                event.target.innerHTML = event.dataTransfer.getData('text/html');
+            }
+            return false;
+        }
+        
+        function handleDragEnd(event) {
+            event.target.style.opacity = '1';
+            var dragItems = document.getElementsByClassName('drag-item');
+            for (var i = 0; i < dragItems.length; i++) {
+                dragItems[i].classList.remove('drag-over');
+            }
+        }
+    </script>
+</head>
+<body>
+    <form method="post" th:action="@{/Reorder}" id="reorderContainer">
+        <ul>
+            <li th:each="song : ${playlistSongs}">
+                <div class="drag-item"
+                     draggable="true"
+                     ondragstart="handleDragStart(event)"
+                     ondragover="handleDragOver(event)"
+                     ondragenter="handleDragEnter(event)"
+                     ondragleave="handleDragLeave(event)"
+                     ondrop="handleDrop(event)"
+                     ondragend="handleDragEnd(event)">
+                    <input type="hidden" name="songIds" th:value="${song.id}"/>
+                    <span th:text="${song.title}"></span>
+                </div>
+            </li>
+        </ul>
+        <input type="hidden" name="playlistId" th:value="${playlistId}"/>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

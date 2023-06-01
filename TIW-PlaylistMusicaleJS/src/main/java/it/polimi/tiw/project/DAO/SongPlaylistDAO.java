@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Set;
 
 public class SongPlaylistDAO {
@@ -95,6 +96,38 @@ public class SongPlaylistDAO {
                     throw new SQLException("Failed to check if song belongs to playlist, no rows returned by query");
                 }
             }
+        }
+    }
+    
+    public void updateSongPrecedence(Map<Integer, Integer> songPrecedenceMap, int playlistId) throws SQLException {
+        String updateQuery = "UPDATE SongPlaylist SET precedence = ? WHERE song_id = ? AND playlist_id = ?";
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connection.setAutoCommit(false); // Start a transaction
+
+            preparedStatement = connection.prepareStatement(updateQuery);
+
+            for (Map.Entry<Integer, Integer> entry : songPrecedenceMap.entrySet()) {
+                Integer songId = entry.getKey();
+                int precedence = entry.getValue();
+
+                preparedStatement.setInt(1, precedence);
+                preparedStatement.setInt(2, songId);
+                preparedStatement.setInt(3, playlistId);
+                preparedStatement.addBatch();
+            }
+
+            preparedStatement.executeBatch();
+            connection.commit(); // Commit the transaction
+        } catch (SQLException e) {
+            connection.rollback(); // Rollback the transaction in case of an exception
+            throw e;
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            connection.setAutoCommit(true); // Restore auto-commit mode
         }
     }
 }
