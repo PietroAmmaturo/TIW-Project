@@ -22,9 +22,9 @@ import it.polimi.tiw.project.DAO.PlaylistDAO;
 import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.beans.User;
 
-@WebFilter(filterName = "PlaylistAuthorizationFilter", urlPatterns = { "/RemoveSongsFromPlaylist", "/AddSongsToPlaylist", "/GoToReorder" })
+@WebFilter(filterName = "PossiblePlaylistAuthorizationFilter", urlPatterns = { "/GoToHome" })
 @Priority(11)
-public class PlaylistAuthorizationFilter implements Filter {
+public class PossiblePlaylistAuthorizationFilter implements Filter {
 
     private Connection connection;
 
@@ -77,7 +77,7 @@ public class PlaylistAuthorizationFilter implements Filter {
 			httpResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
 			return;
 		}	
-		if(!found) {
+		if(!found && playlistId >= 0) {
 			// Purposely not differentiating between playlist not belonging to user and playlist not existing
 			// to avoid attacker being able to use that information to infer the existence of a playlist with a specific ID
 			httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND, "Couldn't find a playlist with the provided ID that belongs to your account");

@@ -1,5 +1,7 @@
 class PlaylistManager {
     constructor() {
+		this.currentBlock = 1;
+		this.playlistId = -1;
 		this.pageSize = 5;
 		this.songManager = new SongManager();
         this.pageNumber = parseInt(urlParams.get('playlistPage')) || 1;
@@ -49,6 +51,7 @@ class PlaylistManager {
         
         this.updateQueryParams = function() {
             const updatedUrlParams = new URLSearchParams(window.location.search);
+            updatedUrlParams.set('playlistId', this.playlistId.toString());
             updatedUrlParams.set('playlistPage', this.pageNumber.toString());
             updatedUrlParams.set('playlistBlock', this.currentBlock.toString());
 
@@ -204,7 +207,10 @@ class PlaylistManager {
         };
         
         this.show = function(nextBlock) {
-            fetch(contextPath + "GetPlaylist?playlistId=" + urlParams.get('playlistId') + "&playlistBlock=" + nextBlock, {
+			if (this.playlistId < 0) {
+				return;
+			}
+            fetch(contextPath + "GetPlaylist?playlistId=" + this.playlistId + "&playlistBlock=" + nextBlock, {
                 method: 'GET'
             })
                 .then(response => response.json())
@@ -222,8 +228,18 @@ class PlaylistManager {
                 });
         };
 		
-		this.show(1);
+		this.goToPlaylist = function(playlistId) {
+			if (playlistId == this.playlistId) {
+				this.show(this.currentBlock);
+				return;
+			}
+			this.playlistId = playlistId;
+			const removeSongsForm = document.getElementById('removeSongsFromPlaylistForm');
+			removeSongsForm.querySelector("input").setAttribute("value", urlParams.get('playlistId'));
+			this.updateQueryParams();
+			this.currentBlock = 1;
+			this.pageNumber = 1;
+			this.show(this.currentBlock);
+		}
     }
 }
-
-document.addEventListener('DOMContentLoaded', function() {const playlistManager = new PlaylistManager();})
