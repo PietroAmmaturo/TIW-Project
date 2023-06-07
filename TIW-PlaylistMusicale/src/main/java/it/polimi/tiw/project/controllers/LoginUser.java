@@ -97,10 +97,16 @@ public class LoginUser extends HttpServlet {
 					response.sendRedirect(path);
 				}
 				else {
-					//TODO password non corretta
+					// password non corretta
+					 request.setAttribute("errorMessage", "Invalid username or password");
+			         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/Login.html");
+			         dispatcher.forward(request, response);
 				}
 			} else {
 				//TODO utente non esistente
+				request.setAttribute("errorMessage", "Invalid username or password");
+		        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/Login.html");
+		        dispatcher.forward(request, response);
 			}
 		}catch(Exception e) {
 			e.printStackTrace();

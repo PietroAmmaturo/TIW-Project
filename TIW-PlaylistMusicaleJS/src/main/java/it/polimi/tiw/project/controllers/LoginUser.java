@@ -17,11 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-
 import it.polimi.tiw.project.DAO.UserDAO;
 import it.polimi.tiw.project.beans.User;
 
@@ -93,6 +88,8 @@ public class LoginUser extends HttpServlet {
 					//accedi
 					HttpSession session = request.getSession(true);
 			        session.setAttribute("currentUser", user);
+			        
+			        
 			        String path = getServletContext().getContextPath() + "/GoToHome";
 					response.sendRedirect(path);
 				}

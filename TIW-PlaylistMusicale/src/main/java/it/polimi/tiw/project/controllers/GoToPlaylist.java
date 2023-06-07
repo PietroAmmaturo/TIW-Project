@@ -127,7 +127,7 @@ public class GoToPlaylist extends HttpServlet {
 		ctx.setVariable("playlistId", playlistId);
 		templateEngine.process(path, ctx, response.getWriter());
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		//response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
