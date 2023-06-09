@@ -25,6 +25,24 @@ class HomeManager{
                 });
         };
         
+        this.handleNewSongExistinAlbum = function(event){
+			event.preventDefault();
+			const title = this.newSongExistingALbumForm.querySelector("[name='song_title']").value;
+			const selectedGenre = this.newSongExistingALbumForm.querySelector("#genre option:checked").value;
+			const audioFile = this.newSongExistingALbumForm.querySelector("[name='audioFile']").files[0];
+			const albumId = this.newSongExistingALbumForm.querySelector("[name='albumId']").value;
+			
+			const formData = new FormData();
+			formData.append("song_title", title);
+			formData.append("audioFile", audioFile);
+			formData.append("song_genre", selectedGenre);
+			formData.append("albumId", albumId);
+			
+			console.log(formData);
+			
+			this.handleFormSubmit(event, formData);
+		}
+        
         this.handleNewSongNewALbum = function(event) {
             event.preventDefault();
             const title = this.newSongNewALbumForm.querySelector("[name='song_title']").value;
@@ -49,20 +67,28 @@ class HomeManager{
             this.handleFormSubmit(event, formData);
         };
 
-        this.handleRemoveFormSubmit = function(event) {
-            event.preventDefault();
-            const selectedSongs = Array.from(document.querySelectorAll('#removeSongsFromPlaylistForm input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
-            const formData = new FormData();
-            selectedSongs.forEach(songId => {
-                formData.append('songIds', songId);
-            });
-
-            this.handleFormSubmit(event, formData);
-        };
+		this.handlePlaylist = function(event){
+			//TODO rivedere questo metodo, non funziona
+			event.preventDefault();
+			const playlistTitle = this.newPlaylistForm.querySelector("[name='playlist_title']").value;
+			const playlistDescription = this.newPlaylistForm.querySelector("[name='playlist_description']").value;
+			const selectedSongsIds = Array.from(document.querySelectorAll("#newPlaylist input[type='checkbox']:checked")).map(checkbox => checkbox.value);
+			
+			const formData = new FormData();
+			formData.append("playlist_title", playlistTitle);
+			formData.append("playlist_description", playlistDescription);
+			selectedSongsIds.forEach(songId => {
+				formData.append("songIds", songId);});
+				
+			console.log(formData);
+			
+			this.handleFormSubmit(event, formData);
+				
+		}
 
         this.newSongNewALbumForm.addEventListener('submit', this.handleNewSongNewALbum.bind(this));
-        //this.newSongExistingALbumForm.addEventListener('submit', this.handleNewSongExistingALbum.bind(this));
-        //this.newPlaylistForm.addEventListener('submit', this.handlePlaylist.bind(this));
+        this.newSongExistingALbumForm.addEventListener('submit', this.handleNewSongExistinAlbum.bind(this));
+        this.newPlaylistForm.addEventListener('submit', this.handlePlaylist.bind(this));
 		
 		this.show = function(){
 			//per  fetchare le playlist dell'utente
