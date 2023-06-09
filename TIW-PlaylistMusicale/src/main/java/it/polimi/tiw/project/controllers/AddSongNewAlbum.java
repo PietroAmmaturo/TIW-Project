@@ -100,8 +100,12 @@ public class AddSongNewAlbum extends HttpServlet {
 			try {
 				titleInUse = albumDao.albumTitleInUseForUser(albumTitle, userId);
 				if(!titleInUse) {
-					FileHandler.saveFile(getServletContext(), albumCover,  userId.toString(), albumTitle);
-					albumDao.addAlbum(albumTitle, /*nome della copertina dell'album*/albumTitle, albumArtist, (int)albumYear, (int)userId);
+					//TODO il nome del file dovebbe essere albumTitle-songTitle.extension, adesso è albumId-songTitle.extension
+					String imageFileExtension = FileHandler.getFileExtension(albumCover);
+					//TODO controllare che l'estensione non sia null
+					String imageFileName = URLEncoder.encode(albumTitle + "." + imageFileExtension, "UTF-8");
+					FileHandler.saveFile(getServletContext(), albumCover,  userId.toString(), imageFileName);
+					albumDao.addAlbum(albumTitle, imageFileName, albumArtist, (int)albumYear, (int)userId);
 				}else {
 				//TODO titolo dell'album già in uso per l'utente + return
 				}
@@ -111,11 +115,12 @@ public class AddSongNewAlbum extends HttpServlet {
 			}
 			try {
 				idAlbum = albumDao.getAlbumIdByTitleAndUser(albumTitle, userId);
-				//TODO dà problema, aggiustare
+				//TODO il nome del file dovebbe essere albumTitle-songTitle.extension, adesso è albumId-songTitle.extension
 				String audioFileExtension = FileHandler.getFileExtension(audioFile);
-				String audioFileName = URLEncoder.encode(idAlbum + "_" + songTitle + "." + audioFileExtension, "UTF-8");
+				//TODO controllare che l'estensione non sia null
+				String audioFileName = URLEncoder.encode(albumTitle + "_" + songTitle + "." + audioFileExtension, "UTF-8");
 				FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
-				songDao.addSong(songTitle, songGenre, String.valueOf(idAlbum)+"_"+songTitle, idAlbum);
+				songDao.addSong(songTitle, songGenre, audioFileName, idAlbum);
 			    String path = getServletContext().getContextPath() + "/GoToHome";
 				response.sendRedirect(path);
 			}catch (IOException | SQLException e) {

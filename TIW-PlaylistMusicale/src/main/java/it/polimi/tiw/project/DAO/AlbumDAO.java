@@ -107,13 +107,25 @@ public class AlbumDAO{
 	}
 	
 	public int getAlbumIdByTitleAndUser(String title, int userId) throws SQLException{
-		String query = "SELECT * FROM Album WHERE title = ? AND user_id = ?";
+		String query = "SELECT id FROM Album WHERE title = ? AND user_id = ?";
 		try(PreparedStatement statement = connection.prepareStatement(query)){
 			statement.setString(1, title);
 			statement.setInt(2, userId);
 			try(ResultSet resultSet = statement.executeQuery()){
 				resultSet.next();
 				return resultSet.getInt("id");
+			}
+		}
+	}
+	
+	public String getTitleById(int albumId, int userId) throws SQLException{
+		String query = "SELECT title FROM Album WHERE id = ? AND user_id = ?";
+		try (PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setInt(1, albumId);
+			statement.setInt(2, userId);
+			try(ResultSet resultSet = statement.executeQuery()){
+				resultSet.next();
+				return resultSet.getString("title");
 			}
 		}
 	}

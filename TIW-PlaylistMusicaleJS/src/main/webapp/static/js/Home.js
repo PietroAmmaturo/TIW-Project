@@ -10,9 +10,27 @@ class HomeManager{
 		
 		this.show = function(){
 			//per  fetchare le playlist dell'utente
+			if (this.playlistId < 0) {
+				return;
+			}
+            fetch(contextPath + "GetHome", {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+					const songs = data.songs;
+					const albums = data.albums;
+					const playlists = data.playlists;	        
+
+                    this.update({ playlistSongsWithAlbum, userSongs, currentBlock, maxBlock, songsPerBlock });
+                })
+                .catch(error => {
+                    console.error('Request failed:', error);
+                });
 		}
 	
-		this.update = function(data){ //data è quello che arriva dalla richiesta di show
+		this.update = function(data){
+			//data è quello che arriva dalla richiesta di show
 			//chiamato da this.show per generare l'html e i listener
 			//quanto clicco su una playlist faccio playlistManager.goToPlaylist(playlistId)
 		}
