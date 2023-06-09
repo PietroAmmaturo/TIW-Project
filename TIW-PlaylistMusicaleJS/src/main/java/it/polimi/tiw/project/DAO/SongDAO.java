@@ -32,6 +32,7 @@ public class SongDAO {
 	                song.setTitle(result.getString("title"));
 	                song.setAudio(result.getString("audio"));
 	                song.setAlbumId(result.getInt("album_id"));
+	                song.setGenre(result.getString("genre"));
 	                return song;
 	            } else {
 	                return null;
@@ -44,8 +45,7 @@ public class SongDAO {
 	    List<Song> songs = new ArrayList<>();
 	    String sql = "SELECT s.* FROM Song s " +
 	                 "INNER JOIN SongPlaylist sp ON s.id = sp.song_id " +
-	                 "WHERE sp.playlist_id = ? " +
-	                 "ORDER BY sp.precedence ASC, s.title ASC";
+	                 "WHERE sp.playlist_id = ?";
 	    try (PreparedStatement statement = connection.prepareStatement(sql)) {
 	        statement.setInt(1, playlistId);
 	        try (ResultSet resultSet = statement.executeQuery()) {
@@ -55,6 +55,7 @@ public class SongDAO {
 	                song.setTitle(resultSet.getString("title"));
 	                song.setAudio(resultSet.getString("audio"));
 	                song.setAlbumId(resultSet.getInt("album_id"));
+	                song.setGenre(resultSet.getString("genre"));
 	                songs.add(song);
 	            }
 	        }
@@ -73,6 +74,8 @@ public class SongDAO {
 	                song.setId(result.getInt("id"));
 	                song.setTitle(result.getString("title"));
 	                song.setAudio(result.getString("audio"));
+	                song.setGenre(result.getString("genre"));
+	                song.setAlbumTitle(result.getString("Album.title"));
 	                songs.add(song);
 	            }
 	        }
@@ -108,11 +111,47 @@ public class SongDAO {
 	                song.setTitle(resultSet.getString("title"));
 	                song.setAudio(resultSet.getString("audio"));
 	                song.setAlbumId(resultSet.getInt("album_id"));
+	                song.setGenre(resultSet.getString("genre"));
 	                songs.add(song);
 	            }
 	        }
 	    }
 	    return songs;
+	}
+	
+	public void addSong(String titleSong,String genre, String audio ,int albumId) throws SQLException {
+		String sql = "INSERT INTO Song (title, genre, audio, album_id) VALUES (?, ?, ?, ?)";
+		try(PreparedStatement statement = connection.prepareStatement(sql)) {
+			connection.setAutoCommit(false);
+			statement.setString(1, titleSong);
+			statement.setString(2, genre);
+			statement.setString(3, audio);
+			statement.setInt(4, albumId);
+			int affectedRows = statement.executeUpdate();
+			if (affectedRows == 0) {
+                throw new SQLException("Failed to add song");
+            }
+		}catch(SQLException e){
+			connection.rollback();
+            throw e;
+		}finally {
+			connection.setAutoCommit(true);
+		}
+	}
+	
+	public boolean titleInAlbumAlreadyInUse(String titleSong, int albumId) throws SQLException {
+		String query = "SELECT COUNT(*) FROM Song WHERE title = ? AND album_id = ?";
+		PreparedStatement statement = connection.prepareStatement(query);
+		statement.setString(1, titleSong);
+		statement.setInt(2, albumId);
+		try(ResultSet resultSet = statement.executeQuery()){
+			resultSet.next();
+			int count = resultSet.getInt(1);
+			return count >= 1;
+		}catch(SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 	
 }

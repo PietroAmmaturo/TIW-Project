@@ -4,6 +4,66 @@ class HomeManager{
 	constructor (){
 		this.playlistManager = new PlaylistManager();
 		
+		this.newSongNewALbumForm = document.querySelector("#newSongNewAlbum");
+		this.newSongExistingALbumForm = document.querySelector("#newSongExistingAlbum");
+		this.newPlaylistForm = document.querySelector("#newPlaylist");
+		
+		
+		
+		this.handleFormSubmit = function(event, formData) {
+            fetch(event.target.action, {
+                method: 'POST',
+                
+                body: formData
+            })
+                .then(response => {
+                    console.log('Request succeeded with response:', response);
+                    this.show();
+                })
+                .catch(error => {
+                    console.error('Request failed:', error);
+                });
+        };
+        
+        this.handleNewSongNewALbum = function(event) {
+            event.preventDefault();
+            const title = this.newSongNewALbumForm.querySelector("[name='song_title']").value;
+           	const selectedGenre = this.newSongNewALbumForm.querySelector("#genre option:checked").value;
+           	const audioFile = this.newSongNewALbumForm.querySelector("[name='audioFile']").files[0];
+           	const albumTitle = this.newSongNewALbumForm.querySelector("[name='album_title']").value;
+           	const albumArtist = this.newSongNewALbumForm.querySelector("[name='album_artist']").value; 
+           	const albumYear = this.newSongNewALbumForm.querySelector("[name='album_year']").value;
+           	const albumCover = this.newSongNewALbumForm.querySelector("[name='album_cover']").files[0];
+           	
+           	const formData = new FormData();
+           	formData.append("song_title", title);
+           	formData.append("audioFile", audioFile);
+           	formData.append("album_title", albumTitle);
+           	formData.append("album_artist", albumArtist);
+           	formData.append("album_year", albumYear);
+           	formData.append("song_genre", selectedGenre);
+           	formData.append("album_cover", albumCover);
+       
+       		console.log(formData);
+
+            this.handleFormSubmit(event, formData);
+        };
+
+        this.handleRemoveFormSubmit = function(event) {
+            event.preventDefault();
+            const selectedSongs = Array.from(document.querySelectorAll('#removeSongsFromPlaylistForm input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+            const formData = new FormData();
+            selectedSongs.forEach(songId => {
+                formData.append('songIds', songId);
+            });
+
+            this.handleFormSubmit(event, formData);
+        };
+
+        this.newSongNewALbumForm.addEventListener('submit', this.handleNewSongNewALbum.bind(this));
+        //this.newSongExistingALbumForm.addEventListener('submit', this.handleNewSongExistingALbum.bind(this));
+        //this.newPlaylistForm.addEventListener('submit', this.handlePlaylist.bind(this));
+		
 		this.show = function(){
 			//per  fetchare le playlist dell'utente
             fetch(contextPath + "GetHome", {
@@ -27,7 +87,7 @@ class HomeManager{
                 
 		}
 		
-		this.update = async function(data){
+		this.update = function(data){
 			const songs = data.songs;
 			const albums = data.albums;
 			const playlists = data.playlists;
@@ -54,6 +114,11 @@ class HomeManager{
 				playlistEl.addEventListener("click", this.playlistManager.goToPlaylist.bind(this.playlistManager, playlist.id));
         		playlistEl.textContent = playlist.title;
         		playlistsContainer.appendChild(playlistEl);
+        		
+        		let playlistReorderEl = document.createElement("a");
+        		playlistReorderEl.setAttribute("href",contextPath + "GoToReorder?playlistId=" + playlist.id);
+        		playlistReorderEl.textContent = ("Reorder " + playlist.title);
+        		playlistEl.appendChild(playlistReorderEl);
         		
         		console.log(playlistEl);
 			}

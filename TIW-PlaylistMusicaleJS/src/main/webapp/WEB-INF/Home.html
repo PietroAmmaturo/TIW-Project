@@ -22,7 +22,7 @@
 		
 		<div class="formdiv" id="addSongExisitingAlbum">
 		<h2> Add new song from existing album </h2>
-			<form enctype="multipart/form-data">
+			<form id="newSongExistingAlbum" action="#" th:action="@{/AddSongExistingAlbum}" method="post" enctype="multipart/form-data">
 				<fieldset>
 				<p> Title: <input type="text" name="song_title" required /></p>
 				<p><select id="genre" name="song_genre" required>
@@ -45,12 +45,12 @@
 		
 		<div class="formdiv" id="addSongNewAlbum">
 		<h2> Add new song and new album </h2>
-		<form enctype="multipart/form-data">
+		<form id= "newSongNewAlbum" action="#" th:action="@{/AddSongNewAlbum}" method="post" enctype="multipart/form-data">
 		<fieldset>
 			<p> Song title: <input type="text" name="song_title" required /></p>
     		<p><select id="genre" name="song_genre" required>
             	<option value="">-- Choose genre --</option>
-            	<option value="Rrock"> Rock </option>
+            	<option value="Rock"> Rock </option>
             	<option value="Pop"> Pop </option>
             	<option value="Country"> Country </option>
             	<option value="Indie"> Indie </option>
@@ -68,7 +68,7 @@
 		
 		<div class="formdiv" id="addPlaylist">
   		<h2>Create new playlist</h2>
-     	<form>
+     	<form id="newPlaylist" action="#" th:action="@{/AddPlaylist}" method="post">
      	<fieldset>
      	<p>Enter title of playlist: <input type="text" name="playlist_title" required /></p>
      	<p>Playlist description: <input type="text" name="playlist_description" required /></p>
