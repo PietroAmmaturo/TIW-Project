@@ -2,8 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<link rel="stylesheet" th:href="@{/static/css/style.css}" />
+	<script defer th:src="@{/static/js/Home.js}"></script>
+	<script defer th:src="@{/static/js/Song.js}"></script>
+	<script defer th:src="@{/static/js/Playlist.js}"></script>
 </head>
 <body>
 	<div style="display:none" id ="contextPath" th:text="@{/}"></div>
@@ -44,18 +48,7 @@
 	<div >
 		<div id = "playerContainer">
 		</div>
-
-		<div id="previousSongButton">
-		    <a>Previous</a>
-		</div>
-			
-		<div id="nextSongButton">
-		   <a>Next</a>
-		</div>
 	</div>
 </body>
-<script th:src="@{/static/js/Home.js}"></script>
-<script th:src="@{/static/js/Song.js}"></script>
-<script th:src="@{/static/js/Playlist.js}"></script>
 
 </html>

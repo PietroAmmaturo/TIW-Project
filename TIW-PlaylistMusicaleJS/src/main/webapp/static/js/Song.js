@@ -2,8 +2,6 @@ class SongManager {
     constructor() {
 		this.pageSize = 1;
         this.pageNumber = parseInt(urlParams.get('songPage')) || 1;
-        this.previousButton = document.getElementById('previousSongButton');
-        this.nextButton = document.getElementById('nextSongButton');
         this.songs = document.getElementsByClassName('playerSong');
 
         this.updateQueryParams = function() {
@@ -24,31 +22,6 @@ class SongManager {
             }
         };
 
-        this.nextButton.addEventListener('click', () => {
-            if (this.pageNumber < this.songs.length) {
-                console.log("nxt s");
-                this.pageNumber++;
-                this.updateQueryParams();
-                this.hideAndShow();
-            } else {
-				this.pageNumber = 1;
-                this.updateQueryParams();
-                this.hideAndShow();
-			}
-        });
-
-        this.previousButton.addEventListener('click', () => {
-            if (this.pageNumber > 1) {
-                this.pageNumber--;
-                this.updateQueryParams();
-                this.hideAndShow();
-            } else {
-				this.pageNumber = Math.ceil(this.songs.length / this.pageSize);
-                this.updateQueryParams();
-                this.hideAndShow();
-			}
-        });
-		
 		this.getSongPageNumber = function(songId) {
 			for (let i = 0; i < this.songs.length; i++) {
                 const song = this.songs[i];

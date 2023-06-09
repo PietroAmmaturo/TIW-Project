@@ -12,7 +12,7 @@
 		        <tbody>
 				    <tr>
 						<td th:if="${playlistSongsWithAlbum == null or #maps.isEmpty(playlistSongsWithAlbum)}">La playlist non contiene brani.</td>
-						<th:block th:if="${not #maps.isEmpty(playlistSongsWithAlbum)}" th:each="entry, iter : ${playlistSongsWithAlbum}">
+						<th:block th:if="${playlistSongsWithAlbum != null and not #maps.isEmpty(playlistSongsWithAlbum)}" th:each="entry, iter : ${playlistSongsWithAlbum}">
 						  <td class="playlistSong">
 						      <div>
 						        <input type="checkbox" name="songIds" th:value="${entry.key.id}"/>
@@ -26,7 +26,7 @@
 				    </tr>
 		        </tbody>
 		    </table>
-		    <button type="submit">Remove selected songs</button>
+		    <button th:if="${playlistSongsWithAlbum != null and not #maps.isEmpty(playlistSongsWithAlbum)}" type="submit">Remove selected songs</button>
 		    
 			<div th:if="${currentPage > 1}">
 		        <a th:href="@{/GoToPlaylist(playlistId=${playlistId}, playlistPage=${currentPage - 1})}">Previous</a>

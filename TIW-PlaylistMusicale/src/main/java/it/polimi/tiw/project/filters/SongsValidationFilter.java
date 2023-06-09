@@ -62,7 +62,7 @@ public class SongsValidationFilter implements Filter {
                     .map(Integer::parseInt)
                     .collect(Collectors.toSet());
         }catch (NullPointerException e) {
-        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'songIds' is missing");
+        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'songIds' is missing, probably you have not selected any songs");
 			return;
         }
         catch (NumberFormatException e) {
