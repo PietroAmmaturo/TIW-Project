@@ -52,16 +52,17 @@ class SongManager {
 		
 		        const playerSong = document.createElement('div');
 		        playerSong.classList.add('playerSong');
+		        playerSong.classList.add('content');
 				playerSong.setAttribute('data-id', songId);
 				
+				const title = document.createElement('h1');
+		        title.innerHTML = `${songTitle}`;
+		        playerSong.appendChild(title);
+		        
 		        const image = document.createElement('img');
 		        image.src = contextPath + `FileHandler?fileName=${imageSrc}`;
 		        image.alt = imageAlt;
 		        playerSong.appendChild(image);
-		
-		        const title = document.createElement('p');
-		        title.innerHTML = `Title: <span>${songTitle}</span>`;
-		        playerSong.appendChild(title);
 		
 		        const artist = document.createElement('p');
 		        artist.innerHTML = `Artist: <span>${entry[1].interpreter}</span>`;

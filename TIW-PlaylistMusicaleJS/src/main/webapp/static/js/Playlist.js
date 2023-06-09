@@ -9,7 +9,8 @@ class PlaylistManager {
         this.nextButton = document.getElementById('nextPlaylistButton');
         this.addForm = document.getElementById('addSongsToPlaylistForm');
         this.removeForm = document.getElementById('removeSongsFromPlaylistForm');
-		
+        this.mainElement = document.getElementById('playlistMain');
+        
 		this.setPageNumber = function(pageNumber) {
 			this.pageNumber = pageNumber;
 		};
@@ -136,21 +137,26 @@ class PlaylistManager {
 		};
 		
         this.update = function(playlistData) {
+			this.mainElement.style.display = "block";
 			this.currentBlock = playlistData.currentBlock;
 			this.maxBlock = playlistData.maxBlock;
 			this.songsPerBlock = playlistData.songsPerBlock;
             console.log("updating...", playlistData);
             const removeSongsForm = document.getElementById('removeSongsFromPlaylistForm');
+            const removeButton = removeSongsForm.querySelector("[type='submit']");
             const addSongsForm = document.getElementById('addSongsToPlaylistForm');
             const playlistSongsRow = removeSongsForm.querySelector('table tr');
             while(playlistSongsRow.firstChild) {
 				playlistSongsRow.removeChild(playlistSongsRow.firstChild);
 			}
 			if (this.maxBlock == 0) {
+				removeButton.style.display = "none";
 				const cell = document.createElement('td');
                 cell.textContent = "La playlist non contiene brani.";
 				playlistSongsRow.appendChild(cell);
+				
 			} else {
+				removeButton.style.display = "block";
 				playlistData.playlistSongsWithAlbum.forEach((entry) => {
 	                const songId = entry[0].id;
 	                const songTitle = entry[0].title;
@@ -211,6 +217,7 @@ class PlaylistManager {
         
         this.show = function(nextBlock) {
 			if (this.playlistId < 0) {
+				this.mainElement.style.display = "none";
 				return;
 			}
             fetch(contextPath + "GetPlaylist?playlistId=" + this.playlistId + "&playlistBlock=" + nextBlock, {
@@ -244,5 +251,7 @@ class PlaylistManager {
 			this.pageNumber = 1;
 			this.show(this.currentBlock);
 		}
+		
+		this.show(-1);
     }
 }

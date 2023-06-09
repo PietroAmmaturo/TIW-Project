@@ -3,9 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Insert title here</title>
-	<!-- 
 	<link rel="stylesheet" th:href="@{/static/css/style.css}" />
-	 -->
 	<script defer th:src="@{/static/js/Main.js}"></script>
 	<script defer th:src="@{/static/js/Song.js}"></script>
 	<script defer th:src="@{/static/js/Playlist.js}"></script>
@@ -13,17 +11,17 @@
 </head>
 <body>
 
-	<div id="formsDiv">
+	<div id="formsDiv" class="compartment">
 	
 		<div id="playlistShowDiv">
 			<h2> Select playlist </h2>
-			<div id="playlist"></div>
+			<div id="playlist"  class ="content"></div>
 		</div>
 		
-		<div class="formdiv" id="addSongExisitingAlbum">
+		<div id="addSongExisitingAlbum">
 		<h2> Add new song from existing album </h2>
 			<form id="newSongExistingAlbum" action="#" th:action="@{/AddSongExistingAlbum}" method="post" enctype="multipart/form-data">
-				<fieldset>
+				<fieldset class ="content">
 				<p> Title: <input type="text" name="song_title" required /></p>
 				<p><select id="genre" name="song_genre" required>
 					<option value="">-- Choose genre --</option>
@@ -43,10 +41,10 @@
 			</form>
 		</div>
 		
-		<div class="formdiv" id="addSongNewAlbum">
+		<div id="addSongNewAlbum">
 		<h2> Add new song and new album </h2>
 		<form id= "newSongNewAlbum" action="#" th:action="@{/AddSongNewAlbum}" method="post" enctype="multipart/form-data">
-		<fieldset>
+		<fieldset class ="content">
 			<p> Song title: <input type="text" name="song_title" required /></p>
     		<p><select id="genre" name="song_genre" required>
             	<option value="">-- Choose genre --</option>
@@ -66,10 +64,10 @@
 		</form>
 		</div>
 		
-		<div class="formdiv" id="addPlaylist">
+		<div id="addPlaylist">
   		<h2>Create new playlist</h2>
      	<form id="newPlaylist" action="#" th:action="@{/AddPlaylist}" method="post">
-     	<fieldset>
+     	<fieldset class ="content">
      	<p>Enter title of playlist: <input type="text" name="playlist_title" required /></p>
      	<p>Playlist description: <input type="text" name="playlist_description" required /></p>
      	<p>Select songs:</p>
@@ -83,10 +81,10 @@
 	</div>
 	
 	<div style="display:none" id ="contextPath" th:text="@{/}"></div>
-	<div id = "playlist" class = "compartment">
+	<div id = "playlistMain" class = "compartment">
 	    <h1>Playlist</h1>
-	
 			<form id="removeSongsFromPlaylistForm" th:action="@{/RemoveSongsFromPlaylist(playlistId=${playlistId})}" method="post">
+				<fieldset class ="content">
 			    <input type="hidden" name="playlistId" th:value="${playlistId}"/>
 			    <table>
 					<tbody>
@@ -95,6 +93,7 @@
 					</tbody>
 			    </table>
 			    <button type="submit">Remove selected songs</button>
+			    </fieldset>
 			</form>
 			<div id="previousPlaylistButton">
 		        <a>Previous</a>
@@ -106,6 +105,7 @@
 	
 	    <h2>Add Song to Playlist</h2>
 		<form id="addSongsToPlaylistForm" method="post" th:action="@{/AddSongsToPlaylist(playlistId=${playlistId})}">
+			<fieldset class ="content">
 		    <div>
 		        <label for="song">Songs:</label>
 		        <br>
@@ -115,10 +115,11 @@
 		        </select>
 		    </div>
 		    <button type="submit">Add to Playlist</button>
+		    </fieldset>
 		</form>
 	</div>
 
-	<div id = "player" class = "compartment">
+	<div id = "playerMain" class = "compartment">
 		<div id = "playerContainer">
 		</div>
 	</div>
