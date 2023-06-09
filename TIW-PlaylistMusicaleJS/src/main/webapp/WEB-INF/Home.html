@@ -83,7 +83,7 @@
 	</div>
 	
 	<div style="display:none" id ="contextPath" th:text="@{/}"></div>
-	<div>
+	<div id = "playlist" class = "compartment">
 	    <h1>Playlist</h1>
 	
 			<form id="removeSongsFromPlaylistForm" th:action="@{/RemoveSongsFromPlaylist(playlistId=${playlistId})}" method="post">
@@ -117,8 +117,8 @@
 		    <button type="submit">Add to Playlist</button>
 		</form>
 	</div>
-	
-	<div >
+
+	<div id = "player" class = "compartment">
 		<div id = "playerContainer">
 		</div>
 	</div>
