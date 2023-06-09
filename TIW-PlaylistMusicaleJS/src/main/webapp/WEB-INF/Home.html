@@ -1,15 +1,87 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<html>
 <head>
 	<meta charset="UTF-8">
 	<title>Insert title here</title>
+	<!-- 
 	<link rel="stylesheet" th:href="@{/static/css/style.css}" />
-	<script defer th:src="@{/static/js/Home.js}"></script>
+	 -->
+	<script defer th:src="@{/static/js/Main.js}"></script>
 	<script defer th:src="@{/static/js/Song.js}"></script>
 	<script defer th:src="@{/static/js/Playlist.js}"></script>
+	<script defer th:src="@{/static/js/Home.js}"></script>
 </head>
 <body>
+
+	<div id="formsDiv">
+	
+		<div id="playlistShowDiv">
+			<h2> Select playlist </h2>
+			<div id="playlist"></div>
+		</div>
+		
+		<div class="formdiv" id="addSongExisitingAlbum">
+		<h2> Add new song from existing album </h2>
+			<form enctype="multipart/form-data">
+				<fieldset>
+				<p> Title: <input type="text" name="song_title" required /></p>
+				<p><select id="genre" name="song_genre" required>
+					<option value="">-- Choose genre --</option>
+            		<option value="Rock"> Rock </option>
+            		<option value="Pop"> Pop </option>
+            		<option value="Country"> Country </option>
+            		<option value="Indie"> Indie </option>
+            		<option value="Classical"> Classical </option>
+				</select></p>
+				<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
+				<p><select id="existingAlbum" name="albumId" required>
+            		<option value="">-- Choose Existing Album --</option>
+            		<!-- qua vengono appesi gli album esistenti -->
+            	</select></p>
+            	<input type="submit" name="add_song" value="Add song">
+				</fieldset>
+			</form>
+		</div>
+		
+		<div class="formdiv" id="addSongNewAlbum">
+		<h2> Add new song and new album </h2>
+		<form enctype="multipart/form-data">
+		<fieldset>
+			<p> Song title: <input type="text" name="song_title" required /></p>
+    		<p><select id="genre" name="song_genre" required>
+            	<option value="">-- Choose genre --</option>
+            	<option value="Rrock"> Rock </option>
+            	<option value="Pop"> Pop </option>
+            	<option value="Country"> Country </option>
+            	<option value="Indie"> Indie </option>
+            	<option value="Classical"> Classical </option>
+        	</select></p>
+    		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
+    		<p> Album title: <input type="text" name="album_title" required /></p>
+    		<p> Album artist: <input type="text" name="album_artist" required /></p>
+    		<p> Album year: <input type="number" name="album_year" required /></p>
+    		<p> Album cover: <input type="file" name="album_cover" accept="image/*" required /></p>
+    		<input type="submit" name="add_song" value="Add song">
+		</fieldset>
+		</form>
+		</div>
+		
+		<div class="formdiv" id="addPlaylist">
+  		<h2>Create new playlist</h2>
+     	<form>
+     	<fieldset>
+     	<p>Enter title of playlist: <input type="text" name="playlist_title" required /></p>
+     	<p>Playlist description: <input type="text" name="playlist_description" required /></p>
+     	<p>Select songs:</p>
+     	<!-- qua è dove vanno appese le canzoni da scegliere per creare una playlist -->
+    	<p id="songsPossible"></p> 
+     	<input type="submit" name="add_song" value="Create playlist">
+     	</fieldset>
+    	</form>
+   		</div>
+		
+	</div>
+	
 	<div style="display:none" id ="contextPath" th:text="@{/}"></div>
 	<div>
 	    <h1>Playlist</h1>
@@ -45,6 +117,7 @@
 		    <button type="submit">Add to Playlist</button>
 		</form>
 	</div>
+	
 	<div >
 		<div id = "playerContainer">
 		</div>

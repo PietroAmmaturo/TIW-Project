@@ -1,12 +1,13 @@
 package it.polimi.tiw.project.controllers;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -18,12 +19,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 import it.polimi.tiw.project.DAO.AlbumDAO;
 import it.polimi.tiw.project.DAO.PlaylistDAO;
@@ -101,6 +105,7 @@ public class GetHome extends HttpServlet {
 	    }
 		
 		Gson gson = new GsonBuilder()
+				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
 	    		.setLenient()
                 .create();
 	
@@ -116,7 +121,7 @@ public class GetHome extends HttpServlet {
 		 response.getWriter().write(
 				 "{\"songs\":" + songsSerialized + "," +
 				 "\"albums\":" + albumsSerialized + "," +
-				 "\"playlists\":" + albumsSerialized + "}"
+				 "\"playlists\":" + playlistsSerialized + "}"
 				 );
 	}
 
@@ -127,5 +132,15 @@ public class GetHome extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
+	
+	class LocalDateTimeSerializer implements JsonSerializer < LocalDateTime > {
+	    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d::MMM::uuuu HH::mm::ss");
 
+	    @Override
+	    public JsonElement serialize(LocalDateTime localDateTime, Type srcType, JsonSerializationContext context) {
+	        return new JsonPrimitive(formatter.format(localDateTime));
+	    }
+
+	}
 }
+

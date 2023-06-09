@@ -90,7 +90,7 @@ public class LoginUser extends HttpServlet {
 			        session.setAttribute("currentUser", user);
 			        
 			        
-			        String path = getServletContext().getContextPath() + "/GoToHome";
+			        String path = getServletContext().getContextPath() + "/GoToHome?playlistId=-1";
 					response.sendRedirect(path);
 				}
 				else {

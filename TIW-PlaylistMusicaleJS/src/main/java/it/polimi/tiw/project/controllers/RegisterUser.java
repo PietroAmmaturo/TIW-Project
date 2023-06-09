@@ -99,7 +99,7 @@ public class RegisterUser extends HttpServlet {
 				HttpSession session = request.getSession(true);
 		        User user = userDao.findUserByUsername(username);
 		        session.setAttribute("currentUser", user);
-		        String path = getServletContext().getContextPath() + "/GoToHome";
+		        String path = getServletContext().getContextPath() + "/GoToHome?playlistId=-1";
 				response.sendRedirect(path);
 				//response.sendRedirect("Home.html"); ///per andare alla homepage
 			}

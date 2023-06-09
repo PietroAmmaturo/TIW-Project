@@ -69,11 +69,12 @@
      <form action="#" th:action="@{/AddPlaylist}" method="post">
      <fieldset>
      <p>Enter title of playlist: <input type="text" name="playlist_title" required /></p>
-     <p>Playlist description: <input type="text" name="playlist_description" required />
-     <legend>Select songs:</legend>
+     <p>Playlist description: <input type="text" name="playlist_description" required /></p>
+     <p>Select songs:</p>
     	<p th:each="song : ${songs}">
         <label>
             <input type="checkbox" name="songIds" th:value="${song.id}">
+            <!-- TODO far vedere accanto al titolo della canzone anche l'album da cui è presa -->
             <span th:text="${song.title}"></span>
         </label>
      </p> 

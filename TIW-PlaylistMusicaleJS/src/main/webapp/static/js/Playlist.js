@@ -143,7 +143,9 @@ class PlaylistManager {
             const removeSongsForm = document.getElementById('removeSongsFromPlaylistForm');
             const addSongsForm = document.getElementById('addSongsToPlaylistForm');
             const playlistSongsRow = removeSongsForm.querySelector('table tr');
-            playlistSongsRow.innerHTML = '';
+            while(playlistSongsRow.firstChild) {
+				playlistSongsRow.removeChild(playlistSongsRow.firstChild);
+			}
 			if (this.maxBlock == 0) {
 				const cell = document.createElement('td');
                 cell.textContent = "La playlist non contiene brani.";
