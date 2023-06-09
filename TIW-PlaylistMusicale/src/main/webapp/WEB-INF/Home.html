@@ -33,7 +33,6 @@
     		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
     		<p><select id="existingAlbum" name="albumId" required>
             	<option value="">-- Choose Existing Album --</option>
-            	<option value="album"> Album </option>
             	<option th:each="album : ${albums}" th:text="${album.title}" th:value="${album.id}"></option>
         	</select></p>
     		<input type="submit" name="add_song" value="Add song">
@@ -71,14 +70,13 @@
      <fieldset>
      <p>Enter title of playlist: <input type="text" name="playlist_title" required /></p>
      <p>Playlist description: <input type="text" name="playlist_description" required />
-     	<legend>Select songs:</legend>
-    <p th:each="song : ${songs}">
+     <legend>Select songs:</legend>
+    	<p th:each="song : ${songs}">
         <label>
             <input type="checkbox" name="songIds" th:value="${song.id}">
             <span th:text="${song.title}"></span>
         </label>
-    </p>
-     </th:block> 
+     </p> 
      <input type="submit" name="add_song" value="Create playlist">
      </fieldset>
     </form>

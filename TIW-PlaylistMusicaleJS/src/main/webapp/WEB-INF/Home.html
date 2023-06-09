@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Home page</title>
 </head>
 <body>
+	<div id="formsDiv">
+		<div id="playlistShowDiv">
+			<h2> Select playlist </h2>
+			<div id="playlist"></div>
+		</div>
+		<div class="formdiv" id="addSongExisitingAlbum">
+		</div>
+	</div>
+	
 	<div style="display:none" id ="contextPath" th:text="@{/}"></div>
 	<div>
+	
 	    <h1>Playlist</h1>
 	
 			<form id="removeSongsFromPlaylistForm" th:action="@{/RemoveSongsFromPlaylist(playlistId=${playlistId})}" method="post">
@@ -54,8 +63,8 @@
 		</div>
 	</div>
 </body>
-<script th:src="@{/static/js/Home.js}"></script>
-<script th:src="@{/static/js/Song.js}"></script>
-<script th:src="@{/static/js/Playlist.js}"></script>
+<script src="@{/static/js/Home.js}"></script>
+<script src="@{/static/js/Song.js}"></script>
+<script src="@{/static/js/Playlist.js}"></script>
 
 </html>

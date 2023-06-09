@@ -71,6 +71,7 @@ class PlaylistManager {
                 this.hideAndShow();
             }
         });
+        //todo non andrebbe aggiunto false dopo la funzione?
 
         this.previousButton.addEventListener('click', () => {
 			let isFirstPage = this.pageNumber == 1;
