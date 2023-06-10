@@ -25,7 +25,7 @@ import javax.servlet.http.HttpSession;
 import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.beans.User;
 
-@WebFilter(filterName = "SongsValidationFilter", urlPatterns = { "/RemoveSongsFromPlaylist", "/AddSongsToPlaylist" })
+@WebFilter(filterName = "SongsValidationFilter", urlPatterns = { "/RemoveSongsFromPlaylist", "/AddSongsToPlaylist", "/AddPlaylist" })
 @Priority(21)
 public class SongsValidationFilter implements Filter {
 

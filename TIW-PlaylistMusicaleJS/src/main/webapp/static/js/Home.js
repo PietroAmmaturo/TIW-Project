@@ -25,6 +25,23 @@ class HomeManager{
                 });
         };
         
+        this.handleUrlFormSubmit = function(event, formData) {
+            fetch(event.target.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams(formData).toString()
+            })
+                .then(response => {
+                    console.log('Request succeeded with response:', response);
+                    this.show();
+                })
+                .catch(error => {
+                    console.error('Request failed:', error);
+                });
+        };
+        
         this.handleNewSongExistinAlbum = function(event){
 			event.preventDefault();
 			const title = this.newSongExistingALbumForm.querySelector("[name='song_title']").value;
@@ -72,17 +89,24 @@ class HomeManager{
 			event.preventDefault();
 			const playlistTitle = this.newPlaylistForm.querySelector("[name='playlist_title']").value;
 			const playlistDescription = this.newPlaylistForm.querySelector("[name='playlist_description']").value;
-			const selectedSongsIds = Array.from(document.querySelectorAll("#newPlaylist input[type='checkbox']:checked")).map(checkbox => checkbox.value);
+			const selectedSongsIds = Array.from(this.newPlaylistForm.querySelectorAll("#newPlaylist input[type='checkbox']:checked"))
+										  .map(checkbox => checkbox.value);
+										  
+			console.log(selectedSongsIds);							  
 			
 			const formData = new FormData();
+			
+			selectedSongsIds.forEach(id => {
+                formData.append("songIds", id);
+            });
 			formData.append("playlist_title", playlistTitle);
 			formData.append("playlist_description", playlistDescription);
-			selectedSongsIds.forEach(songId => {
-				formData.append("songIds", songId);});
+			
+			//formData.append("songIds", selectedSongsIds);
 				
 			console.log(formData);
 			
-			this.handleFormSubmit(event, formData);
+			this.handleUrlFormSubmit(event, formData);
 				
 		}
 
@@ -137,15 +161,19 @@ class HomeManager{
 			for(let i = 0; i < playlists.length; i++){
 				const playlist = playlists[i];
 				let playlistEl = document.createElement("div");
-				playlistEl.addEventListener("click", this.playlistManager.goToPlaylist.bind(this.playlistManager, playlist.id));
-        		playlistEl.textContent = playlist.title;
-        		playlistsContainer.appendChild(playlistEl);
+				
+				let playlistLabelEl = document.createElement("label");
+        		playlistLabelEl.addEventListener("click", this.playlistManager.goToPlaylist.bind(this.playlistManager, playlist.id));
+        		playlistLabelEl.textContent = playlist.title;
+        		playlistEl.appendChild(playlistLabelEl);
         		
         		let playlistReorderEl = document.createElement("a");
         		playlistReorderEl.setAttribute("href",contextPath + "GoToReorder?playlistId=" + playlist.id);
         		playlistReorderEl.textContent = ("Reorder " + playlist.title);
         		playlistEl.appendChild(playlistReorderEl);
         		
+        		playlistsContainer.appendChild(playlistEl);     		
+        		        		
         		console.log(playlistEl);
 			}
 			for(let i = 0; i < albums.length; i++){
