@@ -106,7 +106,7 @@ class PlaylistManager {
 			  })
 			  .then(data => {
 			    console.log('Request succeeded with response:', data);
-			    this.show();
+			    this.refresh();
 			  })
         };
         
