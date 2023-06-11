@@ -56,48 +56,47 @@ public class LoginUser extends HttpServlet {
 		String username = null;
 		String password = null;
 		boolean valid = true;
-		
-		try {
-			username = request.getParameter("username");
-			password = request.getParameter("password");
-			
-			if(username.isBlank() || username.isEmpty() || password.isBlank() || password.isEmpty())
-				valid = false;
-		}catch(NullPointerException e) {
-			valid = false;
-		}
-		
-		if(!valid) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or incorrect parameters");
-			return;
-		}
+
+		username = request.getParameter("username");
+		password = request.getParameter("password");
 		
 		UserDAO userDao = new UserDAO(connection);
 		boolean usernameUsed;
+		boolean rightPassword;
+		
 		try {
 			usernameUsed = userDao.usernameAlreadyInUse(username);
 		}catch(SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Missing or incorrect parameters");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in reaching the database");
 			return;
 		}
 		
 		try {
 			if(usernameUsed) {
-				User user = userDao.findUserByUsername(username);
-				if(password.equals(user.getPassword())) {
+				try {
+					rightPassword = userDao.passwordUsedByUser(username, password);
+				}catch(SQLException e) {
+					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in reaching the database");
+					return;
+				}
+				
+				if(rightPassword) {
 					//accedi
+					User user = userDao.findUserByUsername(username);
 					HttpSession session = request.getSession(true);
 			        session.setAttribute("currentUser", user);
 			        
-			        
 			        String path = getServletContext().getContextPath() + "/GoToHome?playlistId=-1";
 					response.sendRedirect(path);
-				}
-				else {
+				} else {
 					//password non corretta
+					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+							"Wrong password (now for testing, will become wrong credentials)");
 				}
 			} else {
 				//utente non esistente
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Username doesn't existst (now for testing, will become wrong credentials)");
 			}
 		}catch(Exception e) {
 			e.printStackTrace();

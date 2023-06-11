@@ -100,7 +100,6 @@ class HomeManager{
         };
 
 		this.handlePlaylist = function(event){
-			//TODO rivedere questo metodo, non funziona
 			event.preventDefault();
 			const playlistTitle = this.newPlaylistForm.querySelector("[name='playlist_title']").value;
 			const playlistDescription = this.newPlaylistForm.querySelector("[name='playlist_description']").value;
@@ -116,8 +115,6 @@ class HomeManager{
             });
 			formData.append("playlist_title", playlistTitle);
 			formData.append("playlist_description", playlistDescription);
-			
-			//formData.append("songIds", selectedSongsIds);
 				
 			console.log(formData);
 			

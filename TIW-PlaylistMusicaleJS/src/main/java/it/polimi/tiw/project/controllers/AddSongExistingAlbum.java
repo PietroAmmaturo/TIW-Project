@@ -69,6 +69,7 @@ public class AddSongExistingAlbum extends HttpServlet {
 		
 		
 		try {
+			//TODO fare un try catch per ognuno
 			audioFile = request.getPart("audioFile");
 			songTitle = request.getParameter("song_title");
 			songGenre = request.getParameter("song_genre");
@@ -117,22 +118,22 @@ public class AddSongExistingAlbum extends HttpServlet {
 					String audioFileName = albumTitle + "_" + songTitle + "." + audioFileExtension;
 					FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
 					songDao.addSong(songTitle, songGenre, URLEncoder.encode(audioFileName, StandardCharsets.UTF_8), albumId);
-			        String path = getServletContext().getContextPath() + "/GoToHome";
-					response.sendRedirect(path);
+			        
 				}else {
 					//TODO titolo in uso nell'album
 					showPopup = true;
 					errorMessage = "Title already in use in the album";
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Song title already in use in the album");
 				}
 			}else {
 				//TODO schermata che qualcuno ha manomesso l'id inviato
 				showPopup = true;
 				errorMessage = "You shouldn't see this...";
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Song id not valid");
 			}
 		}catch (IOException | SQLException e) {
 			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Error in adding the song");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in adding the song");
 			return;
 		}
 		}

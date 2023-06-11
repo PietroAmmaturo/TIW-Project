@@ -62,36 +62,21 @@ public class RegisterUser extends HttpServlet {
 		String password = null;
 		boolean valid = true;
 		
-		try {
-			username = request.getParameter("username");
-			password = request.getParameter("password");
-			
-			if(username.isBlank() || username.isEmpty() || password.isBlank() || password.isEmpty())
-				valid = false;
-		}catch(NullPointerException e) {
-			valid = false;
-		}
-		
-		if(!valid) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or incorrect parameters");
-			return;
-		}
+		username = request.getParameter("username");
+		password = request.getParameter("password");
 		
 		UserDAO userDao = new UserDAO(connection);
 		boolean usernameUsed;
+		
 		try {
 			usernameUsed = userDao.usernameAlreadyInUse(username);
 		}catch(SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Missing or incorrect parameters");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in reaching the database");
 			return;
 		}
 		try {
 			if(usernameUsed) {
-				//response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Username alredy in use");
-				RequestDispatcher dispatcher = request.getRequestDispatcher("/UsernameOccupied");
-		        dispatcher.include(request, response);
-		        String path = getServletContext().getContextPath() + "/GoToLogin";
-				response.sendRedirect(path);
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Username alredy in use");
 				return;
 			}
 			else {
@@ -101,10 +86,7 @@ public class RegisterUser extends HttpServlet {
 		        session.setAttribute("currentUser", user);
 		        String path = getServletContext().getContextPath() + "/GoToHome?playlistId=-1";
 				response.sendRedirect(path);
-				//response.sendRedirect("Home.html"); ///per andare alla homepage
 			}
-			//RequestDispatcher dispatcher = request.getRequestDispatcher("UsernameOccupied");
-	        //dispatcher.forward(request, response);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -112,7 +94,6 @@ public class RegisterUser extends HttpServlet {
 					"Error in creating the account");
 			return;
 		}
-		//
 		
 	}
 	

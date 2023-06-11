@@ -79,20 +79,39 @@ public class UserDAO{
 	/**
 	 *  Return true if the username is already used, false otherwise
 	 * @param username that needs to be checked
-	 * @return
 	 */
 	public boolean usernameAlreadyInUse(String username) throws SQLException {
 		String query = "SELECT COUNT(*) FROM User WHERE nickname = ?";
 		PreparedStatement statement = connection.prepareStatement(query);
-			statement.setString(1, username);
-			try(ResultSet resultSet = statement.executeQuery()){
-				resultSet.next();
-				int count = resultSet.getInt(1);
-				return count >= 1;
-			}catch(SQLException e) {
-				e.printStackTrace();
-				throw e;
-			}
+		statement.setString(1, username);
+		try(ResultSet resultSet = statement.executeQuery()){
+			resultSet.next();
+			int count = resultSet.getInt(1);
+			return count >= 1;
+		}catch(SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
 	
+	/**
+	 * Returns true if the password is used by the user "username", false otherwise
+	 * @param username of user
+	 * @param password to check
+	 */
+	public boolean passwordUsedByUser(String username, String password) throws SQLException {
+		String query = "SELECT COUNT(*) FROM User WHERE nickname = ? AND password = ?";
+		PreparedStatement statement = connection.prepareStatement(query);
+		statement.setString(1, username);
+		statement.setString(2, password);
+		try(ResultSet resultSet = statement.executeQuery()){
+			resultSet.next();
+			int count = resultSet.getInt(1);
+			return count == 1;
+		}catch(SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}
+		
 	}
 }

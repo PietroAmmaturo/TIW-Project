@@ -83,7 +83,7 @@ public class AddSongNewAlbum extends HttpServlet {
 			System.out.print(songTitle+", "+albumTitle +", "+albumArtist+", "+albumYear+", "+songGenre+", ");
 			if(songTitle.isBlank() || songTitle.isEmpty() || albumTitle.isBlank() || albumTitle.isEmpty() ||
 			   audioFile.equals(null) || albumCover.equals(null) || albumArtist.isBlank() || albumArtist.isEmpty() ||
-			   albumYear> currentYear.getValue() || songGenre.isBlank() || songGenre.isEmpty())
+			   albumYear > currentYear.getValue() || songGenre.isBlank() || songGenre.isEmpty())
 				valid = false;
 		}catch(NullPointerException e) {
 			valid = false;
@@ -110,6 +110,7 @@ public class AddSongNewAlbum extends HttpServlet {
 					albumDao.addAlbum(albumTitle, URLEncoder.encode(imageFileName, StandardCharsets.UTF_8), albumArtist, (int)albumYear, (int)userId);
 				}else {
 				//TODO titolo dell'album già in uso per l'utente + return
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Album name already in use");
 				}
 			}catch(SQLException e) {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in adding the album");

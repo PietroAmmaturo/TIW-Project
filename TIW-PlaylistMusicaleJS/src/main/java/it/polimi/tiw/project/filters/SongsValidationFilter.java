@@ -25,6 +25,9 @@ import javax.servlet.http.HttpSession;
 import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.beans.User;
 
+/**
+ * controlla che le canzoni abbiano un id valido, cioè un intero
+ */
 @WebFilter(filterName = "SongsValidationFilter", urlPatterns = { "/RemoveSongsFromPlaylist", "/AddSongsToPlaylist", "/AddPlaylist" })
 @Priority(21)
 public class SongsValidationFilter implements Filter {
