@@ -1,7 +1,7 @@
 class PlaylistManager {
     constructor() {
-		this.currentBlock = 1;
-		this.playlistId = -1;
+		this.currentBlock = parseInt(urlParams.get('playlistBlock')) || 1;
+		this.playlistId = parseInt(urlParams.get('playlistId')) || -1;
 		this.pageSize = 5;
 		this.songManager = new SongManager();
         this.pageNumber = parseInt(urlParams.get('playlistPage')) || 1;
@@ -273,6 +273,6 @@ class PlaylistManager {
 			return;
 		}
 		
-		this.show(-1);
+		this.show(this.currentBlock);
     }
 }
