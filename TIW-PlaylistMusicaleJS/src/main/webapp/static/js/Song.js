@@ -17,6 +17,7 @@ class SongManager {
             for (let i = 0; i < this.songs.length; i++) {
                 if (i < this.pageNumber - this.pageSize || i >= this.pageNumber) {
                     this.songs[i].hidden = true;
+                    this.songs[i].querySelector('audio').pause();
                 } else {
                     this.songs[i].hidden = false;
                 }
@@ -41,7 +42,9 @@ class SongManager {
 		
 		this.update = function(playlistSongsWithAlbum) {		
 		    const playerContainer = document.getElementById('playerMain');
-		    playerContainer.innerHTML = '';
+			while(playerContainer.firstChild) {
+				playerContainer.removeChild(playerContainer.firstChild);
+			}
 		
 		    playlistSongsWithAlbum.forEach((entry) => {
 		        const songId = entry[0].id;
@@ -83,7 +86,6 @@ class SongManager {
 		        playerSong.appendChild(genre);
 		
 				const audio = document.createElement('audio');
-				audio.setAttribute('preload', 'none');
 				audio.setAttribute('controls', '');
 				audio.src = contextPath + `FileHandler?fileName=${songAudio}`;
 		        playerSong.appendChild(audio);

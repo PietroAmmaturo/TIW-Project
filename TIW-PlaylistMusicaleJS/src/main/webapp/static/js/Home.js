@@ -16,14 +16,21 @@ class HomeManager{
                 
                 body: formData
             })
-                .then(response => {
-                    console.log('Request succeeded with response:', response);
-                    this.show();
-                    this.playlistManager.refresh();
-                })
-                .catch(error => {
-                    console.error('Request failed:', error);
-                });
+               .then(response => {
+			    if (response.ok) {
+			      return response;
+			    } else {
+			      response.text().then(errorMessage => {
+					renderErrorMessage(errorMessage);
+			        throw new Error(errorMessage || 'Unknown error');
+			      });
+			    }
+			  })
+			  .then(data => {
+			    console.log('Request succeeded with response:', data);
+			    this.show();
+			    this.playlistManager.refresh();
+			  })
         };
         
         this.handleUrlFormSubmit = function(event, formData) {
@@ -36,20 +43,18 @@ class HomeManager{
             })
 			  .then(response => {
 			    if (response.ok) {
-			      return response.json();
+			      return response;
 			    } else {
-			      throw new Error(response.statusText);
+			      response.text().then(errorMessage => {
+					renderErrorMessage(errorMessage);
+			        throw new Error(errorMessage || 'Unknown error');
+			      });
 			    }
 			  })
 			  .then(data => {
 			    console.log('Request succeeded with response:', data);
-			    // Handle successful response here
 			    this.show();
 			  })
-			  .catch(error => {
-			    console.error('Error:', error.message);
-			    window.alert('Error: ' + error.message);
-			  });
         };
         
         this.handleNewSongExistinAlbum = function(event){

@@ -2,6 +2,7 @@ package it.polimi.tiw.project.controllers;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -104,9 +105,9 @@ public class AddSongNewAlbum extends HttpServlet {
 					//TODO il nome del file dovebbe essere albumTitle-songTitle.extension, adesso è albumId-songTitle.extension
 					String imageFileExtension = FileHandler.getFileExtension(albumCover);
 					//TODO controllare che l'estensione non sia null
-					String imageFileName = URLEncoder.encode(albumTitle + "." + imageFileExtension, "UTF-8");
+					String imageFileName = albumTitle + "." + imageFileExtension;
 					FileHandler.saveFile(getServletContext(), albumCover,  userId.toString(), imageFileName);
-					albumDao.addAlbum(albumTitle, imageFileName, albumArtist, (int)albumYear, (int)userId);
+					albumDao.addAlbum(albumTitle, URLEncoder.encode(imageFileName, StandardCharsets.UTF_8), albumArtist, (int)albumYear, (int)userId);
 				}else {
 				//TODO titolo dell'album già in uso per l'utente + return
 				}
@@ -119,9 +120,9 @@ public class AddSongNewAlbum extends HttpServlet {
 				//TODO il nome del file dovebbe essere albumTitle-songTitle.extension, adesso è albumId-songTitle.extension
 				String audioFileExtension = FileHandler.getFileExtension(audioFile);
 				//TODO controllare che l'estensione non sia null
-				String audioFileName = URLEncoder.encode(albumTitle + "_" + songTitle + "." + audioFileExtension, "UTF-8");
+				String audioFileName = albumTitle + "_" + songTitle + "." + audioFileExtension;
 				FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
-				songDao.addSong(songTitle, songGenre, audioFileName, idAlbum);
+				songDao.addSong(songTitle, songGenre, URLEncoder.encode(audioFileName, StandardCharsets.UTF_8), idAlbum);
 			   /* String path = getServletContext().getContextPath() + "/GoToHome";
 				response.sendRedirect(path);*/
 			}catch (IOException | SQLException e) {

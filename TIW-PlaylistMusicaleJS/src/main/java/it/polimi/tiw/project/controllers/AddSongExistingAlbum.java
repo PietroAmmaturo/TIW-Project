@@ -2,6 +2,7 @@ package it.polimi.tiw.project.controllers;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -113,9 +114,9 @@ public class AddSongExistingAlbum extends HttpServlet {
 					
 					String albumTitle = albumDao.getTitleById(albumId, userId);
 					
-					String audioFileName = URLEncoder.encode(albumTitle + "_" + songTitle + "." + audioFileExtension, "UTF-8");
+					String audioFileName = albumTitle + "_" + songTitle + "." + audioFileExtension;
 					FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
-					songDao.addSong(songTitle, songGenre, audioFileName, albumId);
+					songDao.addSong(songTitle, songGenre, URLEncoder.encode(audioFileName, StandardCharsets.UTF_8), albumId);
 			        String path = getServletContext().getContextPath() + "/GoToHome";
 					response.sendRedirect(path);
 				}else {

@@ -98,7 +98,6 @@ class PlaylistManager {
 			    if (response.ok) {
 			      return response;
 			    } else {
-					console.log(response)
 			      response.text().then(errorMessage => {
 					renderErrorMessage(errorMessage);
 			        throw new Error(errorMessage || 'Unknown error');
@@ -107,7 +106,6 @@ class PlaylistManager {
 			  })
 			  .then(data => {
 			    console.log('Request succeeded with response:', data);
-			    // Handle successful response here
 			    this.show();
 			  })
         };
