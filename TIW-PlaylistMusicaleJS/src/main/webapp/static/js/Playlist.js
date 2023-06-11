@@ -112,22 +112,27 @@ class PlaylistManager {
         
         this.handleAddFormSubmit = function(event) {
             event.preventDefault();
-            const selectedSongs = Array.from(document.querySelectorAll('#addSongsToPlaylistForm option:checked')).map(option => option.value);
+            const playlistId = this.addForm.querySelector('input[name="playlistId"]').value;
+            const selectedSongs = Array.from(this.addForm.querySelectorAll('option:checked')).map(option => option.value);
             const formData = new FormData();
             selectedSongs.forEach(songId => {
                 formData.append('songIds', songId);
             });
+            formData.append('playlistId', playlistId);
 
             this.handleFormSubmit(event, formData);
         };
 
         this.handleRemoveFormSubmit = function(event) {
             event.preventDefault();
-            const selectedSongs = Array.from(document.querySelectorAll('#removeSongsFromPlaylistForm input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+            const playlistId = this.removeForm.querySelector('input[name="playlistId"]').value;
+            console.log(playlistId)
+            const selectedSongs = Array.from(this.removeForm.querySelectorAll('input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
             const formData = new FormData();
             selectedSongs.forEach(songId => {
                 formData.append('songIds', songId);
             });
+            formData.append('playlistId', playlistId);
 
             this.handleFormSubmit(event, formData);
         };
@@ -152,6 +157,7 @@ class PlaylistManager {
             const removeButton = removeSongsForm.querySelector("[type='submit']");
             const addSongsForm = document.getElementById('addSongsToPlaylistForm');
             const playlistSongsRow = removeSongsForm.querySelector('table tr');
+                        
             while(playlistSongsRow.firstChild) {
 				playlistSongsRow.removeChild(playlistSongsRow.firstChild);
 			}
@@ -253,7 +259,9 @@ class PlaylistManager {
 			}
 			this.playlistId = playlistId;
 			const removeSongsForm = document.getElementById('removeSongsFromPlaylistForm');
-			removeSongsForm.querySelector("input").setAttribute("value", urlParams.get('playlistId'));
+            const addSongsForm = document.getElementById('addSongsToPlaylistForm');
+            removeSongsForm.querySelector('input[name="playlistId"]').setAttribute("value", this.playlistId);
+            addSongsForm.querySelector('input[name="playlistId"]').setAttribute("value", this.playlistId);
 			this.updateQueryParams();
 			this.currentBlock = 1;
 			this.pageNumber = 1;

@@ -108,9 +108,9 @@
 	<div id = "playlistReference"></div>
 	<div id = "playlistMain" class = "compartment">
 	    <h2>Playlist</h2>
-			<form id="removeSongsFromPlaylistForm" th:action="@{/RemoveSongsFromPlaylist(playlistId=${playlistId})}" method="post">
+			<form id="removeSongsFromPlaylistForm" th:action="@{/RemoveSongsFromPlaylist}" method="post">
 				<div class ="content">
-			    <input type="hidden" name="playlistId" th:value="${playlistId}"/>
+			    <input type="hidden" name="playlistId"/>
 			    <table>
 					<tbody>
 					  <tr>
@@ -131,8 +131,9 @@
 			</div>
 	
 	    <h2>Add Songs to Playlist</h2>
-		<form id="addSongsToPlaylistForm" method="post" th:action="@{/AddSongsToPlaylist(playlistId=${playlistId})}">
+		<form id="addSongsToPlaylistForm" method="post" th:action="@{/AddSongsToPlaylist}">
 			<div class ="content">
+				<input type="hidden" name="playlistId"/>
 			    <div>
 			        <label for="song">Songs:</label>
 			        <br>

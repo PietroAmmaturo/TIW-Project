@@ -7,7 +7,7 @@
 <body>
     <h1>Playlist Page</h1>
 	<div id = "playlistMain" class = "compartment">
-		<form th:action="@{/RemoveSongsFromPlaylist(playlistId=${playlistId})}" method="post">
+		<form th:action="@{/RemoveSongsFromPlaylist}" method="post">
 		    <div class ="content">
 		    	<input type="hidden" name="playlistId" th:value="${playlistId}"/>
 			    <table>
@@ -42,8 +42,9 @@
 		</form>
 
 	    <h2>Add Song to Playlist</h2>
-		<form method="post" th:action="@{/AddSongsToPlaylist(playlistId=${playlistId})}">
+		<form method="post" th:action="@{/AddSongsToPlaylist}">
 			<div class ="content">
+				<input type="hidden" name="playlistId" th:value="${playlistId}"/>
 			    <div>
 			        <label for="song">Songs:</label>
 			        <br>
