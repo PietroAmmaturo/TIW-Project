@@ -273,6 +273,10 @@ class PlaylistManager {
 			return;
 		}
 		
+		const removeSongsForm = document.getElementById('removeSongsFromPlaylistForm');
+        const addSongsForm = document.getElementById('addSongsToPlaylistForm');
+        removeSongsForm.querySelector('input[name="playlistId"]').setAttribute("value", this.playlistId);
+        addSongsForm.querySelector('input[name="playlistId"]').setAttribute("value", this.playlistId);
 		this.show(this.currentBlock);
     }
 }
