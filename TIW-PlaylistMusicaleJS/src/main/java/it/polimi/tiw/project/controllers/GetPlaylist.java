@@ -80,7 +80,7 @@ public class GetPlaylist extends HttpServlet{
 		HttpSession session = request.getSession(false);
 		int userId = ((User) session.getAttribute("currentUser")).getId();
 		int playlistId = Integer.parseInt(request.getParameter("playlistId"));
-	    int songsPerBlock = 100;
+	    int songsPerBlock = 10000; // preventing users from retrieving (and trying to render) more than 10k songs
 		int totalSongs;
 	    int currentBlock;
 	    // page validation

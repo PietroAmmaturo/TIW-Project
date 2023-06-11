@@ -101,7 +101,7 @@ public class AddSongsToPlaylist extends HttpServlet {
 			return;
 		}
 		if (foundInvalidId) {
-			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Some of the selected songs could not be found, did not belong to the user  or were already in the playlist, the valid songs were added successfully.");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Some of the selected songs could not be found, did not belong to the user  or were already in the playlist, the valid songs were added successfully.");
 			return;
 		}
 	}

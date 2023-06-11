@@ -2,7 +2,8 @@ class SongManager {
     constructor() {
 		this.pageSize = 1;
         this.pageNumber = parseInt(urlParams.get('songPage')) || 1;
-        this.songs = document.getElementsByClassName('playerSong');
+        this.mainElement = document.querySelector('#playerMain');
+        this.songs = document.querySelectorAll('#playerMain .card');
 
         this.updateQueryParams = function() {
             const updatedUrlParams = new URLSearchParams(window.location.search);
@@ -39,7 +40,7 @@ class SongManager {
 		};
 		
 		this.update = function(playlistSongsWithAlbum) {		
-		    const playerContainer = document.getElementById('playerContainer');
+		    const playerContainer = document.getElementById('playerMain');
 		    playerContainer.innerHTML = '';
 		
 		    playlistSongsWithAlbum.forEach((entry) => {
@@ -51,15 +52,16 @@ class SongManager {
 		        const imageAlt = entry[1].title;
 		
 		        const playerSong = document.createElement('div');
-		        playerSong.classList.add('playerSong');
-		        playerSong.classList.add('content');
+		        playerSong.classList.add('card');
+		        playerSong.classList.add('thick');
 				playerSong.setAttribute('data-id', songId);
-				
-				const title = document.createElement('h1');
+
+				const title = document.createElement('h2');
 		        title.innerHTML = `${songTitle}`;
 		        playerSong.appendChild(title);
 		        
 		        const image = document.createElement('img');
+		        console.log(imageSrc)
 		        image.src = contextPath + `FileHandler?fileName=${imageSrc}`;
 		        image.alt = imageAlt;
 		        playerSong.appendChild(image);
@@ -88,7 +90,7 @@ class SongManager {
 		        
 		        playerContainer.appendChild(playerSong);
 		        
-		        this.songs = document.getElementsByClassName('playerSong');
+		        this.songs = this.mainElement.querySelectorAll('.card');
 		        this.setPageNumber(1);
 		        this.updateQueryParams();
 		        this.hideAndShow();

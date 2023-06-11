@@ -94,14 +94,22 @@ class PlaylistManager {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 body: new URLSearchParams(formData).toString()
-            })
-                .then(response => {
-                    console.log('Request succeeded with response:', response);
-                    this.show();
-                })
-                .catch(error => {
-                    console.error('Request failed:', error);
-                });
+            }).then(response => {
+			    if (response.ok) {
+			      return response;
+			    } else {
+					console.log(response)
+			      response.text().then(errorMessage => {
+					renderErrorMessage(errorMessage);
+			        throw new Error(errorMessage || 'Unknown error');
+			      });
+			    }
+			  })
+			  .then(data => {
+			    console.log('Request succeeded with response:', data);
+			    // Handle successful response here
+			    this.show();
+			  })
         };
         
         this.handleAddFormSubmit = function(event) {
@@ -165,8 +173,8 @@ class PlaylistManager {
 	
 	                const cell = document.createElement('td');
 	                cell.classList.add('playlistSong');
-	                cell.hidden = true;
-	
+	                cell.classList.add("card");
+
 	                const wrapper = document.createElement('div');
 	
 	                const checkbox = document.createElement('input');
@@ -174,10 +182,12 @@ class PlaylistManager {
 	                checkbox.name = 'songIds';
 	                checkbox.value = songId;
 	
-	                const label = document.createElement('label');
+	                const label = document.createElement('a');
 	                label.setAttribute("data-id", songId);
 	                label.textContent = songTitle;
 	                label.addEventListener('click', this.handleSongClick.bind(this, songId));
+	                label.setAttribute("href", "#playerReference");
+	                label.classList.add("interactable");
 	
 	                wrapper.appendChild(checkbox);
 	                wrapper.appendChild(label);
@@ -250,6 +260,11 @@ class PlaylistManager {
 			this.currentBlock = 1;
 			this.pageNumber = 1;
 			this.show(this.currentBlock);
+		}
+		
+		this.refresh = function() {
+			this.show(this.currentBlock);
+			return;
 		}
 		
 		this.show(-1);

@@ -2,91 +2,80 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Home page</title>
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/static/css/style.css}" />
 </head>
 <body>
     <h1>Home page</h1>
     
-    <div>
-    <h2>Select playlist</h2>
-    <div>
-            <p th:each="playlist : ${playlists}">
-                <a th:href="@{/GoToPlaylist(playlistId=${playlist.id})}" th:text="${playlist.title}"></a>
-                <br>
-            </p>
-    </div>
-	</div>
+    <div  id = "homeMain" class="compartment">
+	    <div class ="content">
+	    	<h2>Select playlist</h2>
+	    	<div>
+	            <div class="card wide" th:each="playlist : ${playlists}">
+	                <a class="interactable" th:href="@{/GoToPlaylist(playlistId=${playlist.id})}" th:text="${playlist.title}"></a>
+	                <br>
+	            </div>
+	    	</div>
+	    </div>
     
-    <div class="formdiv">
-    <h2>Add new song from existing album</h2>
-    <form action="#" th:action="@{/AddSongExistingAlbum}" method="post"	enctype="multipart/form-data">
-    	<fieldset>
-    		<p> Title: <input type="text" name="song_title" required /></p>
-    		<p><select id="genre" name="song_genre" required>
-            	<option value="">-- Choose genre --</option>
-            	<option value="Rock"> Rock </option>
-            	<option value="Pop"> Pop </option>
-            	<option value="Country"> Country </option>
-            	<option value="Indie"> Indie </option>
-            	<option value="Classical"> Classical </option>
-        	</select></p>
-    		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
-    		<p><select id="existingAlbum" name="albumId" required>
-            	<option value="">-- Choose Existing Album --</option>
-            	<option th:each="album : ${albums}" th:text="${album.title}" th:value="${album.id}"></option>
-        	</select></p>
-    		<input type="submit" name="add_song" value="Add song">
-    	</fieldset>
-    </form>
-    </div>
+	    <h2>Add new song from existing album</h2>
+	    <form action="#" th:action="@{/AddSongExistingAlbum}" method="post"	enctype="multipart/form-data">
+	    	<div class ="content">
+	    		<p> Title: <input type="text" name="song_title" required /></p>
+	    		<p><select id="genre" name="song_genre" required>
+	            	<option value="">-- Choose genre --</option>
+	            	<option value="Rock"> Rock </option>
+	            	<option value="Pop"> Pop </option>
+	            	<option value="Country"> Country </option>
+	            	<option value="Indie"> Indie </option>
+	            	<option value="Classical"> Classical </option>
+	        	</select></p>
+	    		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
+	    		<p><select id="existingAlbum" name="albumId" required>
+	            	<option value="">-- Choose Existing Album --</option>
+	            	<option th:each="album : ${albums}" th:text="${album.title}" th:value="${album.id}"></option>
+	        	</select></p>
+	            <button class="submit right" type="submit">Add song</button>
+	    	</div>
+	    </form>
     
-    <div class="formdiv">
-    <h2>Add new song and new album</h2>
-    <form action="#" th:action="@{/AddSongNewAlbum}" method="post" enctype="multipart/form-data">
-    	<fieldset>
-    		<p> Song title: <input type="text" name="song_title" required /></p>
-    		<p><select id="genre" name="song_genre" required>
-            	<option value="">-- Choose genre --</option>
-            	<option value="Rrock"> Rock </option>
-            	<option value="Pop"> Pop </option>
-            	<option value="Country"> Country </option>
-            	<option value="Indie"> Indie </option>
-            	<option value="Classical"> Classical </option>
-        	</select></p>
-    		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
-    		<p> Album title: <input type="text" name="album_title" required /></p>
-    		<p> Album artist: <input type="text" name="album_artist" required /></p>
-    		<p> Album year: <input type="number" name="album_year" required /></p>
-    		<p> Album cover: <input type="file" name="album_cover" accept="image/*" required /></p>
-    		<input type="submit" name="add_song" value="Add song">
-    	</fieldset>
-    </form>
+    	<h2>Add new song and new album</h2>
+	    <form action="#" th:action="@{/AddSongNewAlbum}" method="post" enctype="multipart/form-data">
+	    	<div class ="content">
+	    		<p> Song title: <input type="text" name="song_title" required /></p>
+	    		<p><select id="genre" name="song_genre" required>
+	            	<option value="">-- Choose genre --</option>
+	            	<option value="Rrock"> Rock </option>
+	            	<option value="Pop"> Pop </option>
+	            	<option value="Country"> Country </option>
+	            	<option value="Indie"> Indie </option>
+	            	<option value="Classical"> Classical </option>
+	        	</select></p>
+	    		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
+	    		<p> Album title: <input type="text" name="album_title" required /></p>
+	    		<p> Album artist: <input type="text" name="album_artist" required /></p>
+	    		<p> Album year: <input type="number" name="album_year" required /></p>
+	    		<p> Album cover: <input type="file" name="album_cover" accept="image/*" required /></p>
+	            <button class="submit right" type="submit">Add song</button>
+	    	</div>
+	    </form>
+		  <h2>Create new playlist</h2>
+		     <form action="#" th:action="@{/AddPlaylist}" method="post">
+		     <div class ="content">
+		     <p>Enter title of playlist: <input type="text" name="playlist_title" required /></p>
+		     <p>Playlist description: <input type="text" name="playlist_description" required /></p>
+		     <p>Select songs:</p>
+		    	<p th:each="song : ${songs}">
+		        <label>
+		            <input type="checkbox" name="songIds" th:value="${song.id}">
+		            <!-- TODO far vedere accanto al titolo della canzone anche l'album da cui è presa -->
+		            <span th:text="${song.title}"></span>
+		        </label>
+		     </p> 
+     		<button class="submit right" type="submit">Create playlist</button>
+		     </div>
+		   </form>
     </div>
-    <br>
-
-  <div>
-  <h2>Create new playlist</h2>
-     <form action="#" th:action="@{/AddPlaylist}" method="post">
-     <fieldset>
-     <p>Enter title of playlist: <input type="text" name="playlist_title" required /></p>
-     <p>Playlist description: <input type="text" name="playlist_description" required /></p>
-     <p>Select songs:</p>
-    	<p th:each="song : ${songs}">
-        <label>
-            <input type="checkbox" name="songIds" th:value="${song.id}">
-            <!-- TODO far vedere accanto al titolo della canzone anche l'album da cui è presa -->
-            <span th:text="${song.title}"></span>
-        </label>
-     </p> 
-     <input type="submit" name="add_song" value="Create playlist">
-     </fieldset>
-    </form>
-   </div>
-    
-    <div th:if="${showPopup}">
-        <p><span th:text="${inputValue}"></span></p>
-        <a href="/">Close</a>
-    </div>
-    
 </body>
 </html>

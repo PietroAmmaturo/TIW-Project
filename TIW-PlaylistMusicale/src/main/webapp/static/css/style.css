@@ -1,0 +1,129 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 0;
+  box-sizing: border-box;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+a {
+	text-decoration: none;
+color: inherit;
+}
+
+table {
+	position: relative;
+  width: min-content;
+  margin: auto;
+    border-spacing: 1vw;
+}
+
+#song {
+  width: 300px;
+  height: 120px;
+}
+
+#playerMain img {
+	width: 300px;
+	height: 300px;
+}
+.compartment {
+	display: flexbox;
+	position: relative;
+	width: 80vw;
+	height: max-content;
+	margin: auto;
+  	margin-top: 50px;
+  	margin-bottom: 50px
+}
+.content {
+	position: relative;
+	background-color: #dddddd;
+	padding: 20px;
+	padding-left: 5vw;
+	padding-right: 5vw;
+	border-radius: 4px;
+	border-style: none;
+}
+.interactable {
+	color: #ffffff;
+	text-decoration:none;
+}
+.interactable:hover {
+	cursor: pointer;
+  font-weight: bold;
+}
+.playlistSong img {
+	aspect-ratio: 1 / 1;
+	width: 10vw;
+	height: auto;
+}
+
+input {
+	border-radius: 4px;
+}
+select {
+	border-radius: 4px;
+}
+option {
+	border-radius: 4px;
+}
+
+.drag-item {
+  cursor: move;
+}
+.right {
+	position: absolute;
+	right: 20px;
+}
+.card {
+	color: #ffffff;
+	position: relative;
+	background-color: #333333;
+	padding: 10px;
+	border-radius: 4px;
+	position: relative;
+	margin: auto;
+	margin-top: 25px;
+	margin-bottom: 25px;
+	box-sizing: border-box;
+	width: fit-content;
+}
+.card.wide {
+	width: 100%;
+}
+.card.thick {
+	padding: 30px;
+}
+.submit {
+  padding: 10px 20px;
+  background-color: #333333;
+  color: #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  width: max-content;
+  height: max-content;
+  border-style: none;
+}
+.flex {
+	display: flex;
+}
+.submit.spaced {
+	margin: 10px;
+	display: inline-block;
+}
+.submit:hover {
+  background-color: #666666;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+.footer {
+	height: 100vh;
+}

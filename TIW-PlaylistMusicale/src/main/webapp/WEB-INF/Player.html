@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Player</title>
-    <!-- Add your CSS and JavaScript files here -->
+    <link rel="stylesheet" th:href="@{/static/css/style.css}" />
 </head>
 <body>
-	<div class ="playerSong">
-	    <h1 th:text="${song.title}"></h1>
-	    <img th:src="@{/FileHandler(fileName=${album.image})}" />
-	    <!-- Display other details of the song such as artist, album, year, genre, etc. -->
-	    <p>Artist: <span th:text="${album.interpreter}"></span></p>
-	    <p>Album: <span th:text="${album.title}"></span></p>
-	    <p>Album Year: <span th:text="${album.publicationYear}"></span></p>
-	    <p>Genre: <span th:text="${song.genre}"></span></p>
-	    <!-- Add an audio player for song playback -->
-	    <audio th:src="@{/FileHandler(fileName=${song.audio})}" controls></audio>
+    <h1>Player Page</h1>
+	<div id ="playerMain" class="compartment">
+		<div class ="content thick">
+		    <h2 th:text="${song.title}"></h2>
+		    <img th:src="@{/FileHandler(fileName=${album.image})}" />
+		    <!-- Display other details of the song such as artist, album, year, genre, etc. -->
+		    <p>Artist: <span th:text="${album.interpreter}"></span></p>
+		    <p>Album: <span th:text="${album.title}"></span></p>
+		    <p>Album Year: <span th:text="${album.publicationYear}"></span></p>
+		    <p>Genre: <span th:text="${song.genre}"></span></p>
+		    <!-- Add an audio player for song playback -->
+		    <audio th:src="@{/FileHandler(fileName=${song.audio})}" controls></audio>
+	    </div>
     </div>
 </body>
 </html>

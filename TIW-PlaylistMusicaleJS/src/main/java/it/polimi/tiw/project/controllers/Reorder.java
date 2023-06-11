@@ -111,6 +111,8 @@ public class Reorder extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Some of the selected songs could not be found, did not belong to the user or were not in the playlist. The remaining songs were orderd successully.");
 			return;
 		}
+        String path = getServletContext().getContextPath() + "/GoToReorder?playlistId=" + playlistId;
+		response.sendRedirect(path);
     }
 
     @Override

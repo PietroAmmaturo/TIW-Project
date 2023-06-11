@@ -2,18 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
-	<title>Insert title here</title>
-	<!-- 
+	<title>Home</title>
 	<link rel="stylesheet" th:href="@{/static/css/style.css}" />
-	 -->
 	<script defer th:src="@{/static/js/Main.js}"></script>
 	<script defer th:src="@{/static/js/Song.js}"></script>
 	<script defer th:src="@{/static/js/Playlist.js}"></script>
 	<script defer th:src="@{/static/js/Home.js}"></script>
 </head>
 <body>
+	<div style="display:none" id ="contextPath" th:text="@{/}"></div>
+	<h1>Home page</h1>
 
-	<div id="formsDiv" class="compartment">
+	<div id = "homeReference"></div>
+	<div id="homeMain" class="compartment">
 	
 		<div id="playlistShowDiv">
 			<h2> Select playlist </h2>
@@ -23,70 +24,92 @@
 		<div id="addSongExisitingAlbum">
 		<h2> Add new song from existing album </h2>
 			<form id="newSongExistingAlbum" action="#" th:action="@{/AddSongExistingAlbum}" method="post" enctype="multipart/form-data">
-				<fieldset class ="content">
-				<p> Title: <input type="text" name="song_title" required /></p>
-				<p><select id="genre" name="song_genre" required>
-					<option value="">-- Choose genre --</option>
-            		<option value="Rock"> Rock </option>
-            		<option value="Pop"> Pop </option>
-            		<option value="Country"> Country </option>
-            		<option value="Indie"> Indie </option>
-            		<option value="Classical"> Classical </option>
-				</select></p>
-				<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
-				<p><select id="existingAlbum" name="albumId" required>
-            		<option value="">-- Choose Existing Album --</option>
-            		<!-- qua vengono appesi gli album esistenti -->
-            	</select></p>
-            	<input type="submit" name="add_song" value="Add song">
-				</fieldset>
+				<div class ="content">
+					<p> Title:
+						<input type="text" name="song_title" required />
+					</p>
+					<p>
+						<select id="genre" name="song_genre" required>
+							<option value="">-- Choose genre --</option>
+		            		<option value="Rock"> Rock </option>
+		            		<option value="Pop"> Pop </option>
+		            		<option value="Country"> Country </option>
+		            		<option value="Indie"> Indie </option>
+		            		<option value="Classical"> Classical </option>
+						</select>
+					</p>
+					<p> Audio file:
+						<input type="file" name="audioFile" accept="audio/*" required>
+					</p>
+					<p>
+					<select id="existingAlbum" name="albumId" required>
+	            		<option value="">-- Choose Existing Album --</option>
+	            		<!-- qua vengono appesi gli album esistenti -->
+	            	</select>
+	            	</p>
+	            	<button class="submit right" type="submit">Add song</button>
+				</div>
 			</form>
 		</div>
 		
 		<div id="addSongNewAlbum">
 		<h2> Add new song and new album </h2>
-		<form id= "newSongNewAlbum" action="#" th:action="@{/AddSongNewAlbum}" method="post" enctype="multipart/form-data">
-		<fieldset class ="content">
-			<p> Song title: <input type="text" name="song_title" required /></p>
-    		<p><select id="genre" name="song_genre" required>
-            	<option value="">-- Choose genre --</option>
-            	<option value="Rock"> Rock </option>
-            	<option value="Pop"> Pop </option>
-            	<option value="Country"> Country </option>
-            	<option value="Indie"> Indie </option>
-            	<option value="Classical"> Classical </option>
-        	</select></p>
-    		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
-    		<p> Album title: <input type="text" name="album_title" required /></p>
-    		<p> Album artist: <input type="text" name="album_artist" required /></p>
-    		<p> Album year: <input type="number" name="album_year" required /></p>
-    		<p> Album cover: <input type="file" name="album_cover" accept="image/*" required /></p>
-    		<input type="submit" name="add_song" value="Add song">
-		</fieldset>
-		</form>
+			<form id= "newSongNewAlbum" action="#" th:action="@{/AddSongNewAlbum}" method="post" enctype="multipart/form-data">
+				<div class ="content">
+					<p> Song title:
+						<input type="text" name="song_title" required />
+					</p>
+		    		<p>
+			    		<select id="genre" name="song_genre" required>
+			            	<option value="">-- Choose genre --</option>
+			            	<option value="Rock"> Rock </option>
+			            	<option value="Pop"> Pop </option>
+			            	<option value="Country"> Country </option>
+			            	<option value="Indie"> Indie </option>
+			            	<option value="Classical"> Classical </option>
+			        	</select>
+		        	</p>
+		    		<p> Audio file:
+		    			<input type="file" name="audioFile" accept="audio/*" required>
+		    		</p>
+		    		<p> Album title:
+		    			<input type="text" name="album_title" required />
+		    		</p>
+		    		<p> Album artist: 
+		    			<input type="text" name="album_artist" required />
+		    		</p>
+		    		<p> Album year:
+		    			<input type="number" name="album_year" required />
+		    		</p>
+		    		<p> Album cover:
+		    			<input type="file" name="album_cover" accept="image/*" required />
+		    		</p>
+		    		<button class="submit right" type="submit">Add song</button>
+				</div>
+			</form>
 		</div>
 		
 		<div id="addPlaylist">
-  		<h2>Create new playlist</h2>
-     	<form id="newPlaylist" action="#" th:action="@{/AddPlaylist}" method="post">
-     	<fieldset class ="content">
-     	<p>Enter title of playlist: <input type="text" name="playlist_title" required /></p>
-     	<p>Playlist description: <input type="text" name="playlist_description" required /></p>
-     	<p>Select songs:</p>
-     	<!-- qua è dove vanno appese le canzoni da scegliere per creare una playlist -->
-    	<p id="songsPossible"></p> 
-     	<input type="submit" name="add_song" value="Create playlist">
-     	</fieldset>
-    	</form>
+  			<h2>Create new playlist</h2>
+     		<form id="newPlaylist" action="#" th:action="@{/AddPlaylist}" method="post">
+     			<div class ="content">
+     				<p>Enter title of playlist: <input type="text" name="playlist_title" required /></p>
+     				<p>Playlist description: <input type="text" name="playlist_description" required /></p>
+     				<p>Select songs:</p>
+     				<!-- qua è dove vanno appese le canzoni da scegliere per creare una playlist -->
+    				<p id="songsPossible"></p> 
+     			<button class="submit right" type="submit">Create playlist</button>
+     			</div>
+    		</form>
    		</div>
 		
 	</div>
 	
-	<div style="display:none" id ="contextPath" th:text="@{/}"></div>
+	<div id = "playlistReference"></div>
 	<div id = "playlistMain" class = "compartment">
-	    <h1>Playlist</h1>
+	    <h2>Playlist</h2>
 			<form id="removeSongsFromPlaylistForm" th:action="@{/RemoveSongsFromPlaylist(playlistId=${playlistId})}" method="post">
-				<fieldset class ="content">
+				<div class ="content">
 			    <input type="hidden" name="playlistId" th:value="${playlistId}"/>
 			    <table>
 					<tbody>
@@ -94,36 +117,40 @@
 					  </tr>
 					</tbody>
 			    </table>
-			    <button type="submit">Remove selected songs</button>
-			    </fieldset>
+			    <button class="submit right" type="submit">Remove selected songs</button>
+			    </div>
 			</form>
-			<div id="previousPlaylistButton">
-		        <a>Previous</a>
-		    </div>
 			
-			<div id="nextPlaylistButton">
-		        <a>Next</a>
-		    </div>
+			<div class = "flex">
+				<a class="submit spaced" id="previousPlaylistButton">
+		        	Previous
+		    	</a>
+				<a class="submit spaced" id="nextPlaylistButton">
+			        Next
+			    </a>
+			</div>
 	
-	    <h2>Add Song to Playlist</h2>
+	    <h2>Add Songs to Playlist</h2>
 		<form id="addSongsToPlaylistForm" method="post" th:action="@{/AddSongsToPlaylist(playlistId=${playlistId})}">
-			<fieldset class ="content">
-		    <div>
-		        <label for="song">Songs:</label>
-		        <br>
-		        <select id="song"
-		                name="songIds"
-		                multiple>
-		        </select>
+			<div class ="content">
+			    <div>
+			        <label for="song">Songs:</label>
+			        <br>
+			        <select id="song"
+			                name="songIds"
+			                multiple>
+			        </select>
+			    </div>
+			    <button class="submit right" type="submit">Add to Playlist</button>
 		    </div>
-		    <button type="submit">Add to Playlist</button>
-		    </fieldset>
 		</form>
 	</div>
 
+	<div id = "playerReference"></div>
 	<div id = "playerMain" class = "compartment">
-		<div id = "playerContainer">
-		</div>
+	</div>
+	
+	<div class ="footer">
 	</div>
 </body>
 

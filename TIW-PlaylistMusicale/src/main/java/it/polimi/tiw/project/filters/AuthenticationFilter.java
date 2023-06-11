@@ -32,7 +32,7 @@ public class AuthenticationFilter implements Filter {
             chain.doFilter(request, response);
         } else {
             // User is not authenticated, redirect to login page
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/login");
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/");
         }
     }
 

@@ -3,10 +3,10 @@ console.log("homejs started");
 class HomeManager{
 	constructor (){
 		this.playlistManager = new PlaylistManager();
-		
-		this.newSongNewALbumForm = document.querySelector("#newSongNewAlbum");
-		this.newSongExistingALbumForm = document.querySelector("#newSongExistingAlbum");
-		this.newPlaylistForm = document.querySelector("#newPlaylist");
+		this.mainElement = document.querySelector("#homeMain");
+		this.newSongNewALbumForm = this.mainElement.querySelector("#newSongNewAlbum");
+		this.newSongExistingALbumForm = this.mainElement.querySelector("#newSongExistingAlbum");
+		this.newPlaylistForm = this.mainElement.querySelector("#newPlaylist");
 		
 		
 		
@@ -19,6 +19,7 @@ class HomeManager{
                 .then(response => {
                     console.log('Request succeeded with response:', response);
                     this.show();
+                    this.playlistManager.refresh();
                 })
                 .catch(error => {
                     console.error('Request failed:', error);
@@ -33,13 +34,22 @@ class HomeManager{
                 },
                 body: new URLSearchParams(formData).toString()
             })
-                .then(response => {
-                    console.log('Request succeeded with response:', response);
-                    this.show();
-                })
-                .catch(error => {
-                    console.error('Request failed:', error);
-                });
+			  .then(response => {
+			    if (response.ok) {
+			      return response.json();
+			    } else {
+			      throw new Error(response.statusText);
+			    }
+			  })
+			  .then(data => {
+			    console.log('Request succeeded with response:', data);
+			    // Handle successful response here
+			    this.show();
+			  })
+			  .catch(error => {
+			    console.error('Error:', error.message);
+			    window.alert('Error: ' + error.message);
+			  });
         };
         
         this.handleNewSongExistinAlbum = function(event){
@@ -142,9 +152,9 @@ class HomeManager{
 			const albums = data.albums;
 			const playlists = data.playlists;
 			
-			const playlistsContainer = document.querySelector("#formsDiv #playlistShowDiv #playlist");
-			const albumsContainer = document.querySelector("#formsDiv #existingAlbum");
-			const songsContainer = document.querySelector("#formsDiv #songsPossible");
+			const playlistsContainer = this.mainElement.querySelector("#playlistShowDiv #playlist");
+			const albumsContainer = this.mainElement.querySelector("#homeMain #existingAlbum");
+			const songsContainer = this.mainElement.querySelector("#homeMain #songsPossible");
 			
 			console.log(data, playlistsContainer, albumsContainer, songsContainer);
 
@@ -161,15 +171,21 @@ class HomeManager{
 			for(let i = 0; i < playlists.length; i++){
 				const playlist = playlists[i];
 				let playlistEl = document.createElement("div");
-				
-				let playlistLabelEl = document.createElement("label");
-        		playlistLabelEl.addEventListener("click", this.playlistManager.goToPlaylist.bind(this.playlistManager, playlist.id));
-        		playlistLabelEl.textContent = playlist.title;
-        		playlistEl.appendChild(playlistLabelEl);
+				playlistEl.classList.add("card");
+				playlistEl.classList.add("wide");
+
+				let playlistSpanEl = document.createElement("a");
+        		playlistSpanEl.addEventListener("click", this.playlistManager.goToPlaylist.bind(this.playlistManager, playlist.id));
+        		playlistSpanEl.textContent = playlist.title;
+        		playlistSpanEl.classList.add("interactable");
+        		playlistSpanEl.setAttribute("href", "#playlistReference");
+        		playlistEl.appendChild(playlistSpanEl);
         		
         		let playlistReorderEl = document.createElement("a");
         		playlistReorderEl.setAttribute("href",contextPath + "GoToReorder?playlistId=" + playlist.id);
-        		playlistReorderEl.textContent = ("Reorder " + playlist.title);
+        		playlistReorderEl.textContent = "reorder";
+        		playlistReorderEl.classList.add("interactable");
+        		playlistReorderEl.classList.add("right");
         		playlistEl.appendChild(playlistReorderEl);
         		
         		playlistsContainer.appendChild(playlistEl);     		
