@@ -142,5 +142,15 @@ public class GetHome extends HttpServlet {
 	    }
 
 	}
+	
+	public void destroy() {
+		if (connection != null) {
+			try {
+				connection.close();
+			} catch (SQLException e){
+				
+			}
+		}
+	}
 }
 

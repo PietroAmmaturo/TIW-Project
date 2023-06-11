@@ -16,13 +16,15 @@ class PlaylistManager {
 		};
 		
         this.hideAndShow = function() {
-            for (let i = 0; i < this.songs.length; i++) {
-                if (i < (this.pageNumber - 1) * 5 || i >= this.pageNumber * 5) {
-                    this.songs[i].hidden = true;
-                } else {
-                    this.songs[i].hidden = false;
-                }
-            }
+			const playlistSongsRow = this.removeForm.querySelector('table tr');
+			while(playlistSongsRow.firstChild) {
+				playlistSongsRow.removeChild(playlistSongsRow.firstChild);
+			}
+			for (let i = 0; i < this.songs.length; i++) {
+	           if (!(i < (this.pageNumber - 1) * 5 || i >= this.pageNumber * 5)) {
+					this.renderSong(playlistSongsRow, this.songs[i])
+	           }
+	        }
             let isLastPage = this.pageNumber * this.pageSize >= this.songs.length;
             let isLastBlock = this.currentBlock == this.maxBlock;
             let isFirstPage = this.pageNumber == 1;
@@ -139,28 +141,18 @@ class PlaylistManager {
 
         this.addForm.addEventListener('submit', this.handleAddFormSubmit.bind(this));
         this.removeForm.addEventListener('submit', this.handleRemoveFormSubmit.bind(this));
-        
-        this.handleSongClick = function(songId) {
-			let songPageNumber = this.songManager.getSongPageNumber(songId);
-			this.songManager.setPageNumber(songPageNumber);
-			this.songManager.updateQueryParams();
-			this.songManager.hideAndShow();
-		};
 		
         this.update = function(playlistData) {
 			this.mainElement.style.display = "block";
 			this.currentBlock = playlistData.currentBlock;
 			this.maxBlock = playlistData.maxBlock;
 			this.songsPerBlock = playlistData.songsPerBlock;
+			this.songs = playlistData.playlistSongsWithAlbum;
+			
             console.log("updating...", playlistData);
-            const removeSongsForm = document.getElementById('removeSongsFromPlaylistForm');
-            const removeButton = removeSongsForm.querySelector("[type='submit']");
+            const removeButton = this.removeForm.querySelector("[type='submit']");
             const addSongsForm = document.getElementById('addSongsToPlaylistForm');
-            const playlistSongsRow = removeSongsForm.querySelector('table tr');
                         
-            while(playlistSongsRow.firstChild) {
-				playlistSongsRow.removeChild(playlistSongsRow.firstChild);
-			}
 			if (this.maxBlock == 0) {
 				removeButton.style.display = "none";
 				const cell = document.createElement('td');
@@ -169,44 +161,8 @@ class PlaylistManager {
 				
 			} else {
 				removeButton.style.display = "block";
-				playlistData.playlistSongsWithAlbum.forEach((entry) => {
-	                const songId = entry[0].id;
-	                const songTitle = entry[0].title;
-	                const imageSrc = entry[1].image;
-	                const imageAlt = entry[1].title;
-	
-	                const cell = document.createElement('td');
-	                cell.classList.add('playlistSong');
-	                cell.classList.add("card");
-
-	                const wrapper = document.createElement('div');
-	
-	                const checkbox = document.createElement('input');
-	                checkbox.type = 'checkbox';
-	                checkbox.name = 'songIds';
-	                checkbox.value = songId;
-	
-	                const label = document.createElement('a');
-	                label.setAttribute("data-id", songId);
-	                label.textContent = songTitle;
-	                label.addEventListener('click', this.handleSongClick.bind(this, songId));
-	                label.setAttribute("href", "#playerReference");
-	                label.classList.add("interactable");
-	
-	                wrapper.appendChild(checkbox);
-	                wrapper.appendChild(label);
-	
-	                const image = document.createElement('img');
-	                image.setAttribute('loading', 'lazy');
-	                image.src = contextPath + `FileHandler?fileName=${imageSrc}`;
-	                image.alt = imageAlt;
-	
-	                cell.appendChild(wrapper);
-	                cell.appendChild(image);
-	                playlistSongsRow.appendChild(cell);
-            	});
 			}
-
+			
             const songSelect = addSongsForm.querySelector('select#song');
             songSelect.innerHTML = '';
 
@@ -223,7 +179,6 @@ class PlaylistManager {
             });
 
 			this.songManager.update(playlistData.playlistSongsWithAlbum)
-            this.songs = document.getElementsByClassName('playlistSong');
             this.setPageNumber(1);
             this.updateQueryParams();
             this.hideAndShow();
@@ -258,10 +213,8 @@ class PlaylistManager {
 				return;
 			}
 			this.playlistId = playlistId;
-			const removeSongsForm = document.getElementById('removeSongsFromPlaylistForm');
-            const addSongsForm = document.getElementById('addSongsToPlaylistForm');
-            removeSongsForm.querySelector('input[name="playlistId"]').setAttribute("value", this.playlistId);
-            addSongsForm.querySelector('input[name="playlistId"]').setAttribute("value", this.playlistId);
+            this.removeForm.querySelector('input[name="playlistId"]').setAttribute("value", this.playlistId);
+            this.addForm.querySelector('input[name="playlistId"]').setAttribute("value", this.playlistId);
 			this.updateQueryParams();
 			this.currentBlock = 1;
 			this.pageNumber = 1;
@@ -273,10 +226,45 @@ class PlaylistManager {
 			return;
 		}
 		
-		const removeSongsForm = document.getElementById('removeSongsFromPlaylistForm');
-        const addSongsForm = document.getElementById('addSongsToPlaylistForm');
-        removeSongsForm.querySelector('input[name="playlistId"]').setAttribute("value", this.playlistId);
-        addSongsForm.querySelector('input[name="playlistId"]').setAttribute("value", this.playlistId);
+		this.renderSong = function(parent, entry) {
+				    const songId = entry[0].id;
+	                const songTitle = entry[0].title;
+	                const imageSrc = entry[1].image;
+	                const imageAlt = entry[1].title;
+	
+	                const cell = document.createElement('td');
+	                cell.classList.add('playlistSong');
+	                cell.classList.add("card");
+
+	                const wrapper = document.createElement('div');
+	
+	                const checkbox = document.createElement('input');
+	                checkbox.type = 'checkbox';
+	                checkbox.name = 'songIds';
+	                checkbox.value = songId;
+	
+	                const label = document.createElement('a');
+	                label.setAttribute("data-id", songId);
+	                label.textContent = songTitle;
+	                label.addEventListener('click', this.songManager.goToSong.bind(this.songManager, songId));
+	                label.setAttribute("href", "#playerReference");
+	                label.classList.add("interactable");
+	
+	                wrapper.appendChild(checkbox);
+	                wrapper.appendChild(label);
+	
+	                const image = document.createElement('img');
+	                image.setAttribute('loading', 'lazy');
+	                image.src = contextPath + `FileHandler?fileName=${imageSrc}`;
+	                image.alt = imageAlt;
+	
+	                cell.appendChild(wrapper);
+	                cell.appendChild(image);
+	                parent.appendChild(cell);
+		}
+
+        this.removeForm.querySelector('input[name="playlistId"]').setAttribute("value", this.playlistId);
+        this.addForm.querySelector('input[name="playlistId"]').setAttribute("value", this.playlistId);
 		this.show(this.currentBlock);
     }
 }

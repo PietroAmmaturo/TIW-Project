@@ -1,52 +1,23 @@
 class SongManager {
     constructor() {
-		this.pageSize = 1;
-        this.pageNumber = parseInt(urlParams.get('songPage')) || 1;
         this.mainElement = document.querySelector('#playerMain');
-        this.songs = document.querySelectorAll('#playerMain .card');
 
-        this.updateQueryParams = function() {
-            const updatedUrlParams = new URLSearchParams(window.location.search);
-            updatedUrlParams.set('songPage', this.pageNumber.toString());
-
-            const newUrl = window.location.pathname + '?' + updatedUrlParams.toString();
-            window.history.pushState({ path: newUrl }, '', newUrl);
-        };
-
-        this.hideAndShow = function() {
+        this.goToSong = function(id) {
+			while(this.mainElement.firstChild) {
+				this.mainElement.removeChild(this.mainElement.firstChild);
+			}
             for (let i = 0; i < this.songs.length; i++) {
-                if (i < this.pageNumber - this.pageSize || i >= this.pageNumber) {
-                    this.songs[i].hidden = true;
-                    this.songs[i].querySelector('audio').pause();
-                } else {
-                    this.songs[i].hidden = false;
+                if (id == this.songs[i][0].id) {
+					this.renderSong(this.mainElement, this.songs[i]);
                 }
             }
         };
-
-		this.getSongPageNumber = function(songId) {
-			for (let i = 0; i < this.songs.length; i++) {
-                const song = this.songs[i];
-                const id = song.getAttribute("data-id");
-                console.log("going to song", songId, song, id);
-                if (id == songId) {
-					return Math.floor(i / this.pageSize) + 1;
-                }
-            }
-            return null;
-		};
-		
-		this.setPageNumber = function(pageNumber) {
-			this.pageNumber = pageNumber;
-		};
 		
 		this.update = function(playlistSongsWithAlbum) {		
-		    const playerContainer = document.getElementById('playerMain');
-			while(playerContainer.firstChild) {
-				playerContainer.removeChild(playerContainer.firstChild);
-			}
+			this.songs = playlistSongsWithAlbum;
+		};
 		
-		    playlistSongsWithAlbum.forEach((entry) => {
+		this.renderSong = function(parent, entry) {
 		        const songId = entry[0].id;
 		        const songTitle = entry[0].title;
 		        const songGenre = entry[0].genre;
@@ -90,13 +61,9 @@ class SongManager {
 				audio.src = contextPath + `FileHandler?fileName=${songAudio}`;
 		        playerSong.appendChild(audio);
 		        
-		        playerContainer.appendChild(playerSong);
-		        
-		        this.songs = this.mainElement.querySelectorAll('.card');
-		        this.setPageNumber(1);
-		        this.updateQueryParams();
-		        this.hideAndShow();
-		    });
-		};
+		        parent.appendChild(playerSong);
+		}
     }
+    
+    
 }

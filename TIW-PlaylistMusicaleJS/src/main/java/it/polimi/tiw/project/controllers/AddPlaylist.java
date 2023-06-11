@@ -119,4 +119,14 @@ public class AddPlaylist extends HttpServlet {
 		
 	
 	}
+	
+	public void destroy() {
+		if (connection != null) {
+			try {
+				connection.close();
+			} catch (SQLException e){
+				
+			}
+		}
+	}
 }

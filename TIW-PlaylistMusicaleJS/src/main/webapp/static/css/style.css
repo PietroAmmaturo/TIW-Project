@@ -19,6 +19,7 @@ table {
   width: min-content;
   margin: auto;
     border-spacing: 1vw;
+      vertical-align: top;
 }
 
 #song {
@@ -61,7 +62,10 @@ table {
 	width: 10vw;
 	height: auto;
 }
-
+.playlistSong div {
+	width: 10vw;
+		height: auto;
+}
 input {
 	border-radius: 4px;
 }
@@ -80,6 +84,7 @@ option {
 	right: 20px;
 }
 .card {
+	      vertical-align: top;
 	color: #ffffff;
 	position: relative;
 	background-color: #333333;
@@ -90,7 +95,6 @@ option {
 	margin-top: 25px;
 	margin-bottom: 25px;
 	box-sizing: border-box;
-	width: fit-content;
 }
 .card.wide {
 	width: 100%;
