@@ -63,85 +63,44 @@ public class AddSongExistingAlbum extends HttpServlet {
 		String songTitle = null;
 		String songGenre = null;
 		Part audioFile = null;
-		boolean valid = true;
-		boolean showPopup = false;
-		String errorMessage = "null";
 		
+		audioFile = request.getPart("audioFile");
+		songTitle = request.getParameter("song_title");
+		songGenre = request.getParameter("song_genre");
+		albumId = Integer.parseInt(request.getParameter("albumId"));
 		
-		try {
-			//TODO fare un try catch per ognuno
-			audioFile = request.getPart("audioFile");
-			songTitle = request.getParameter("song_title");
-			songGenre = request.getParameter("song_genre");
-			albumId = Integer.parseInt(request.getParameter("albumId"));
-			if(songTitle.isBlank() || songTitle.isEmpty() || audioFile.equals(null)) {
-				valid = false;
-				showPopup = true;
-				errorMessage = "Missing or incorrect parameters";
-			}
-		}catch(NullPointerException e) {
-			valid = false;
-			showPopup = true;
-			errorMessage = "Missing or incorrect parameters";
-		}
-		
-		if(!valid) {
-		    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or incorrect parameters");
-			return;
-		}
-		
-		if(valid) {
 		boolean songTitleInUse = true;
-		boolean albumIdValid = false;
 		SongDAO songDao = new SongDAO(connection);
 		AlbumDAO albumDao = new AlbumDAO(connection);
+		
 		try {
-			//TODO aggiungere filtro per assicurarsi sia intero valido
-			//TODO controllare che l'album sia dell'utente
-			albumIdValid = albumDao.idInUse(albumId);
-			if(albumIdValid)
-				songTitleInUse = songDao.titleInAlbumAlreadyInUse(songTitle, albumId);
+			songTitleInUse = songDao.titleInAlbumAlreadyInUse(songTitle, albumId);
 		}catch(SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in contacting the db");
 			return;
 		}
 		
 		try {
-			if(albumIdValid) {
-				if(!songTitleInUse) {
-					//TODO il nome del file dovebbe essere albumTitle-songTitle.extension, adesso è albumId-songTitle.extension
-					String audioFileExtension = FileHandler.getFileExtension(audioFile);
-					//TODO controllare che l'estensione non sia null
-					
-					String albumTitle = albumDao.getTitleById(albumId, userId);
-					
-					String audioFileName = albumTitle + "_" + songTitle + "." + audioFileExtension;
-					FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
-					songDao.addSong(songTitle, songGenre, URLEncoder.encode(audioFileName, StandardCharsets.UTF_8), albumId);
+			if(!songTitleInUse) {
+			//il nome del file è albumTitle_songTitle.extension
+			String audioFileExtension = FileHandler.getFileExtension(audioFile);
+			String albumTitle = albumDao.getTitleById(albumId, userId);
+			String audioFileName = albumTitle + "_" + songTitle + "." + audioFileExtension;
+			FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
+			songDao.addSong(songTitle, songGenre, URLEncoder.encode(audioFileName, StandardCharsets.UTF_8), albumId);
 			        
-				}else {
-					//TODO titolo in uso nell'album
-					showPopup = true;
-					errorMessage = "Title already in use in the album";
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Song title already in use in the album");
-				}
 			}else {
-				//TODO schermata che qualcuno ha manomesso l'id inviato
-				showPopup = true;
-				errorMessage = "You shouldn't see this...";
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Song id not valid");
+				//TODO titolo in uso nell'album
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Song title already in use in the album");
+				return;
 			}
 		}catch (IOException | SQLException e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in adding the song");
 			return;
 		}
-		}
 		
-		/*request.setAttribute("showPopup", showPopup);
-	    request.setAttribute("inputValue", errorMessage);
-	    RequestDispatcher dispatcher = request.getRequestDispatcher("src/main/webapp/WEB-INF/Home.html");
-	    dispatcher.forward(request, response);*/
+
 		
 	}
 	

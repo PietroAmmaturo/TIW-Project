@@ -42,6 +42,9 @@ public class UserValidationFilter implements Filter {
         }catch(NullPointerException e) {
         	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The username is not valid");
 			return;
+        }catch(Exception e){
+        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The username is not valid");
+			return;
         }finally {
         	if(username.isBlank() || username.isEmpty()) {
         		httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The username cannot be blank");
@@ -52,6 +55,9 @@ public class UserValidationFilter implements Filter {
         try {
         	password = request.getParameter("password");
         }catch(NullPointerException e) {
+        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The password is not valid");
+			return;
+        }catch(Exception e){
         	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The password is not valid");
 			return;
         }finally {
