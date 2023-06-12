@@ -79,43 +79,54 @@ public class AddSongNewAlbum extends HttpServlet {
 		albumCover = request.getPart("album_cover");
 		albumYear = Integer.parseInt(request.getParameter("album_year"));
 		
-		boolean titleInUse = true;
+		boolean albumTitleInUse = true;
+		boolean songTitleInUse = true;
 		SongDAO songDao = new SongDAO(connection);
 		AlbumDAO albumDao = new AlbumDAO(connection);
 		int idAlbum = 0;
 		
-			try {
-				titleInUse = albumDao.albumTitleInUseForUser(albumTitle, userId);
-				if(!titleInUse) {
-					//TODO il nome del file dovebbe essere albumTitle-songTitle.extension, adesso è albumId-songTitle.extension
-					String imageFileExtension = FileHandler.getFileExtension(albumCover);
-					String imageFileName = albumTitle + "." + imageFileExtension;
-					FileHandler.saveFile(getServletContext(), albumCover,  userId.toString(), imageFileName);
-					albumDao.addAlbum(albumTitle, URLEncoder.encode(imageFileName, StandardCharsets.UTF_8), albumArtist, (int)albumYear, (int)userId);
-				}else {
-				//TODO titolo dell'album già in uso per l'utente + return
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Album name already in use");
-				}
-			}catch(SQLException e) {
-				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in adding the album");
+		try {
+			songTitleInUse = songDao.titleAlreadyInUseForUser(songTitle, userId);
+		}catch(SQLException e) {
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in contacting the db");
+			return;
+		}finally {
+			if(songTitleInUse) {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Song title already in use");
 				return;
 			}
-			try {
-				idAlbum = albumDao.getAlbumIdByTitleAndUser(albumTitle, userId);
-				//TODO il nome del file dovebbe essere albumTitle-songTitle.extension, adesso è albumId-songTitle.extension
-				String audioFileExtension = FileHandler.getFileExtension(audioFile);
-				//TODO controllare che l'estensione non sia null
-				String audioFileName = albumTitle + "_" + songTitle + "." + audioFileExtension;
-				FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
-				songDao.addSong(songTitle, songGenre, URLEncoder.encode(audioFileName, StandardCharsets.UTF_8), idAlbum);
-			   /* String path = getServletContext().getContextPath() + "/GoToHome";
-				response.sendRedirect(path);*/
-			}catch (IOException | SQLException e) {
-				e.printStackTrace();
-				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Error in adding the song");
-			return;
+		}
+		
+		try {
+			albumTitleInUse = albumDao.albumTitleInUseForUser(albumTitle, userId);
+			if(!albumTitleInUse) {
+				//il nome del file è albumTitle.extension
+				String imageFileExtension = FileHandler.getFileExtension(albumCover);
+				String imageFileName = albumTitle + "." + imageFileExtension;
+				FileHandler.saveFile(getServletContext(), albumCover,  userId.toString(), imageFileName);
+				albumDao.addAlbum(albumTitle, URLEncoder.encode(imageFileName, StandardCharsets.UTF_8), albumArtist, (int)albumYear, (int)userId);
+			}else {
+			//TODO titolo dell'album già in uso per l'utente + return
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Album name already in use");
+				return;
 			}
+		}catch(SQLException e) {
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in adding the album");
+			return;
+		}
+			
+		try {
+			idAlbum = albumDao.getAlbumIdByTitleAndUser(albumTitle, userId);
+			//il nome del file è albumTitle_songTitle.extension
+			String audioFileExtension = FileHandler.getFileExtension(audioFile);
+			String audioFileName = albumTitle + "_" + songTitle + "." + audioFileExtension;
+			FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
+			songDao.addSong(songTitle, songGenre, URLEncoder.encode(audioFileName, StandardCharsets.UTF_8), idAlbum);
+		}catch (IOException | SQLException e) {
+			e.printStackTrace();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in adding the song");
+			return;
+		}
 		
 		
 		

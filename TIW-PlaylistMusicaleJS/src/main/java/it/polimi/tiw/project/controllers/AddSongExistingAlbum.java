@@ -74,7 +74,7 @@ public class AddSongExistingAlbum extends HttpServlet {
 		AlbumDAO albumDao = new AlbumDAO(connection);
 		
 		try {
-			songTitleInUse = songDao.titleInAlbumAlreadyInUse(songTitle, albumId);
+			songTitleInUse = songDao.titleAlreadyInUseForUser(songTitle, userId);
 		}catch(SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in contacting the db");
 			return;

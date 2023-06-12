@@ -97,6 +97,7 @@ public class LoginUser extends HttpServlet {
 				request.setAttribute("error", "Wrong credentials");
 				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
 				dispatcher.forward(request, response);
+				return;
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
