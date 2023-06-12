@@ -95,6 +95,8 @@ option {
 	margin-top: 25px;
 	margin-bottom: 25px;
 	box-sizing: border-box;
+	width: fit-content;
+	
 }
 .card.wide {
 	width: 100%;

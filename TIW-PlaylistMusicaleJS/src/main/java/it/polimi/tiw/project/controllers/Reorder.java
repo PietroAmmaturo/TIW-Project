@@ -100,7 +100,7 @@ public class Reorder extends HttpServlet {
 		try {
 	    	Map<Integer, Integer> songIndexMap = IntStream.range(0, validSongIds.size())
 	    	        .boxed()
-	    	        .collect(Collectors.toMap(validSongIds::get, Function.identity()));
+	    	        .collect(Collectors.toMap(validSongIds::get, n -> n + 1));
 			songPlaylistDAO.updateSongPrecedence(songIndexMap, playlistId);
 		} catch (SQLException e) {
 			e.printStackTrace();
