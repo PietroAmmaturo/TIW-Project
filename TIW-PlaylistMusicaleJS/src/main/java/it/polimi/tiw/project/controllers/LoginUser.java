@@ -90,13 +90,18 @@ public class LoginUser extends HttpServlet {
 					response.sendRedirect(path);
 				} else {
 					//password non corretta
+					/*request.setAttribute("error", "myError");
+					RequestDispatcher dispatcher = servletContext().getRequestDispatcher(url);
+					dispatcher.forward(request, response);*/
 					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 							"Wrong password (now for testing, will become wrong credentials)");
+					return;
 				}
 			} else {
 				//utente non esistente
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 						"Username doesn't existst (now for testing, will become wrong credentials)");
+				return;
 			}
 		}catch(Exception e) {
 			e.printStackTrace();

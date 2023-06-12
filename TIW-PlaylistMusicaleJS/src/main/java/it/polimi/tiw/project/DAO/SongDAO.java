@@ -155,4 +155,19 @@ public class SongDAO {
 		}
 	}
 	
+	public boolean titleAlreadyInUseForUser(String titleSong, int userId) throws SQLException{
+		String query = "SELECT COUNT(*) FROM Song JOIN Album ON Song.album_id = Album.id WHERE Song.title = ? AND User.id = ?";
+		PreparedStatement statement = connection.prepareStatement(query);
+		statement.setString(1, titleSong);
+		statement.setInt(2, userId);
+		try(ResultSet resultSet = statement.executeQuery()){
+			resultSet.next();
+			int count = resultSet.getInt(1);
+			return count >= 1;
+		}catch(SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
 }
