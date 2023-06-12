@@ -76,7 +76,9 @@ public class RegisterUser extends HttpServlet {
 		}
 		try {
 			if(usernameUsed) {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Username alredy in use");
+				request.setAttribute("error", "Username already in use");
+				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
+				dispatcher.forward(request, response);
 				return;
 			}
 			else {

@@ -89,14 +89,14 @@ public class LoginUser extends HttpServlet {
 			        String path = getServletContext().getContextPath() + "/GoToHome?playlistId=-1";
 					response.sendRedirect(path);
 				} else {
-					//password non corretta
-					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-							"Wrong password (now for testing, will become wrong credentials)");
+					request.setAttribute("error", "Wrong credentials");
+					RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
+					dispatcher.forward(request, response);
 				}
 			} else {
-				//utente non esistente
-				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-						"Username doesn't existst (now for testing, will become wrong credentials)");
+				request.setAttribute("error", "Wrong credentials");
+				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
+				dispatcher.forward(request, response);
 			}
 		}catch(Exception e) {
 			e.printStackTrace();

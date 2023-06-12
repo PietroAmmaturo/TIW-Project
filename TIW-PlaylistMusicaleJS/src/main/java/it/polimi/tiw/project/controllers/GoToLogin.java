@@ -67,10 +67,10 @@ public class GoToLogin extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Redirect to the Home page and add missions to the parameters
-		
 		String path = "/WEB-INF/Login.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		ctx.setVariable("error", request.getAttribute("error"));
 		templateEngine.process(path, ctx, response.getWriter());
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());

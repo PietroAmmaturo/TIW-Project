@@ -25,6 +25,8 @@
 				<button class="submit right" type="submit" name="Login">Sign up</button>
 			</div>
 		</form>  
-	</div>	
+	</div>
+	<div th:if="${error != null}" th:text="${error}">
+	</div>
 </body>
 </html>
