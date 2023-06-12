@@ -71,28 +71,13 @@ public class AddSongNewAlbum extends HttpServlet {
 		Part albumCover = null;
 		boolean valid = true;
 		
-		
-		try {
-			songTitle = request.getParameter("song_title");
-			audioFile = request.getPart("audioFile");
-			albumTitle = request.getParameter("album_title");
-			albumArtist = request.getParameter("album_artist");
-			albumYear = Integer.parseInt(request.getParameter("album_year"));
-			songGenre = request.getParameter("song_genre");
-			albumCover = request.getPart("album_cover");
-			System.out.print(songTitle+", "+albumTitle +", "+albumArtist+", "+albumYear+", "+songGenre+", ");
-			if(songTitle.isBlank() || songTitle.isEmpty() || albumTitle.isBlank() || albumTitle.isEmpty() ||
-			   audioFile.equals(null) || albumCover.equals(null) || albumArtist.isBlank() || albumArtist.isEmpty() ||
-			   albumYear > currentYear.getValue() || songGenre.isBlank() || songGenre.isEmpty())
-				valid = false;
-		}catch(NullPointerException e) {
-			valid = false;
-		}
-		
-		if(!valid) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or incorrect parameters");
-			return;
-		}
+		songTitle = request.getParameter("song_title");
+		audioFile = request.getPart("audioFile");
+		songGenre = request.getParameter("song_genre");
+		albumTitle = request.getParameter("album_title");
+		albumArtist = request.getParameter("album_artist");
+		albumCover = request.getPart("album_cover");
+		albumYear = Integer.parseInt(request.getParameter("album_year"));
 		
 		boolean titleInUse = true;
 		SongDAO songDao = new SongDAO(connection);
@@ -104,7 +89,6 @@ public class AddSongNewAlbum extends HttpServlet {
 				if(!titleInUse) {
 					//TODO il nome del file dovebbe essere albumTitle-songTitle.extension, adesso è albumId-songTitle.extension
 					String imageFileExtension = FileHandler.getFileExtension(albumCover);
-					//TODO controllare che l'estensione non sia null
 					String imageFileName = albumTitle + "." + imageFileExtension;
 					FileHandler.saveFile(getServletContext(), albumCover,  userId.toString(), imageFileName);
 					albumDao.addAlbum(albumTitle, URLEncoder.encode(imageFileName, StandardCharsets.UTF_8), albumArtist, (int)albumYear, (int)userId);

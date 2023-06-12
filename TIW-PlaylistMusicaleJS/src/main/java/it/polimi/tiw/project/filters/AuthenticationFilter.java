@@ -26,7 +26,7 @@ public class AuthenticationFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         HttpSession session = httpRequest.getSession();
-        boolean isAuthenticated = session != null && session.getAttribute("currentUser") != null;
+        boolean isAuthenticated = ((session != null) && (session.getAttribute("currentUser") != null));
         if (isAuthenticated) {
             // User is authenticated, continue processing the request
             chain.doFilter(request, response);
