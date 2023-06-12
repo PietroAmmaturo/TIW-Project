@@ -90,8 +90,8 @@ public class AddSongExistingAlbum extends HttpServlet {
 			songDao.addSong(songTitle, songGenre, URLEncoder.encode(audioFileName, StandardCharsets.UTF_8), albumId);
 			        
 			}else {
-				//TODO titolo in uso nell'album
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Song title already in use in the album");
+				//titolo in uso per l'utente
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Song title already in use");
 				return;
 			}
 		}catch (IOException | SQLException e) {

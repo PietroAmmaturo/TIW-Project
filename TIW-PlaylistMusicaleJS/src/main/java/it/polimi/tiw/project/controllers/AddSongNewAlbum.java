@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.Year;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
@@ -60,8 +61,6 @@ public class AddSongNewAlbum extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		Integer userId = ((User) session.getAttribute("currentUser")).getId();
 		
-		Year currentYear = Year.now();
-		
 		String songTitle = null;
 		Part audioFile = null;
 		String albumTitle = null;
@@ -69,7 +68,6 @@ public class AddSongNewAlbum extends HttpServlet {
 		Integer albumYear = null;
 		String songGenre = null;
 		Part albumCover = null;
-		boolean valid = true;
 		
 		songTitle = request.getParameter("song_title");
 		audioFile = request.getPart("audioFile");
@@ -88,15 +86,17 @@ public class AddSongNewAlbum extends HttpServlet {
 		try {
 			songTitleInUse = songDao.titleAlreadyInUseForUser(songTitle, userId);
 		}catch(SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in contacting the db");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in contacting the database");
 			return;
 		}finally {
 			if(songTitleInUse) {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Song title already in use");
+				request.setAttribute("error", "Song title already in use");
+				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToHome");
+				dispatcher.forward(request, response);
 				return;
 			}
 		}
-		
+
 		try {
 			albumTitleInUse = albumDao.albumTitleInUseForUser(albumTitle, userId);
 			if(!albumTitleInUse) {
@@ -106,8 +106,10 @@ public class AddSongNewAlbum extends HttpServlet {
 				FileHandler.saveFile(getServletContext(), albumCover,  userId.toString(), imageFileName);
 				albumDao.addAlbum(albumTitle, URLEncoder.encode(imageFileName, StandardCharsets.UTF_8), albumArtist, (int)albumYear, (int)userId);
 			}else {
-			//TODO titolo dell'album già in uso per l'utente + return
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Album name already in use");
+			//titolo dell'album già in uso per l'utente
+				request.setAttribute("error", "Album title already in use");
+				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToHome");
+				dispatcher.forward(request, response);
 				return;
 			}
 		}catch(SQLException e) {
@@ -122,14 +124,13 @@ public class AddSongNewAlbum extends HttpServlet {
 			String audioFileName = albumTitle + "_" + songTitle + "." + audioFileExtension;
 			FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
 			songDao.addSong(songTitle, songGenre, URLEncoder.encode(audioFileName, StandardCharsets.UTF_8), idAlbum);
+			return;
 		}catch (IOException | SQLException e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in adding the song");
 			return;
 		}
-		
-		
-		
+			
 	}
 	
 	public void destroy() {

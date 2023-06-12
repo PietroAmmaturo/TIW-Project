@@ -62,20 +62,8 @@ public class RegisterUser extends HttpServlet {
 		String password = null;
 		boolean valid = true;
 		
-		try {
-			username = request.getParameter("username");
-			password = request.getParameter("password");
-			
-			if(username.isBlank() || username.isEmpty() || password.isBlank() || password.isEmpty())
-				valid = false;
-		}catch(NullPointerException e) {
-			valid = false;
-		}
-		
-		if(!valid) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or incorrect parameters");
-			return;
-		}
+		username = request.getParameter("username");
+		password = request.getParameter("password");
 		
 		UserDAO userDao = new UserDAO(connection);
 		boolean usernameUsed = true;
@@ -88,10 +76,9 @@ public class RegisterUser extends HttpServlet {
 		try {
 			if(usernameUsed) {
 				//response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Username alredy in use");
-				RequestDispatcher dispatcher = request.getRequestDispatcher("/UsernameOccupied");
-		        dispatcher.include(request, response);
-		        String path = getServletContext().getContextPath() + "/GoToLogin";
-				response.sendRedirect(path);
+				request.getSession().setAttribute("error", "Username already in use");
+				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
+				dispatcher.forward(request, response);
 				return;
 			}
 			else {

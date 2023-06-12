@@ -20,16 +20,30 @@ public class AlbumDAO{
 	
 	public boolean idInUse(int albumId) throws SQLException {
 		String query = "SELECT COUNT(*) FROM Album WHERE id = ?";
-		PreparedStatement statement = connection.prepareStatement(query);
-		statement.setInt(1, albumId);
-		try(ResultSet resultSet = statement.executeQuery()){
-			resultSet.next();
-			int count = resultSet.getInt(1);
-			return count >= 1;
-		}catch(SQLException e) {
-			e.printStackTrace();
-			throw e;
+		try(PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setInt(1, albumId);
+			try(ResultSet resultSet = statement.executeQuery()){
+				resultSet.next();
+				int count = resultSet.getInt(1);
+				return count >= 1;
+			}catch(SQLException e) {
+				e.printStackTrace();
+				throw e;
+			}
 		}
+	}
+	
+	public boolean albumBelongToUser(int albumId, int userId) throws SQLException {
+		String query = "SELECT COUNT(*) FROM Album WHERE id = ? AND user_id = ?";
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+	        statement.setInt(1, albumId);
+	        statement.setInt(2, userId);
+	        try (ResultSet result = statement.executeQuery()) {
+	            result.next();
+	            int count = result.getInt(1);
+	            return count == 1;
+	        }
+	    }
 	}
 	
 	public void addAlbum(String title, String image, String interpreter, int publicationYear, int userId) throws SQLException {

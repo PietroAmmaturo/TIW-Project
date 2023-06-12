@@ -55,7 +55,6 @@ public class LoginUser extends HttpServlet {
 		
 		String username = null;
 		String password = null;
-		boolean valid = true;
 
 		username = request.getParameter("username");
 		password = request.getParameter("password");
@@ -89,11 +88,13 @@ public class LoginUser extends HttpServlet {
 			        String path = getServletContext().getContextPath() + "/GoToHome?playlistId=-1";
 					response.sendRedirect(path);
 				} else {
+					//password sbagliata
 					request.setAttribute("error", "Wrong credentials");
 					RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
 					dispatcher.forward(request, response);
 				}
 			} else {
+				//username non esistente
 				request.setAttribute("error", "Wrong credentials");
 				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
 				dispatcher.forward(request, response);

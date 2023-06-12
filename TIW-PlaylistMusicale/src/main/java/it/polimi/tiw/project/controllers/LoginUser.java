@@ -60,53 +60,53 @@ public class LoginUser extends HttpServlet {
 		
 		String username = null;
 		String password = null;
-		boolean valid = true;
-		
-		try {
-			username = request.getParameter("username");
-			password = request.getParameter("password");
-			
-			if(username.isBlank() || username.isEmpty() || password.isBlank() || password.isEmpty())
-				valid = false;
-		}catch(NullPointerException e) {
-			valid = false;
-		}
-		
-		if(!valid) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or incorrect parameters");
-			return;
-		}
+
+		username = request.getParameter("username");
+		password = request.getParameter("password");
 		
 		UserDAO userDao = new UserDAO(connection);
 		boolean usernameUsed;
+		boolean rightPassword = false;
+		
 		try {
 			usernameUsed = userDao.usernameAlreadyInUse(username);
 		}catch(SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Missing or incorrect parameters");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in reaching the database");
 			return;
 		}
 		
 		try {
 			if(usernameUsed) {
-				User user = userDao.findUserByUsername(username);
-				if(password.equals(user.getPassword())) {
+				try {
+					rightPassword = userDao.passwordUsedByUser(username, password);
+				}catch(SQLException e) {
+					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in reaching the database");
+					return;
+				}
+				
+				if(rightPassword) {
 					//accedi
-					HttpSession session = request.getSession(true);
-			        session.setAttribute("currentUser", user);
-			        String path = getServletContext().getContextPath() + "/GoToHome";
+					User user = userDao.findUserByUsername(username);
+					HttpSession session = request.getSession(false);
+			       
+					session.setAttribute("currentUser", user);
+			       	String path = getServletContext().getContextPath() + "/GoToHome";
 					response.sendRedirect(path);
+					return;
+				} else {
+					//password sbagliata
+					request.getSession().setAttribute("error", "Wrong credentials");
+					RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
+					dispatcher.forward(request, response);
+					return;
 				}
-				else {
-					// password non corretta
-					 request.setAttribute("errorMessage", "Invalid username or password");
-			         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/Login.html");
-			         dispatcher.forward(request, response);
-				}
+				
 			} else {
-				//TODO utente non esistente
-				request.setAttribute("errorMessage", "Invalid username or password");
-		        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/Login.html");
-		        dispatcher.forward(request, response);
+				//username non esistente
+				request.getSession().setAttribute("error", "Wrong credentials");
+				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
+				dispatcher.forward(request, response);
+				return;
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -114,5 +114,7 @@ public class LoginUser extends HttpServlet {
 					"Error in login");
 			return;
 		}
+		
+		
 	}
 }

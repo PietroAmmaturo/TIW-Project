@@ -87,8 +87,6 @@ public class GoToPlayer extends HttpServlet {
 		ctx.setVariable("song", songWithAlbum.keySet().toArray()[0]);
 		ctx.setVariable("album", songWithAlbum.values().toArray()[0]);
 		templateEngine.process(path, ctx, response.getWriter());
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**

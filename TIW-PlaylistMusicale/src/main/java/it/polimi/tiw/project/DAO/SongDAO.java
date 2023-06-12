@@ -45,7 +45,8 @@ public class SongDAO {
 	    List<Song> songs = new ArrayList<>();
 	    String sql = "SELECT s.* FROM Song s " +
 	                 "INNER JOIN SongPlaylist sp ON s.id = sp.song_id " +
-	                 "WHERE sp.playlist_id = ?";
+	                 "WHERE sp.playlist_id = ? " +
+	                 "ORDER BY sp.precedence ASC, s.title ASC";
 	    try (PreparedStatement statement = connection.prepareStatement(sql)) {
 	        statement.setInt(1, playlistId);
 	        try (ResultSet resultSet = statement.executeQuery()) {
@@ -144,6 +145,21 @@ public class SongDAO {
 		PreparedStatement statement = connection.prepareStatement(query);
 		statement.setString(1, titleSong);
 		statement.setInt(2, albumId);
+		try(ResultSet resultSet = statement.executeQuery()){
+			resultSet.next();
+			int count = resultSet.getInt(1);
+			return count >= 1;
+		}catch(SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	public boolean titleAlreadyInUseForUser(String titleSong, int userId) throws SQLException{
+		String query = "SELECT COUNT(*) FROM Song JOIN Album ON Song.album_id = Album.id WHERE Song.title = ? AND Album.user_id = ?";
+		PreparedStatement statement = connection.prepareStatement(query);
+		statement.setString(1, titleSong);
+		statement.setInt(2, userId);
 		try(ResultSet resultSet = statement.executeQuery()){
 			resultSet.next();
 			int count = resultSet.getInt(1);
