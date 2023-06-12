@@ -61,6 +61,7 @@
 		    </div>
 		</form>
 	<div>
-	
+	<div th:if="${error != null}" th:text="${error}">
+	</div>
 </body>
 </html>

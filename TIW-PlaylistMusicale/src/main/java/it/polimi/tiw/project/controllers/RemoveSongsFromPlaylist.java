@@ -55,7 +55,7 @@ public class RemoveSongsFromPlaylist extends HttpServlet{
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+        
 		HttpSession session = request.getSession(false);
     	int playlistId = Integer.parseInt(request.getParameter("playlistId"));
     	

@@ -125,6 +125,8 @@ public class GoToPlaylist extends HttpServlet {
 		ctx.setVariable("maxPage", maxPage);
 		ctx.setVariable("currentPage", currentPage);
 		ctx.setVariable("playlistId", playlistId);
+		ctx.setVariable("error", session.getAttribute("error"));
+		session.removeAttribute("error");
 		templateEngine.process(path, ctx, response.getWriter());
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
