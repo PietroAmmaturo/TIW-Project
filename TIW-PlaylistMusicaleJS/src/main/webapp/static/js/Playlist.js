@@ -20,13 +20,24 @@ class PlaylistManager {
 			while(playlistSongsRow.firstChild) {
 				playlistSongsRow.removeChild(playlistSongsRow.firstChild);
 			}
+			const removeButton = this.removeForm.querySelector("[type='submit']");
+			if (this.maxBlock == 0) {
+				removeButton.style.display = "none";
+				const cell = document.createElement('td');
+                cell.textContent = "La playlist non contiene brani.";
+                cell.classList.add('playlistSong');
+	            cell.classList.add("card");
+				playlistSongsRow.appendChild(cell);
+			} else {
+				removeButton.style.display = "block";
+			}
 			for (let i = 0; i < this.songs.length; i++) {
 	           if (!(i < (this.pageNumber - 1) * 5 || i >= this.pageNumber * 5)) {
 					this.renderSong(playlistSongsRow, this.songs[i])
 	           }
 	        }
             let isLastPage = this.pageNumber * this.pageSize >= this.songs.length;
-            let isLastBlock = this.currentBlock == this.maxBlock;
+            let isLastBlock = this.currentBlock >= this.maxBlock;
             let isFirstPage = this.pageNumber == 1;
             let isFirstBlock = this.currentBlock == 1;
             if (!(isLastPage && isLastBlock) && !(isFirstPage && isFirstBlock)) {
@@ -148,20 +159,12 @@ class PlaylistManager {
 			this.maxBlock = playlistData.maxBlock;
 			this.songsPerBlock = playlistData.songsPerBlock;
 			this.songs = playlistData.playlistSongsWithAlbum;
-			
+			this.songManager.update(playlistData.playlistSongsWithAlbum)
+            this.setPageNumber(1);
+            this.updateQueryParams();
+
             console.log("updating...", playlistData);
-            const removeButton = this.removeForm.querySelector("[type='submit']");
             const addSongsForm = document.getElementById('addSongsToPlaylistForm');
-                        
-			if (this.maxBlock == 0) {
-				removeButton.style.display = "none";
-				const cell = document.createElement('td');
-                cell.textContent = "La playlist non contiene brani.";
-				playlistSongsRow.appendChild(cell);
-				
-			} else {
-				removeButton.style.display = "block";
-			}
 			
             const songSelect = addSongsForm.querySelector('select#song');
             songSelect.innerHTML = '';
@@ -177,10 +180,7 @@ class PlaylistManager {
                 option.textContent = song.title;
                 songSelect.appendChild(option);
             });
-
-			this.songManager.update(playlistData.playlistSongsWithAlbum)
-            this.setPageNumber(1);
-            this.updateQueryParams();
+            
             this.hideAndShow();
         };
         
