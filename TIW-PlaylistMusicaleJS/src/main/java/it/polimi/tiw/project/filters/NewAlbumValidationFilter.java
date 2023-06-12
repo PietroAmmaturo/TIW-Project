@@ -93,7 +93,7 @@ public class NewAlbumValidationFilter implements Filter {
         	}
         	if(!imageExtension.equals("jpeg") && !imageExtension.equals("jpg") && !imageExtension.equals("png") &&
         	   !imageExtension.equals("gif") && !imageExtension.equals("bmp") && !imageExtension.equals("tiff") &&
-        	   !imageExtension.equals("tif") && !imageExtension.equals("svg")) {
+        	   !imageExtension.equals("tif") && !imageExtension.equals("svg") && !imageExtension.equals("webp")) {
         		httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The album cover extension is not supported");
     			return;
         	}
