@@ -58,9 +58,10 @@ public class RegisterUser extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+		HttpSession session = request.getSession(true);
+		
 		String username = null;
 		String password = null;
-		boolean valid = true;
 		
 		username = request.getParameter("username");
 		password = request.getParameter("password");
@@ -76,14 +77,13 @@ public class RegisterUser extends HttpServlet {
 		}
 		try {
 			if(usernameUsed) {
-				request.setAttribute("error", "Username already in use");
-				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
-				dispatcher.forward(request, response);
+				session.setAttribute("error", "Username alredy in use");
+		       	String path = getServletContext().getContextPath() + "/GoToLogin";
+				response.sendRedirect(path);
 				return;
 			}
 			else {
 				userDao.addUser(username, password);
-				HttpSession session = request.getSession(true);
 		        User user = userDao.findUserByUsername(username);
 		        session.setAttribute("currentUser", user);
 		        String path = getServletContext().getContextPath() + "/GoToHome?playlistId=-1";

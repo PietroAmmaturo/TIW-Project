@@ -94,9 +94,9 @@ public class AddSongExistingAlbum extends HttpServlet {
 			        
 			}else {
 				//titolo in uso per l'utente
-				request.getSession().setAttribute("error", "Song title already in use");
-				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToHome");
-				dispatcher.forward(request, response);
+				session.setAttribute("error", "Song title already in use");
+		       	String path = getServletContext().getContextPath() + "/GoToHome";
+				response.sendRedirect(path);
 				return;
 			}
 		}catch (IOException | SQLException e) {

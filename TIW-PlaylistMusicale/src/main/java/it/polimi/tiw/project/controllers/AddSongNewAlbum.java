@@ -91,9 +91,9 @@ public class AddSongNewAlbum extends HttpServlet {
 			return;
 		}finally {
 			if(songTitleInUse) {
-				request.getSession().setAttribute("error", "Song title already in use");
-				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToHome");
-				dispatcher.forward(request, response);
+				session.setAttribute("error", "Song title already in use");
+		       	String path = getServletContext().getContextPath() + "/GoToHome";
+				response.sendRedirect(path);
 				return;
 			}
 		}
@@ -108,9 +108,9 @@ public class AddSongNewAlbum extends HttpServlet {
 				albumDao.addAlbum(albumTitle, URLEncoder.encode(imageFileName, StandardCharsets.UTF_8), albumArtist, (int)albumYear, (int)userId);
 			}else {
 			//titolo dell'album già in uso per l'utente
-				request.getSession().setAttribute("error", "Album title already in use");
-				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToHome");
-				dispatcher.forward(request, response);
+				session.setAttribute("error", "Album title already in use");
+		       	String path = getServletContext().getContextPath() + "/GoToHome";
+				response.sendRedirect(path);
 				return;
 			}
 		}catch(SQLException e) {

@@ -69,14 +69,13 @@ public class GoToLogin extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Redirect to the Home page and add missions to the parameters
 		HttpSession session = request.getSession(true);
-		System.out.print(session.getAttribute("error") + "\n\n\n\n");
+		System.out.print(request.getAttribute("error") + "\n\n\n\n");
 		String path = "/WEB-INF/Login.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("error", session.getAttribute("error"));
+		session.removeAttribute("error");
 		templateEngine.process(path, ctx, response.getWriter());
-		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**

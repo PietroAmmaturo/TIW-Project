@@ -58,9 +58,10 @@ public class RegisterUser extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+		HttpSession session = request.getSession(false);
+		
 		String username = null;
 		String password = null;
-		boolean valid = true;
 		
 		username = request.getParameter("username");
 		password = request.getParameter("password");
@@ -75,23 +76,19 @@ public class RegisterUser extends HttpServlet {
 		}
 		try {
 			if(usernameUsed) {
-				//response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Username alredy in use");
-				request.getSession().setAttribute("error", "Username already in use");
-				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
-				dispatcher.forward(request, response);
+				session.setAttribute("error", "Username alredy in use");
+		       	String path = getServletContext().getContextPath() + "/GoToLogin";
+				response.sendRedirect(path);
 				return;
 			}
 			else {
 				userDao.addUser(username, password);
-				HttpSession session = request.getSession(true);
+				
 		        User user = userDao.findUserByUsername(username);
 		        session.setAttribute("currentUser", user);
 		        String path = getServletContext().getContextPath() + "/GoToHome";
 				response.sendRedirect(path);
-				//response.sendRedirect("Home.html"); ///per andare alla homepage
 			}
-			//RequestDispatcher dispatcher = request.getRequestDispatcher("UsernameOccupied");
-	        //dispatcher.forward(request, response);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -99,7 +96,6 @@ public class RegisterUser extends HttpServlet {
 					"Error in creating the account");
 			return;
 		}
-		//
 		
 	}
 	

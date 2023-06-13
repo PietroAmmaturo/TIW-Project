@@ -58,6 +58,8 @@ public class LoginUser extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+		HttpSession session = request.getSession(false);
+		
 		String username = null;
 		String password = null;
 
@@ -84,10 +86,10 @@ public class LoginUser extends HttpServlet {
 					return;
 				}
 				
+				
 				if(rightPassword) {
 					//accedi
 					User user = userDao.findUserByUsername(username);
-					HttpSession session = request.getSession(false);
 			       
 					session.setAttribute("currentUser", user);
 			       	String path = getServletContext().getContextPath() + "/GoToHome";
@@ -95,17 +97,17 @@ public class LoginUser extends HttpServlet {
 					return;
 				} else {
 					//password sbagliata
-					request.getSession().setAttribute("error", "Wrong credentials");
-					RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
-					dispatcher.forward(request, response);
+					session.setAttribute("error", "Wrong credentials");
+			       	String path = getServletContext().getContextPath() + "/GoToLogin";
+					response.sendRedirect(path);
 					return;
 				}
 				
 			} else {
 				//username non esistente
-				request.getSession().setAttribute("error", "Wrong credentials");
-				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
-				dispatcher.forward(request, response);
+				session.setAttribute("error", "Wrong credentials");
+		       	String path = getServletContext().getContextPath() + "/GoToLogin";
+				response.sendRedirect(path);
 				return;
 			}
 		}catch(Exception e) {

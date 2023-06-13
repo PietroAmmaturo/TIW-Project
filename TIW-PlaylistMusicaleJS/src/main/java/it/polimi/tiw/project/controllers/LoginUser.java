@@ -63,6 +63,8 @@ public class LoginUser extends HttpServlet {
 		boolean usernameUsed;
 		boolean rightPassword;
 		
+		HttpSession session = request.getSession(true);
+		
 		try {
 			usernameUsed = userDao.usernameAlreadyInUse(username);
 		}catch(SQLException e) {
@@ -71,6 +73,7 @@ public class LoginUser extends HttpServlet {
 		}
 		
 		try {
+			
 			if(usernameUsed) {
 				try {
 					rightPassword = userDao.passwordUsedByUser(username, password);
@@ -82,22 +85,23 @@ public class LoginUser extends HttpServlet {
 				if(rightPassword) {
 					//accedi
 					User user = userDao.findUserByUsername(username);
-					HttpSession session = request.getSession(true);
+					
 			        session.setAttribute("currentUser", user);
 			        
 			        String path = getServletContext().getContextPath() + "/GoToHome?playlistId=-1";
 					response.sendRedirect(path);
 				} else {
 					//password sbagliata
-					request.setAttribute("error", "Wrong credentials");
-					RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
-					dispatcher.forward(request, response);
+					session.setAttribute("error", "Wrong credentials");
+			       	String path = getServletContext().getContextPath() + "/GoToLogin";
+					response.sendRedirect(path);
+					return;
 				}
 			} else {
 				//username non esistente
-				request.setAttribute("error", "Wrong credentials");
-				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GoToLogin");
-				dispatcher.forward(request, response);
+				session.setAttribute("error", "Wrong credentials");
+		       	String path = getServletContext().getContextPath() + "/GoToLogin";
+				response.sendRedirect(path);
 				return;
 			}
 		}catch(Exception e) {

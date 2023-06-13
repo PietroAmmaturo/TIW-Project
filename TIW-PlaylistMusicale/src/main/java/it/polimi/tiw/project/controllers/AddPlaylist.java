@@ -101,7 +101,9 @@ public class AddPlaylist extends HttpServlet {
 		//mettere if tutte le canzoni esistono
 		try {
 			if(playlistDao.playlistTitleUsed(playlistTitle, userId)){
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The title for the playlist is already in use");
+				session.setAttribute("error", "Playlist title already in use");
+		       	String path = getServletContext().getContextPath() + "/GoToHome";
+				response.sendRedirect(path);
 				return;
 			}else {
 				int playlistId = playlistDao.addPlaylist(playlistTitle, playlistDescription, userId);
