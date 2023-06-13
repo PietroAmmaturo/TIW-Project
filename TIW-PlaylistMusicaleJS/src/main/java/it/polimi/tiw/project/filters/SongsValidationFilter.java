@@ -64,23 +64,14 @@ public class SongsValidationFilter implements Filter {
         	songIds = Arrays.stream(request.getParameterValues("songIds"))
                     .map(Integer::parseInt)
                     .collect(Collectors.toSet());
-        }catch (NullPointerException e) {
+        } catch (NullPointerException e) {
         	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'songIds' is missing, probably you have not selected any songs");
 			return;
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
         	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Some elements inside the parameter 'songIds' are not a valid integer");
 			return;
-        }
-        catch (ArrayIndexOutOfBoundsException e) {
-        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'songIds' is an empty string");
-			return;
-        }
-        catch (IllegalArgumentException e) {
-        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'songIds' contains more than one comma in a row or it contains whitespace");
-			return;
         } catch (Exception e) {
-        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'songIds' must be a valid array of integers");
+        	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The parameter 'songIds' is wrongly formatted");
 			return;
         }
         chain.doFilter(request, response);

@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import it.polimi.tiw.project.DAO.PlaylistDAO;
 import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.DAO.SongPlaylistDAO;
@@ -68,12 +70,13 @@ public class AddPlaylist extends HttpServlet {
 		String playlistDescription = null;
 		boolean valid = true;
 		List<Integer> songIds = new ArrayList<>();
-		String[] selectedSongIds = null;
 		
 		try {
-			playlistTitle = request.getParameter("playlist_title");
-			playlistDescription = request.getParameter("playlist_description");
-			selectedSongIds = request.getParameterValues("songIds");
+			playlistTitle = StringEscapeUtils.escapeJava(request.getParameter("playlist_title"));
+			playlistDescription = StringEscapeUtils.escapeJava(request.getParameter("playlist_description"));
+			songIds = Arrays.stream(request.getParameterValues("songIds"))
+	    			.map(Integer::parseInt)
+	                .collect(Collectors.toList());
 			if(playlistTitle.isBlank() || playlistTitle.isEmpty() || playlistDescription.isEmpty())
 				valid = false;
 		}catch(NullPointerException e) {
@@ -85,20 +88,9 @@ public class AddPlaylist extends HttpServlet {
 			return;
 		}
 		
-		boolean allSongsPresent = true;
-		
-		//mettere if l'utente è valido
-		if (selectedSongIds != null) {
-	        // Convert each selected song ID from string to integer and add it to the ArrayList
-	        for (String songId : selectedSongIds) {
-	            songIds.add(Integer.parseInt(songId));
-	            /*if(una canzone non esiste)
-	            	allSongsPresent = false;*/
-	        }
-	    }
+		// TODO: Controllare che almeno una canzone esista e sia dell'utente (per evitare di creare una playlist vuota), il resto se lo vede /AddSongsToPlaylist
 		
 		PlaylistDAO playlistDao = new PlaylistDAO(connection);
-		//mettere if tutte le canzoni esistono
 		try {
 			if(playlistDao.playlistTitleUsed(playlistTitle, userId)){
 				session.setAttribute("error", "Playlist title already in use");

@@ -8,6 +8,7 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
 
 import it.polimi.tiw.project.beans.User;
@@ -27,7 +28,7 @@ public class FileHandler extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
 		Integer userId = ((User) session.getAttribute("currentUser")).getId();
-        String fileName = request.getParameter("fileName");
+        String fileName = StringEscapeUtils.escapeJava(request.getParameter("fileName"));
 
         // Construct the file path
         String filePath = getFilePath(getServletContext(), userId.toString(), fileName);
@@ -62,21 +63,6 @@ public class FileHandler extends HttpServlet {
             // File not found, send an error response
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "File: " + fileName + " not found");
         }
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        Integer userId = ((User) session.getAttribute("currentUser")).getId();
-        String fileName = request.getParameter("fileName");
-
-        // Get the uploaded file part from the request
-        Part filePart = request.getPart("file");
-
-        // Save the file
-        saveFile(getServletContext(), filePart, userId.toString(), fileName);
-
-        // Send a success response
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     public static void saveFile(ServletContext servletContext, Part filePart, String userId, String fileName) throws IOException {

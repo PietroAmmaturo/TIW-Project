@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import it.polimi.tiw.project.DAO.AlbumDAO;
 import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.beans.User;
@@ -66,8 +68,8 @@ public class AddSongExistingAlbum extends HttpServlet {
 		Part audioFile = null;
 		
 		audioFile = request.getPart("audioFile");
-		songTitle = request.getParameter("song_title");
-		songGenre = request.getParameter("song_genre");
+		songTitle = StringEscapeUtils.escapeJava(request.getParameter("song_title"));
+		songGenre = StringEscapeUtils.escapeJava(request.getParameter("song_genre"));
 		albumId = Integer.parseInt(request.getParameter("albumId"));
 		
 		boolean songTitleInUse = true;

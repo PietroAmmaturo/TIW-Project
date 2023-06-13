@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import it.polimi.tiw.project.DAO.UserDAO;
 import it.polimi.tiw.project.beans.User;
 
@@ -56,8 +58,8 @@ public class LoginUser extends HttpServlet {
 		String username = null;
 		String password = null;
 
-		username = request.getParameter("username");
-		password = request.getParameter("password");
+		username = StringEscapeUtils.escapeJava(request.getParameter("username"));
+		password = StringEscapeUtils.escapeJava(request.getParameter("password"));
 		
 		UserDAO userDao = new UserDAO(connection);
 		boolean usernameUsed;

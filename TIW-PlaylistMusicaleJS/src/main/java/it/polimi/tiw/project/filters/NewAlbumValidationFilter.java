@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import it.polimi.tiw.project.controllers.FileHandler;
 
 
@@ -44,7 +46,7 @@ public class NewAlbumValidationFilter implements Filter {
         Integer albumYear = null;
 
         try {
-        	albumTitle = request.getParameter("album_title");
+        	albumTitle = StringEscapeUtils.escapeJava(request.getParameter("album_title"));
         }catch(NullPointerException e) {
         	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The album title is not valid");
 			return;
@@ -59,7 +61,7 @@ public class NewAlbumValidationFilter implements Filter {
         }
         
         try {
-        	albumArtist = request.getParameter("album_artist");
+        	albumArtist = StringEscapeUtils.escapeJava(request.getParameter("album_artist"));
         }catch(NullPointerException e) {
         	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The artist is not valid");
 			return;

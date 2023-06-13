@@ -57,7 +57,10 @@ class SongManager {
 		
 				const audio = document.createElement('audio');
 				audio.setAttribute('controls', '');
-				audio.src = contextPath + `FileHandler?fileName=${songAudio}`;
+				
+				const source = document.createElement('source');
+				source.setAttribute('src', contextPath + `FileHandler?fileName=${songAudio}`);
+				audio.appendChild(source);
 		        playerSong.appendChild(audio);
 		        
 		        parent.appendChild(playerSong);

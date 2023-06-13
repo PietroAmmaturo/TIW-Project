@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import it.polimi.tiw.project.controllers.FileHandler;
 
 
@@ -43,7 +45,7 @@ public class NewSongValidationFilter implements Filter {
         String audioFileExtension;
 
         try {
-        	songTitle = request.getParameter("song_title");
+        	songTitle = StringEscapeUtils.escapeJava(request.getParameter("song_title"));
         }catch(NullPointerException e) {
         	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The song title is not valid");
 			return;
@@ -58,7 +60,7 @@ public class NewSongValidationFilter implements Filter {
         }
         
         try {
-        	songGenre = request.getParameter("song_genre");
+        	songGenre = StringEscapeUtils.escapeJava(request.getParameter("song_genre"));
         }catch(NullPointerException e) {
         	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The song genre is not valid");
 			return;

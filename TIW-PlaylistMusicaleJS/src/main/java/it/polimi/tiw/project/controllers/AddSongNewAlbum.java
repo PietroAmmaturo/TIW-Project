@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import it.polimi.tiw.project.DAO.AlbumDAO;
 import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.beans.Album;
@@ -69,11 +71,11 @@ public class AddSongNewAlbum extends HttpServlet {
 		String songGenre = null;
 		Part albumCover = null;
 		
-		songTitle = request.getParameter("song_title");
+		songTitle = StringEscapeUtils.escapeJava(request.getParameter("song_title"));
 		audioFile = request.getPart("audioFile");
-		songGenre = request.getParameter("song_genre");
-		albumTitle = request.getParameter("album_title");
-		albumArtist = request.getParameter("album_artist");
+		songGenre = StringEscapeUtils.escapeJava(request.getParameter("song_genre"));
+		albumTitle = StringEscapeUtils.escapeJava(request.getParameter("album_title"));
+		albumArtist = StringEscapeUtils.escapeJava(request.getParameter("album_artist"));
 		albumCover = request.getPart("album_cover");
 		albumYear = Integer.parseInt(request.getParameter("album_year"));
 		
