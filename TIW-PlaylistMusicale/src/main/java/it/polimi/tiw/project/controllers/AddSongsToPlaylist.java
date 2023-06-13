@@ -68,6 +68,7 @@ public class AddSongsToPlaylist extends HttpServlet {
 		SongPlaylistDAO songPlaylistDAO = new SongPlaylistDAO(connection);
 		Boolean foundUser;
 		Boolean foundPlaylist;
+		
 		for (Integer songId : songIds) {
 			try {
 				foundUser = songDAO.doesSongBelongToUser(songId, userId);

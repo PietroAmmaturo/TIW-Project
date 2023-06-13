@@ -91,7 +91,7 @@ public class SongDAO {
 	        try (ResultSet result = statement.executeQuery()) {
 	            result.next();
 	            int count = result.getInt(1);
-	            return count > 0;
+	            return count >= 1;
 	        }
 	    }
 	}

@@ -88,7 +88,25 @@ public class AddPlaylist extends HttpServlet {
 			return;
 		}
 				
-	   // TODO: Controllare che almeno una canzone esista e sia dell'utente (per evitare di creare una playlist vuota), il resto se lo vede /AddSongsToPlaylist
+		boolean oneSongBelongToUser = false;
+		SongDAO songDao = new SongDAO(connection);
+		for(Integer sId : songIds) {
+			try {
+				if(songDao.doesSongBelongToUser(sId, userId)) {
+					oneSongBelongToUser = true;
+					break;
+				}
+			}catch(SQLException e) {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "SQL exception");
+				e.printStackTrace();
+				return;
+			}
+		}
+		
+		if(!oneSongBelongToUser) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "None of the songs belonged to the user");
+			return;
+		}
 		
 		PlaylistDAO playlistDao = new PlaylistDAO(connection);
 		try {
