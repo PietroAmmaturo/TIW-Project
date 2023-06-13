@@ -31,7 +31,6 @@ public class FileHandler extends HttpServlet {
 
         // Construct the file path
         String filePath = getFilePath(getServletContext(), userId.toString(), fileName);
-        System.out.println(filePath);
         // Create a file object
         File file = new File(filePath);
 
@@ -86,8 +85,6 @@ public class FileHandler extends HttpServlet {
         
         // Create a file object
         Path path = Path.of(filePath);
-        System.out.println(filePath);
-        System.out.println(filePart);
 
         // Create parent directories if they don't exist
         Files.createDirectories(path.getParent());
@@ -104,8 +101,6 @@ public class FileHandler extends HttpServlet {
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
             }
-            
-            System.out.println("File saved successfully.");
         } catch (IOException e) {
             System.out.println("An error occurred while saving the file: " + e.getMessage());
             throw e;

@@ -65,7 +65,6 @@ public class Reorder extends HttpServlet {
     	        .map(Integer::parseInt)
     	        .collect(Collectors.toList());
     	
-    	System.out.println("LIST " + songIds);
     	List<Integer> validSongIds = new ArrayList();
         Boolean foundInvalidId = false;
         SongDAO songDAO = new SongDAO(connection);

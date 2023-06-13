@@ -13,7 +13,7 @@
 			    <table>
 			        <tbody>
 					    <tr>
-							<td th:if="${playlistSongsWithAlbum == null or #maps.isEmpty(playlistSongsWithAlbum)}">La playlist non contiene brani.</td>
+							<td class="playlistSong card" th:if="${playlistSongsWithAlbum == null or #maps.isEmpty(playlistSongsWithAlbum)}">La playlist non contiene brani.</td>
 							<th:block th:if="${playlistSongsWithAlbum != null and not #maps.isEmpty(playlistSongsWithAlbum)}" th:each="entry, iter : ${playlistSongsWithAlbum}">
 							  <td class="playlistSong card">
 							      <div>
@@ -50,8 +50,8 @@
 			        <br>
 			        <select id="song"
 			                name="songIds"
-			                multiple>
-			            <option value="">-- Select songs --</option>
+			                multiple required>
+			            <option value="" disabled>-- Select songs --</option>
 			            <option th:each="song : ${userSongs}"
 			                    th:value="${song.id}"
 			                    th:text="${song.title}"></option>
@@ -61,7 +61,7 @@
 		    </div>
 		</form>
 	<div>
-	<div th:if="${error != null}" th:text="${error}">
+	<div id="errorMain" th:if="${error != null}" th:text="${error}">
 	</div>
 </body>
 </html>

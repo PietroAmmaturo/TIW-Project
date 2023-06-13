@@ -22,12 +22,11 @@ class HomeManager{
 			    } else {
 			      response.text().then(errorMessage => {
 					renderErrorMessage(errorMessage);
-			        throw new Error(errorMessage || 'Unknown error');
+			        throw new Error('Request failed:', response);
 			      });
 			    }
 			  })
 			  .then(data => {
-			    console.log('Request succeeded with response:', data);
 			    this.show();
 			    this.playlistManager.refresh();
 			  })
@@ -47,18 +46,20 @@ class HomeManager{
 			    } else {
 			      response.text().then(errorMessage => {
 					renderErrorMessage(errorMessage);
-			        throw new Error(errorMessage || 'Unknown error');
+			        throw new Error('Request failed:', response);
 			      });
 			    }
 			  })
 			  .then(data => {
-			    console.log('Request succeeded with response:', data);
 			    this.show();
 			  })
         };
         
         this.handleNewSongExistinAlbum = function(event){
-			event.preventDefault();
+			if (!this.newSongExistingALbumForm.checkValidity()){
+				    return;
+			}
+            event.preventDefault();
 			const title = this.newSongExistingALbumForm.querySelector("[name='song_title']").value;
 			const selectedGenre = this.newSongExistingALbumForm.querySelector("#genre option:checked").value;
 			const audioFile = this.newSongExistingALbumForm.querySelector("[name='audioFile']").files[0];
@@ -69,13 +70,14 @@ class HomeManager{
 			formData.append("audioFile", audioFile);
 			formData.append("song_genre", selectedGenre);
 			formData.append("albumId", albumId);
-			
-			console.log(formData);
-			
+						
 			this.handleFormSubmit(event, formData);
 		}
         
         this.handleNewSongNewALbum = function(event) {
+			if (!this.newSongNewALbumForm.checkValidity()){
+				    return;
+			}
             event.preventDefault();
             const title = this.newSongNewALbumForm.querySelector("[name='song_title']").value;
            	const selectedGenre = this.newSongNewALbumForm.querySelector("#genre option:checked").value;
@@ -94,20 +96,19 @@ class HomeManager{
            	formData.append("song_genre", selectedGenre);
            	formData.append("album_cover", albumCover);
        
-       		console.log(formData);
-
             this.handleFormSubmit(event, formData);
         };
 
 		this.handlePlaylist = function(event){
-			event.preventDefault();
+			if (!this.newPlaylistForm.checkValidity()){
+				    return;
+			}
+            event.preventDefault();
 			const playlistTitle = this.newPlaylistForm.querySelector("[name='playlist_title']").value;
 			const playlistDescription = this.newPlaylistForm.querySelector("[name='playlist_description']").value;
 			const selectedSongsIds = Array.from(this.newPlaylistForm.querySelectorAll("#newPlaylist input[type='checkbox']:checked"))
 										  .map(checkbox => checkbox.value);
-										  
-			console.log(selectedSongsIds);							  
-			
+										  			
 			const formData = new FormData();
 			
 			selectedSongsIds.forEach(id => {
@@ -115,9 +116,7 @@ class HomeManager{
             });
 			formData.append("playlist_title", playlistTitle);
 			formData.append("playlist_description", playlistDescription);
-				
-			console.log(formData);
-			
+							
 			this.handleUrlFormSubmit(event, formData);
 				
 		}
@@ -137,10 +136,7 @@ class HomeManager{
 					const albums = data.albums;
 					const playlists = data.playlists;	    
 					
-					console.log(data);    
-
                     this.update({ songs, albums, playlists });
-                    
                     
                 })
                 .catch(error => {
@@ -158,8 +154,6 @@ class HomeManager{
 			const albumsContainer = this.mainElement.querySelector("#homeMain #existingAlbum");
 			const songsContainer = this.mainElement.querySelector("#homeMain #songsPossible");
 			
-			console.log(data, playlistsContainer, albumsContainer, songsContainer);
-
 			while(playlistsContainer.firstChild) {
 				playlistsContainer.removeChild(playlistsContainer.firstChild);
 			}
@@ -192,7 +186,6 @@ class HomeManager{
         		
         		playlistsContainer.appendChild(playlistEl);     		
         		        		
-        		console.log(playlistEl);
 			}
 			for(let i = 0; i < albums.length; i++){
 				const album = albums[i];
@@ -201,7 +194,6 @@ class HomeManager{
         		albumEl.textContent = album.title;
         		albumsContainer.appendChild(albumEl);
         		
-        		console.log(albumEl);
 			}
 			for(let i = 0; i < songs.length; i++){
 				const song = songs[i];
@@ -216,8 +208,6 @@ class HomeManager{
         		songsContainer.appendChild(songEl);
         		songsContainer.appendChild(document.createElement("br"));
         		
-        		
-        		console.log(songEl);
 			}
 			
 		}

@@ -48,9 +48,10 @@ LOCK TABLES `Album` WRITE;
 
 -- Insert albums
 INSERT INTO `Album` (`title`, `image`, `interpreter`, `publication_year`, `user_id`) VALUES
-('A1', 'image1.jpg', 'Michael Jackson', 1982, 1),
-('A2', 'image2.jpg', 'Michael Jackson', 1982, 1),
-('A3', 'image3.jpg', 'AC/DC', 1980, 2);
+('A1', 'A1.jpg', 'Michael Jackson', 1982, 1),
+('A2', 'A2.jpg', 'Michael Jackson', 1982, 1),
+('A3', 'A3.jpg', 'AC/DC', 1980, 2),
+('A4', 'A4.jpg', 'Ed Sheeran', 2000, 2);
 
 UNLOCK TABLES;
 
@@ -77,12 +78,16 @@ LOCK TABLES `Song` WRITE;
 
 -- Insert songs
 INSERT INTO `Song` (`title`,`genre`, `audio`, `album_id`) VALUES
-('S1','Country', 'audio1.mp3', 1),
-('S2','Rock', 'audio2.mp3', 1),
-('S3','Pop', 'audio3.mp3', 2),
-('S4','Pop', 'audio4.mp3', 3),
-('S5','Classical', 'audio5.mp3', 3);
-
+('S1','Country', 'A1_S1.mp3', 1),
+('S2','Rock', 'A1_S2.mp3', 1),
+('S3','Pop', 'A2_S3.mp3', 2),
+('S4','Pop', 'A3_S4.mp3', 3),
+('S5','Classical', 'A3_S5.mp3', 3),
+('S6','Classical', 'A3_S6.mp3', 3),
+('S7','Classical', 'A3_S7.mp3', 3),
+('S8','Classical', 'A3_S8.mp3', 3),
+('S9','Classical', 'A3_S9.mp3', 3),
+('S10','Classical', 'A4_S10.mp3', 4);
 UNLOCK TABLES;
 
 --
@@ -138,6 +143,12 @@ INSERT INTO SongPlaylist (song_id, playlist_id) VALUES
 (1, 2), 
 (2, 2),  
 (4, 3),
-(5, 3);
+(5, 3),
+(6, 3),
+(7, 3),
+(8, 3),
+(9, 3),
+(10, 3);
 
 UNLOCK TABLES;
+

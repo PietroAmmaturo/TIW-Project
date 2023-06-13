@@ -35,7 +35,6 @@ class SongManager {
 		        playerSong.appendChild(title);
 		        
 		        const image = document.createElement('img');
-		        console.log(imageSrc)
 		        image.src = contextPath + `FileHandler?fileName=${imageSrc}`;
 		        image.alt = imageAlt;
 		        playerSong.appendChild(image);

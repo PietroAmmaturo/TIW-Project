@@ -118,12 +118,14 @@ class PlaylistManager {
 			    }
 			  })
 			  .then(data => {
-			    console.log('Request succeeded with response:', data);
 			    this.refresh();
 			  })
         };
         
         this.handleAddFormSubmit = function(event) {
+			if (!this.addForm.checkValidity()){
+				    return;
+			}
             event.preventDefault();
             const playlistId = this.addForm.querySelector('input[name="playlistId"]').value;
             const selectedSongs = Array.from(this.addForm.querySelectorAll('option:checked')).map(option => option.value);
@@ -137,9 +139,11 @@ class PlaylistManager {
         };
 
         this.handleRemoveFormSubmit = function(event) {
+			if (!this.removeForm.checkValidity()){
+				    return;
+			}
             event.preventDefault();
             const playlistId = this.removeForm.querySelector('input[name="playlistId"]').value;
-            console.log(playlistId)
             const selectedSongs = Array.from(this.removeForm.querySelectorAll('input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
             const formData = new FormData();
             selectedSongs.forEach(songId => {
@@ -163,7 +167,6 @@ class PlaylistManager {
             this.setPageNumber(1);
             this.updateQueryParams();
 
-            console.log("updating...", playlistData);
             const addSongsForm = document.getElementById('addSongsToPlaylistForm');
 			
             const songSelect = addSongsForm.querySelector('select#song');
@@ -172,6 +175,7 @@ class PlaylistManager {
             const defaultOption = document.createElement('option');
             defaultOption.value = '';
             defaultOption.textContent = '-- Select songs --';
+            defaultOption.setAttribute('disabled', '');
             songSelect.appendChild(defaultOption);
 
             playlistData.userSongs.forEach((song) => {
