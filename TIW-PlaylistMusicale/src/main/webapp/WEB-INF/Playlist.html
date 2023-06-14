@@ -60,6 +60,13 @@
 			    <button class="submit right" type="submit">Add to Playlist</button>
 		    </div>
 		</form>
+		
+		<div class = "footer">
+		   	<div class = "flex">
+				<a th:href="@{/GoToHome}" class = "card" th:text="Home"></a>		   	
+			</div>
+		</div>
+
 	<div>
 	<div id="errorMain" th:if="${error != null}" th:text="${error}">
 	</div>
