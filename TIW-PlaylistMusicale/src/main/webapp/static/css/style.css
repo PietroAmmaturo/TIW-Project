@@ -12,13 +12,13 @@ body {
 }
 a {
 	text-decoration: none;
-color: inherit;
+	color: inherit;
 }
 
 table {
 	position: relative;
-  width: min-content;
-  margin: auto;
+  	width: min-content;
+  	margin: auto;
     border-spacing: 1vw;
 }
 
@@ -55,7 +55,7 @@ table {
 }
 .interactable:hover {
 	cursor: pointer;
-  font-weight: bold;
+  	font-weight: bold;
 }
 .playlistSong img {
 	aspect-ratio: 1 / 1;

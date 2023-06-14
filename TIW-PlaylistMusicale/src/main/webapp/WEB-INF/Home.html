@@ -60,6 +60,7 @@
 	            <button class="submit right" type="submit">Add song</button>
 	    	</div>
 	    </form>
+	    
 		  <h2>Create new playlist</h2>
 		     <form action="#" th:action="@{/AddPlaylist}" method="post">
 		     <div class ="content">
@@ -76,8 +77,13 @@
      		<button class="submit right" type="submit">Create playlist</button>
 		     </div>
 		   </form>
+		   
     </div>
 
+	<form action="#" th:action="@{/GoToLogin}" method="post" enctype="multipart/form-data">
+		<button class="submit right" type="submit">Logout</button>
+	</form>
+	
 	<div id="errorMain" th:if="${error != null}" th:text="${error}">
 	</div>
 	
