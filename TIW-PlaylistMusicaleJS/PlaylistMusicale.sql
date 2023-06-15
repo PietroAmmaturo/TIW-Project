@@ -37,7 +37,7 @@ CREATE TABLE `Album` (
   `interpreter` varchar(64) NOT NULL,
   `publication_year` int NOT NULL,
   `user_id` int NOT NULL,
-  FOREIGN KEY (`user_id`) REFERENCES `User`(`id`)
+  FOREIGN KEY (`user_id`) REFERENCES `User`(`id`) ON UPDATE ON CASCADE ON DELETE NO ACTION
 );
 
 --
@@ -67,7 +67,7 @@ CREATE TABLE `Song` (
   `audio` varchar(256) NOT NULL,
   `album_id` int NOT NULL, 
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`album_id`) REFERENCES `Album`(`id`)
+  FOREIGN KEY (`album_id`) REFERENCES `Album`(`id`) ON UPDATE ON CASCADE ON DELETE NO ACTION
 );
 
 --
@@ -102,7 +102,7 @@ CREATE TABLE `Playlist` (
   `description` varchar(256) NOT NULL,
   `user_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `User`(`id`)
+  FOREIGN KEY (`user_id`) REFERENCES `User`(`id`) ON UPDATE ON CASCADE ON DELETE NO ACTION
 );
 
 --
@@ -127,8 +127,8 @@ CREATE TABLE `SongPlaylist` (
   `song_id` int NOT NULL,
   `playlist_id` int NOT NULL,
   `precedence` int NOT NULL DEFAULT 0,
-  FOREIGN KEY (`song_id`) REFERENCES Song(`id`),
-  FOREIGN KEY (`playlist_id`) REFERENCES Playlist(`id`),
+  FOREIGN KEY (`song_id`) REFERENCES Song(`id`) ON UPDATE ON CASCADE ON DELETE NO ACTION,
+  FOREIGN KEY (`playlist_id`) REFERENCES Playlist(`id`) ON UPDATE ON CASCADE ON DELETE NO ACTION,
   CONSTRAINT pk_song_playlist PRIMARY KEY (song_id, playlist_id)
 );
 --
