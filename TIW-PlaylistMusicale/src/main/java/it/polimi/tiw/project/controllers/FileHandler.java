@@ -37,7 +37,7 @@ public class FileHandler extends HttpServlet {
 
         // Check if the file exists
         if (file.exists()) {
-            // Set the response content type
+            // Set the response content type (used to indicate that a body contains arbitrary binary data.)
             response.setContentType("application/octet-stream");
 
             // Set the Content-Disposition header to force download
