@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import it.polimi.tiw.project.DAO.AlbumDAO;
 import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.beans.User;
+import it.polimi.tiw.project.utils.FileService;
 
 @WebServlet("/AddSongExistingAlbum")
 @MultipartConfig
@@ -85,10 +86,10 @@ public class AddSongExistingAlbum extends HttpServlet {
 		try {
 			if(!songTitleInUse) {
 			//il nome del file è albumTitle_songTitle.extension
-			String audioFileExtension = FileHandler.getFileExtension(audioFile);
+			String audioFileExtension = FileService.getFileExtension(audioFile);
 			String albumTitle = albumDao.getTitleById(albumId, userId);
 			String audioFileName = albumTitle + "_" + songTitle + "." + audioFileExtension;
-			FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
+			FileService.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
 			songDao.addSong(songTitle, songGenre, URLEncoder.encode(audioFileName, StandardCharsets.UTF_8), albumId);
 			        
 			}else {

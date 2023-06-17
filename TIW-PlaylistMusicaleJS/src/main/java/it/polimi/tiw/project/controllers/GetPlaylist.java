@@ -1,9 +1,12 @@
 package it.polimi.tiw.project.controllers;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +30,20 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
+import it.polimi.tiw.project.DAO.PlaylistDAO;
 import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.DAO.SongDetailsDAO;
 import it.polimi.tiw.project.beans.Album;
+import it.polimi.tiw.project.beans.Playlist;
 import it.polimi.tiw.project.beans.Song;
 import it.polimi.tiw.project.beans.User;
+import it.polimi.tiw.project.utils.LocalDateTimeSerializer;
 
 @WebServlet("/GetPlaylist")
 public class GetPlaylist extends HttpServlet{
@@ -84,12 +94,21 @@ public class GetPlaylist extends HttpServlet{
 	    int songsPerBlock = 10000; // preventing users from retrieving (and trying to render) more than 10k songs
 		int totalSongs;
 	    int currentBlock;
+	    Playlist playlist;
 	    // page validation
         try{
         	currentBlock = Integer.parseInt(request.getParameter("playlistBlock"));
         }catch (Exception e) {
         	currentBlock = 1;
         }
+		PlaylistDAO playlistDao = new PlaylistDAO(connection);
+		try {
+	        playlist = playlistDao.findPlaylistById(playlistId);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
+	        return;
+	    }
 		SongDAO songDAO = new SongDAO(connection);
 		SongDetailsDAO songDetailsDAO = new SongDetailsDAO(connection);
 		LinkedHashMap<Song, Album> playlistSongsWithAlbum;
@@ -118,22 +137,25 @@ public class GetPlaylist extends HttpServlet{
 	    }
 	    
 	    Gson gson = new GsonBuilder()
+				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
 	    		.setLenient()
                 .create();
 	
 		 // Convert objects to JSON strings
+	    String playlistSerialized = gson.toJson(playlist);
 	    String playlistSongsWithAlbumSerialized = gson.toJson(playlistSongsWithAlbum.entrySet()
 	            .stream()
 	            .map(e -> List.of(e.getKey(), e.getValue())) //List because of order
 	            .collect(Collectors.toList()));
 	    String userSongsSerialized = gson.toJson(userSongs);
-	
+
 		 // Set the response content type to JSON
 		 response.setContentType("application/json");
 	
 		 // Write the response JSON string to the response output stream
 		 response.getWriter().write(
-				 "{\"playlistSongsWithAlbum\":" + playlistSongsWithAlbumSerialized + "," +
+				 "{\"playlist\":" + playlistSerialized + "," +
+				 "\"playlistSongsWithAlbum\":" + playlistSongsWithAlbumSerialized + "," +
 				 "\"userSongs\":" + userSongsSerialized + "," +
 				 "\"currentBlock\":" + currentBlock + "," +
 				 "\"maxBlock\":" + maxBlock + "," +
@@ -145,10 +167,9 @@ public class GetPlaylist extends HttpServlet{
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-
+	
 	public void destroy() {
 		if (connection != null) {
 			try {

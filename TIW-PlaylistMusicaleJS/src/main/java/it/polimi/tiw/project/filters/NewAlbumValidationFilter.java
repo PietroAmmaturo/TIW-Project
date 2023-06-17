@@ -21,6 +21,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import it.polimi.tiw.project.controllers.FileHandler;
+import it.polimi.tiw.project.utils.FileService;
 
 
 
@@ -84,7 +85,7 @@ public class NewAlbumValidationFilter implements Filter {
         	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The album cover is not valid");
 			return;
         }finally {
-        	String imageExtension = FileHandler.getFileExtension(albumCover);
+        	String imageExtension = FileService.getFileExtension(albumCover);
         	if(albumCover == null) {
         		httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The album cover cannot be null");
     			return;

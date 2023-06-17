@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import it.polimi.tiw.project.controllers.FileHandler;
+import it.polimi.tiw.project.utils.FileService;
 
 
 
@@ -86,7 +86,7 @@ public class NewSongValidationFilter implements Filter {
         	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The audio file is not valid");
 			return;
         }finally {
-        	audioFileExtension = FileHandler.getFileExtension(audioFile);
+        	audioFileExtension = FileService.getFileExtension(audioFile);
         	if(audioFile == null) {
         		httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The audio file cannot be null");
     			return;

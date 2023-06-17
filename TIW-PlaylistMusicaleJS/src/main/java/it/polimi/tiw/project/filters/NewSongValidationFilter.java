@@ -20,6 +20,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import it.polimi.tiw.project.controllers.FileHandler;
+import it.polimi.tiw.project.utils.FileService;
 
 
 
@@ -88,7 +89,7 @@ public class NewSongValidationFilter implements Filter {
         	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The audio file is not valid");
 			return;
         }finally {
-        	audioFileExtension = FileHandler.getFileExtension(audioFile);
+        	audioFileExtension = FileService.getFileExtension(audioFile);
         	if(audioFile == null) {
         		httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The audio file cannot be null");
     			return;

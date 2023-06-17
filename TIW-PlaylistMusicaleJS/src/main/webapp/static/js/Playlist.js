@@ -10,7 +10,9 @@ class PlaylistManager {
         this.addForm = document.getElementById('addSongsToPlaylistForm');
         this.removeForm = document.getElementById('removeSongsFromPlaylistForm');
         this.mainElement = document.getElementById('playlistMain');
-        
+        this.titleElement = this.mainElement.querySelector('#playlistTitle');
+        this.descriptionElement = this.mainElement.querySelector('#playlistDescription');
+
 		this.setPageNumber = function(pageNumber) {
 			this.pageNumber = pageNumber;
 		};
@@ -166,6 +168,9 @@ class PlaylistManager {
 			this.songManager.update(playlistData.playlistSongsWithAlbum)
             this.setPageNumber(1);
             this.updateQueryParams();
+            
+            this.titleElement.textContent = playlistData.playlist.title;
+            this.descriptionElement.textContent = playlistData.playlist.description;
 
             const addSongsForm = document.getElementById('addSongsToPlaylistForm');
 			
@@ -198,13 +203,14 @@ class PlaylistManager {
             })
                 .then(response => response.json())
                 .then(data => {
+					const playlist = data.playlist;
                     const playlistSongsWithAlbum = data.playlistSongsWithAlbum;
                     const userSongs = data.userSongs;
                     const currentBlock = data.currentBlock;
                     const maxBlock = data.maxBlock;
                     const songsPerBlock = data.songsPerBlock;
 
-                    this.update({ playlistSongsWithAlbum, userSongs, currentBlock, maxBlock, songsPerBlock });
+                    this.update({ playlist, playlistSongsWithAlbum, userSongs, currentBlock, maxBlock, songsPerBlock });
                 })
                 .catch(error => {
                     console.error('Request failed:', error);

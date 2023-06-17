@@ -92,9 +92,7 @@ public class GoToPlaylist extends HttpServlet {
         }catch (Exception e) {
         	currentPage = 1;
         }
-		SongDAO songDAO = new SongDAO(connection);
 		PlaylistDAO playlistDao = new PlaylistDAO(connection);
-		//TODO prendi dal dao titolo e descrizione
 		try {
 	        playlist = playlistDao.findPlaylistById(playlistId);
 	    } catch (SQLException e) {
@@ -102,7 +100,7 @@ public class GoToPlaylist extends HttpServlet {
 	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
 	        return;
 	    }
-		
+		SongDAO songDAO = new SongDAO(connection);
 		SongDetailsDAO songDetailsDAO = new SongDetailsDAO(connection);
 		LinkedHashMap<Song, Album> playlistSongsWithAlbum;
 		List<Song> userSongs;

@@ -36,6 +36,7 @@ import it.polimi.tiw.project.beans.Album;
 import it.polimi.tiw.project.beans.Playlist;
 import it.polimi.tiw.project.beans.Song;
 import it.polimi.tiw.project.beans.User;
+import it.polimi.tiw.project.utils.LocalDateTimeSerializer;
 
 /**
  * Servlet implementation class GoToHome
@@ -131,16 +132,6 @@ public class GetHome extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
-	}
-	
-	class LocalDateTimeSerializer implements JsonSerializer < LocalDateTime > {
-	    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d::MMM::uuuu HH::mm::ss");
-
-	    @Override
-	    public JsonElement serialize(LocalDateTime localDateTime, Type srcType, JsonSerializationContext context) {
-	        return new JsonPrimitive(formatter.format(localDateTime));
-	    }
-
 	}
 	
 	public void destroy() {

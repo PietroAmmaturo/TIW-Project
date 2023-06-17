@@ -26,6 +26,7 @@ import it.polimi.tiw.project.DAO.AlbumDAO;
 import it.polimi.tiw.project.DAO.SongDAO;
 import it.polimi.tiw.project.beans.Album;
 import it.polimi.tiw.project.beans.User;
+import it.polimi.tiw.project.utils.FileService;
 
 @WebServlet("/AddSongNewAlbum")
 @MultipartConfig
@@ -101,9 +102,9 @@ public class AddSongNewAlbum extends HttpServlet {
 			albumTitleInUse = albumDao.albumTitleInUseForUser(albumTitle, userId);
 			if(!albumTitleInUse) {
 				//il nome del file è albumTitle.extension
-				String imageFileExtension = FileHandler.getFileExtension(albumCover);
+				String imageFileExtension = FileService.getFileExtension(albumCover);
 				String imageFileName = albumTitle + "." + imageFileExtension;
-				FileHandler.saveFile(getServletContext(), albumCover,  userId.toString(), imageFileName);
+				FileService.saveFile(getServletContext(), albumCover,  userId.toString(), imageFileName);
 				albumDao.addAlbum(albumTitle, URLEncoder.encode(imageFileName, StandardCharsets.UTF_8), albumArtist, (int)albumYear, (int)userId);
 			}else {
 			//titolo dell'album già in uso per l'utente
@@ -118,9 +119,9 @@ public class AddSongNewAlbum extends HttpServlet {
 		try {
 			idAlbum = albumDao.getAlbumIdByTitleAndUser(albumTitle, userId);
 			//il nome del file è albumTitle_songTitle.extension
-			String audioFileExtension = FileHandler.getFileExtension(audioFile);
+			String audioFileExtension = FileService.getFileExtension(audioFile);
 			String audioFileName = albumTitle + "_" + songTitle + "." + audioFileExtension;
-			FileHandler.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
+			FileService.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
 			songDao.addSong(songTitle, songGenre, URLEncoder.encode(audioFileName, StandardCharsets.UTF_8), idAlbum);
 			return;
 		}catch (IOException | SQLException e) {
