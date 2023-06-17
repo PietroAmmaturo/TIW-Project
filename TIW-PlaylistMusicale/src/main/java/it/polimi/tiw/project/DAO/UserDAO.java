@@ -54,28 +54,6 @@ public class UserDAO{
 	    return user;
 	}
 	
-	public User findUserByUsernameAndPassword(String username, String password) throws SQLException {
-	    User user = null;
-	    String query = "SELECT * FROM User WHERE nickname = ? AND password = ?";
-	    try (PreparedStatement statement = connection.prepareStatement(query)) {
-	        statement.setString(1, username);
-	        statement.setString(2, password);
-	        try (ResultSet result = statement.executeQuery()) {
-	            if (result.next()) {
-	                user = new User();
-	                user.setId(result.getInt("id"));
-	                user.setUsername(result.getString("nickname"));
-	                user.setPassword(result.getString("password"));
-	            }
-	            else {
-	            	//se non c'è nessun utente con quel username ritorna null
-	            	return null;
-	            }
-	        }
-	    }
-	    return user;
-	}
-	
 	/**
 	 *  Return true if the username is already used, false otherwise
 	 * @param username that needs to be checked

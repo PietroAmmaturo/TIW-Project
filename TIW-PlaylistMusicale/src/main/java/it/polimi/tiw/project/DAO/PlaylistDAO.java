@@ -103,7 +103,6 @@ public class PlaylistDAO {
 
 	    return playlistId; // Return the playlistId
 	}
-
 	
 	public List<Playlist> findPlaylistsByUserId(int userId) throws SQLException{
 		String query = "SELECT * FROM Playlist WHERE user_id = ? ORDER BY publication_date DESC";
