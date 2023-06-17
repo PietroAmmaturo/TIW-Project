@@ -7,6 +7,9 @@
 <body>
     <h1>Playlist Page</h1>
 	<div id = "playlistMain" class = "compartment">
+	
+	 <h2 th:text="${playlist.title}"></h2> 
+    <p th:text="${playlist.description}"></p>
 		<form th:action="@{/RemoveSongsFromPlaylist}" method="post">
 		    <div class ="content">
 		    	<input type="hidden" name="playlistId" th:value="${playlistId}"/>

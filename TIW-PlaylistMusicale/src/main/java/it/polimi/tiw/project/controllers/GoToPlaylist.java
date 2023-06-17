@@ -30,7 +30,7 @@ import it.polimi.tiw.project.DAO.SongDetailsDAO;
 import it.polimi.tiw.project.beans.Song;
 import it.polimi.tiw.project.beans.User;
 import it.polimi.tiw.project.beans.Album;
-
+import it.polimi.tiw.project.beans.Playlist;
 
 import org.thymeleaf.templateresolver.ITemplateResolver;
 /**
@@ -85,6 +85,7 @@ public class GoToPlaylist extends HttpServlet {
 	    int songsPerPage = 5;
 		int totalSongs;
 	    int currentPage;
+	    Playlist playlist;
 	    // page validation
         try{
         	currentPage = Integer.parseInt(request.getParameter("playlistPage"));
@@ -92,6 +93,16 @@ public class GoToPlaylist extends HttpServlet {
         	currentPage = 1;
         }
 		SongDAO songDAO = new SongDAO(connection);
+		PlaylistDAO playlistDao = new PlaylistDAO(connection);
+		//TODO prendi dal dao titolo e descrizione
+		try {
+	        playlist = playlistDao.findPlaylistById(playlistId);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
+	        return;
+	    }
+		
 		SongDetailsDAO songDetailsDAO = new SongDetailsDAO(connection);
 		LinkedHashMap<Song, Album> playlistSongsWithAlbum;
 		List<Song> userSongs;
@@ -117,6 +128,7 @@ public class GoToPlaylist extends HttpServlet {
 	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database access failed");
 	        return;
 	    }
+	    //request.setAttribute("playlist", playlist);
 		String path = "/WEB-INF/Playlist.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
@@ -125,9 +137,12 @@ public class GoToPlaylist extends HttpServlet {
 		ctx.setVariable("maxPage", maxPage);
 		ctx.setVariable("currentPage", currentPage);
 		ctx.setVariable("playlistId", playlistId);
+		ctx.setVariable("playlist", playlist);
 		ctx.setVariable("error", session.getAttribute("error"));
 		session.removeAttribute("error");
 		templateEngine.process(path, ctx, response.getWriter());
+		/*RequestDispatcher dispatcher = request.getRequestDispatcher("/playlist.html");
+	    dispatcher.forward(request, response);*/
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
