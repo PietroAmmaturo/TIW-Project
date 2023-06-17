@@ -90,7 +90,7 @@ public class AddSongExistingAlbum extends HttpServlet {
 			String albumTitle = albumDao.getTitleById(albumId, userId);
 			String audioFileName = albumTitle + "_" + songTitle + "." + audioFileExtension;
 			FileService.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
-			songDao.addSong(songTitle, songGenre, URLEncoder.encode(audioFileName, StandardCharsets.UTF_8), albumId);
+			songDao.addSong(songTitle, songGenre, audioFileName, albumId);
 			        
 			}else {
 				//titolo in uso per l'utente

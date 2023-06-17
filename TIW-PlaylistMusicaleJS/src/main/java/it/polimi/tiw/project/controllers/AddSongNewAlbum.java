@@ -105,7 +105,7 @@ public class AddSongNewAlbum extends HttpServlet {
 				String imageFileExtension = FileService.getFileExtension(albumCover);
 				String imageFileName = albumTitle + "." + imageFileExtension;
 				FileService.saveFile(getServletContext(), albumCover,  userId.toString(), imageFileName);
-				albumDao.addAlbum(albumTitle, URLEncoder.encode(imageFileName, StandardCharsets.UTF_8), albumArtist, (int)albumYear, (int)userId);
+				albumDao.addAlbum(albumTitle, imageFileName, albumArtist, (int)albumYear, (int)userId);
 			}else {
 			//titolo dell'album già in uso per l'utente
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Album title already in use");
@@ -122,7 +122,7 @@ public class AddSongNewAlbum extends HttpServlet {
 			String audioFileExtension = FileService.getFileExtension(audioFile);
 			String audioFileName = albumTitle + "_" + songTitle + "." + audioFileExtension;
 			FileService.saveFile(getServletContext(), audioFile,  userId.toString(), audioFileName);
-			songDao.addSong(songTitle, songGenre, URLEncoder.encode(audioFileName, StandardCharsets.UTF_8), idAlbum);
+			songDao.addSong(songTitle, songGenre, audioFileName, idAlbum);
 			return;
 		}catch (IOException | SQLException e) {
 			e.printStackTrace();
