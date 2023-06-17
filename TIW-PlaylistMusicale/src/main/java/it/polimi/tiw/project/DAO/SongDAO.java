@@ -45,18 +45,16 @@ public class SongDAO {
 	    List<Song> songs = new ArrayList<>();
 	    String sql = "SELECT s.* FROM Song s " +
 	                 "INNER JOIN SongPlaylist sp ON s.id = sp.song_id " +
+	                 "INNER JOIN Album a ON s.album_id = a.id " +
 	                 "WHERE sp.playlist_id = ? " +
-	                 "ORDER BY sp.precedence ASC, s.title ASC";
+	                 "ORDER BY sp.precedence ASC, a.publication_year DESC, a.title ASC, s.title ASC ";
 	    try (PreparedStatement statement = connection.prepareStatement(sql)) {
 	        statement.setInt(1, playlistId);
 	        try (ResultSet resultSet = statement.executeQuery()) {
 	            while (resultSet.next()) {
 	                Song song = new Song();
-	                song.setId(resultSet.getInt("id"));
-	                song.setTitle(resultSet.getString("title"));
-	                song.setAudio(resultSet.getString("audio"));
-	                song.setAlbumId(resultSet.getInt("album_id"));
-	                song.setGenre(resultSet.getString("genre"));
+	                song.setId(resultSet.getInt("s.id"));
+	                song.setTitle(resultSet.getString("s.title"));
 	                songs.add(song);
 	            }
 	        }
@@ -66,7 +64,10 @@ public class SongDAO {
 
 	public List<Song> findAllSongsByUserId(int userId) throws SQLException {
 	    List<Song> songs = new ArrayList<>();
-	    String query = "SELECT * FROM Song INNER JOIN Album ON Song.album_id = Album.id WHERE Album.user_id = ?";
+	    String query = "SELECT s.* FROM Song s " +
+		                "INNER JOIN Album a ON s.album_id = a.id " +
+		                "WHERE a.user_id = ? " +
+		                "ORDER BY a.publication_year DESC, a.title ASC, s.title ASC ";
 	    try (PreparedStatement statement = connection.prepareStatement(query)) {
 	        statement.setInt(1, userId);
 	        try (ResultSet result = statement.executeQuery()) {
@@ -74,9 +75,6 @@ public class SongDAO {
 	                Song song = new Song();
 	                song.setId(result.getInt("id"));
 	                song.setTitle(result.getString("title"));
-	                song.setAudio(result.getString("audio"));
-	                song.setGenre(result.getString("genre"));
-	                song.setAlbumTitle(result.getString("Album.title"));
 	                songs.add(song);
 	            }
 	        }
@@ -101,7 +99,8 @@ public class SongDAO {
 	    String sql = "SELECT s.* FROM Song s " +
 	                 "INNER JOIN Album a ON s.album_id = a.id " +
 	                 "WHERE a.user_id = ? AND s.id NOT IN " +
-	                 "(SELECT song_id FROM SongPlaylist WHERE playlist_id = ?)";
+	                 "(SELECT song_id FROM SongPlaylist WHERE playlist_id = ?)" +
+	                 "ORDER BY a.publication_year DESC, a.title ASC, s.title ASC ";
 	    try (PreparedStatement statement = connection.prepareStatement(sql)) {
 	        statement.setInt(1, userId);
 	        statement.setInt(2, playlistId);
@@ -110,9 +109,6 @@ public class SongDAO {
 	                Song song = new Song();
 	                song.setId(resultSet.getInt("id"));
 	                song.setTitle(resultSet.getString("title"));
-	                song.setAudio(resultSet.getString("audio"));
-	                song.setAlbumId(resultSet.getInt("album_id"));
-	                song.setGenre(resultSet.getString("genre"));
 	                songs.add(song);
 	            }
 	        }
