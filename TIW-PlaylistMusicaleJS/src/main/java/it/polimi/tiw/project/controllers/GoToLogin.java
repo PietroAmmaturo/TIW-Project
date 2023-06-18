@@ -68,8 +68,16 @@ public class GoToLogin extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Redirect to the Home page and add missions to the parameters
-		HttpSession session = request.getSession(true);
-		System.out.print(request.getAttribute("error") + "\n\n\n\n");
+		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		response.setHeader("Pragma", "no-cache");
+		response.setHeader("Expires", "0");
+		
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			session.invalidate();
+		}
+		session = request.getSession();
+		//System.out.print(request.getAttribute("error") + "\n\n\n\n");
 		String path = "/WEB-INF/Login.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
