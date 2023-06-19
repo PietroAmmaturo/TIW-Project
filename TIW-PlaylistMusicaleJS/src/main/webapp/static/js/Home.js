@@ -172,7 +172,7 @@ class HomeManager{
 
 				let playlistSpanEl = document.createElement("a");
         		playlistSpanEl.addEventListener("click", this.playlistManager.goToPlaylist.bind(this.playlistManager, playlist.id));
-        		playlistSpanEl.textContent = playlist.title;
+        		playlistSpanEl.textContent = unescape(playlist.title);
         		playlistSpanEl.classList.add("interactable");
         		playlistSpanEl.setAttribute("href", "#playlistReference");
         		playlistEl.appendChild(playlistSpanEl);

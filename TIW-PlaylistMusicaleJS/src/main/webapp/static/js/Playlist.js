@@ -239,7 +239,7 @@ class PlaylistManager {
 		this.renderSong = function(parent, entry) {
 				    const songId = entry[0].id;
 	                const songTitle = entry[0].title;
-	                const imageSrc = entry[1].image;
+	                const imageSrc = encodeURIComponent(entry[1].image);
 	                const imageAlt = entry[1].title;
 	
 	                const cell = document.createElement('td');

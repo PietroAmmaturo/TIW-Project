@@ -21,8 +21,8 @@ class SongManager {
 		        const songId = entry[0].id;
 		        const songTitle = entry[0].title;
 		        const songGenre = entry[0].genre;
-		        const songAudio = entry[0].audio;
-		        const imageSrc = entry[1].image;
+		        const songAudio = encodeURIComponent(entry[0].audio);
+		        const imageSrc = encodeURIComponent(entry[1].image);
 		        const imageAlt = entry[1].title;
 		
 		        const playerSong = document.createElement('div');

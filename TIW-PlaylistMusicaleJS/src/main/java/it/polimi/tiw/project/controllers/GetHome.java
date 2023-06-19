@@ -18,12 +18,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
@@ -37,6 +39,7 @@ import it.polimi.tiw.project.beans.Playlist;
 import it.polimi.tiw.project.beans.Song;
 import it.polimi.tiw.project.beans.User;
 import it.polimi.tiw.project.utils.LocalDateTimeSerializer;
+import it.polimi.tiw.project.utils.UnescapeStringSerializer;
 
 /**
  * Servlet implementation class GoToHome
@@ -88,7 +91,7 @@ public class GetHome extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		int userId = ((User) session.getAttribute("currentUser")).getId();
 		//se serve l'id dell'utente è questo
-		
+                
 		AlbumDAO albumDao = new AlbumDAO(connection);
 		PlaylistDAO playlistDao = new PlaylistDAO(connection);
 		SongDAO songDao = new SongDAO(connection);
@@ -107,6 +110,7 @@ public class GetHome extends HttpServlet {
 		
 		Gson gson = new GsonBuilder()
 				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
+                .registerTypeAdapter(String.class, new UnescapeStringSerializer())
 	    		.setLenient()
                 .create();
 	

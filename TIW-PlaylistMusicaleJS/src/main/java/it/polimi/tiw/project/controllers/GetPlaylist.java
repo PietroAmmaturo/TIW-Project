@@ -44,6 +44,7 @@ import it.polimi.tiw.project.beans.Playlist;
 import it.polimi.tiw.project.beans.Song;
 import it.polimi.tiw.project.beans.User;
 import it.polimi.tiw.project.utils.LocalDateTimeSerializer;
+import it.polimi.tiw.project.utils.UnescapeStringSerializer;
 
 @WebServlet("/GetPlaylist")
 public class GetPlaylist extends HttpServlet{
@@ -138,6 +139,7 @@ public class GetPlaylist extends HttpServlet{
 	    
 	    Gson gson = new GsonBuilder()
 				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
+                .registerTypeAdapter(String.class, new UnescapeStringSerializer())
 	    		.setLenient()
                 .create();
 	

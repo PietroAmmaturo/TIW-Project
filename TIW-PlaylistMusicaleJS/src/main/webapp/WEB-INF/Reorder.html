@@ -15,7 +15,7 @@
 		        <div th:each="song : ${playlistSongs}">
 		            <div class="card drag-item wide" draggable="true">
 		                <input type="hidden" name="songIds" th:value="${song.id}"/>
-		                <span th:text="${song.title}"></span>
+		                <span th:text="${#strings.unescapeJava(song.title)}"></span>
 		            </div>
 				</div>
 	        	<input type="hidden" name="playlistId" th:value="${playlistId}"/>
