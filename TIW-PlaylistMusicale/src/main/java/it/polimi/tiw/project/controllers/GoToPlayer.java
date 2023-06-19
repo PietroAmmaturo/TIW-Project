@@ -70,6 +70,10 @@ public class GoToPlayer extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		response.setHeader("Pragma", "no-cache");
+		response.setHeader("Expires", "0");
+		
 		HttpSession session = request.getSession(false);
 		int songId = Integer.parseInt(request.getParameter("songId"));
 		SongDetailsDAO songDetailsDAO = new SongDetailsDAO(connection);
