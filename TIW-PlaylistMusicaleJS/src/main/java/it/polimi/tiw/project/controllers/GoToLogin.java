@@ -73,8 +73,9 @@ public class GoToLogin extends HttpServlet {
 		response.setHeader("Expires", "0");
 		
 		HttpSession session = request.getSession(false);
-		String error = (String) session.getAttribute("error");
+		String error = null;
 		if (session != null) {
+			error = (String) session.getAttribute("error");
 			session.invalidate();
 		}
 		session = request.getSession();
