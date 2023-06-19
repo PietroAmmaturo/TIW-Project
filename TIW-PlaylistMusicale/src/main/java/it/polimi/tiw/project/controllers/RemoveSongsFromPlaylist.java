@@ -30,7 +30,6 @@ public class RemoveSongsFromPlaylist extends HttpServlet{
 
 	public RemoveSongsFromPlaylist() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public void init() throws ServletException {

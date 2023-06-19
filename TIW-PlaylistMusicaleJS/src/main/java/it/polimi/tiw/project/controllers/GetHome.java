@@ -87,10 +87,8 @@ public class GetHome extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Redirect to the Home page and add missions to the parameters
 		HttpSession session = request.getSession(false);
 		int userId = ((User) session.getAttribute("currentUser")).getId();
-		//se serve l'id dell'utente è questo
                 
 		AlbumDAO albumDao = new AlbumDAO(connection);
 		PlaylistDAO playlistDao = new PlaylistDAO(connection);
@@ -134,7 +132,6 @@ public class GetHome extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 	

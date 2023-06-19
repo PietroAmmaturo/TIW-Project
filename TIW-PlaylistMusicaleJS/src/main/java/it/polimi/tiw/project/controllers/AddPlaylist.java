@@ -38,7 +38,6 @@ public class AddPlaylist extends HttpServlet {
 
 	public AddPlaylist() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public void init() throws ServletException {
