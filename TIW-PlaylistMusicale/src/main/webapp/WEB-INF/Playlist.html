@@ -8,8 +8,8 @@
     <h1>Playlist Page</h1>
 	<div id = "playlistMain" class = "compartment">
 	
-	 <h2 th:text="${playlist.title}"></h2> 
-    <p th:text="${playlist.description}"></p>
+	 <h2 th:text="${#strings.unescapeJava(playlist.title)}"></h2> 
+    <p th:text="${#strings.unescapeJava(playlist.description)}"></p>
 		<form th:action="@{/RemoveSongsFromPlaylist}" method="post">
 		    <div class ="content">
 		    	<input type="hidden" name="playlistId" th:value="${playlistId}"/>
@@ -22,10 +22,10 @@
 							      <div>
 							        <input type="checkbox" name="songIds" th:value="${entry.key.id}"/>
 							        <label class="interactable" for="songIds">
-					        			<a th:href="@{/GoToPlayer(songId=${entry.key.id})}" th:text="${entry.key.title}"></a>
+					        			<a th:href="@{/GoToPlayer(songId=${entry.key.id})}" th:text="${#strings.unescapeJava(entry.key.title)}"></a>
 							        </label>
 							      </div>
-							      <img loading="lazy" th:src="@{/FileHandler(fileName=${entry.value.image})}" th:alt="${entry.value.title}">
+							      <img loading="lazy" th:src="@{/FileHandler(fileName=${#strings.unescapeJava(entry.value.image)})}" th:alt="${#strings.unescapeJava(entry.value.title)}">
 							  </td>
 							</th:block>
 					    </tr>
@@ -57,7 +57,7 @@
 			            <option value="" disabled>-- Select songs --</option>
 			            <option th:each="song : ${userSongs}"
 			                    th:value="${song.id}"
-			                    th:text="${song.title}"></option>
+			                    th:text="${#strings.unescapeJava(song.title)}"></option>
 			        </select>
 			    </div>
 			    <button class="submit right" type="submit">Add to Playlist</button>

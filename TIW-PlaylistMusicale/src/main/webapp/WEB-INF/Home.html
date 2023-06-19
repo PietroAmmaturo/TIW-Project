@@ -12,7 +12,7 @@
 	    	<h2>Select playlist</h2>
 	    	<div class ="content">
 	            <div class="card wide" th:each="playlist : ${playlists}">
-	                <a class="interactable" th:href="@{/GoToPlaylist(playlistId=${playlist.id})}" th:text="${playlist.title}"></a>
+	                <a class="interactable" th:href="@{/GoToPlaylist(playlistId=${playlist.id})}" th:text="${#strings.unescapeJava(playlist.title)}"></a>
 	                <br>
 	            </div>
 	    	</div>
@@ -32,7 +32,7 @@
 	    		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
 	    		<p> Album: <select id="existingAlbum" name="albumId" required>
 	            	<option value="" disabled>-- Choose Existing Album --</option>
-	            	<option th:each="album : ${albums}" th:text="${album.title}" th:value="${album.id}"></option>
+	            	<option th:each="album : ${albums}" th:text="${#strings.unescapeJava(album.title)}" th:value="${album.id}"></option>
 	        	</select></p>
 	            <button class="submit right" type="submit">Add song</button>
 	    	</div>
@@ -69,7 +69,7 @@
 		        <label>
 		            <input type="checkbox" name="songIds" th:value="${song.id}">
 		            <!-- TODO far vedere accanto al titolo della canzone anche l'album da cui è presa -->
-		            <span th:text="${song.title}"></span>
+		            <span th:text="${#strings.unescapeJava(song.title)}"></span>
 		        </label>
 		     </p> 
      		<button class="submit right" type="submit">Create playlist</button>

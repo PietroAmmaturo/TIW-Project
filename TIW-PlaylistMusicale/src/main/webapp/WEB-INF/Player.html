@@ -9,16 +9,16 @@
     <h1>Player Page</h1>
 	<div id ="playerMain" class="compartment">
 		<div class ="card thick">
-		    <h2 th:text="${song.title}"></h2>
-		    <img th:src="@{/FileHandler(fileName=${album.image})}" />
+		    <h2 th:text="${#strings.unescapeJava(song.title)}"></h2>
+		    <img th:src="@{/FileHandler(fileName=${#strings.unescapeJava(album.image)})}" />
 		    <!-- Display other details of the song such as artist, album, year, genre, etc. -->
-		    <p>Artist: <span th:text="${album.interpreter}"></span></p>
-		    <p>Album: <span th:text="${album.title}"></span></p>
-		    <p>Album Year: <span th:text="${album.publicationYear}"></span></p>
-		    <p>Genre: <span th:text="${song.genre}"></span></p>
+		    <p>Artist: <span th:text="${#strings.unescapeJava(album.interpreter)}"></span></p>
+		    <p>Album: <span th:text="${#strings.unescapeJava(album.title)}"></span></p>
+		    <p>Album Year: <span th:text="${#strings.unescapeJava(album.publicationYear)}"></span></p>
+		    <p>Genre: <span th:text="${#strings.unescapeJava(song.genre)}"></span></p>
 		    <!-- Add an audio player for song playback -->
 		    <audio controls>
-		    	<source th:src="@{/FileHandler(fileName=${song.audio})}"></source>
+		    	<source th:src="@{/FileHandler(fileName=${#strings.unescapeJava(song.audio)})}"></source>
 		    </audio>
 	    </div>
 	    
