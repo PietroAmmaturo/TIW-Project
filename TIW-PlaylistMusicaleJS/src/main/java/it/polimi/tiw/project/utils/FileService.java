@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -50,7 +52,7 @@ public class FileService {
 		String baseDirectory = servletContext.getInitParameter("userFilesDirectory");
 
         // Construct the file path
-        return baseDirectory + File.separator + userId + File.separator + filename;
+        return baseDirectory + File.separator + userId + File.separator + URLEncoder.encode(filename, StandardCharsets.UTF_8);
     }
     
     public static String getFileExtension(Part part) {
