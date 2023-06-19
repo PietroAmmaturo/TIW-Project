@@ -66,27 +66,23 @@ public class GoToLogin extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Redirect to the Home page and add missions to the parameters
-		
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		//to prevent older pages to be reloaded
 		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		response.setHeader("Pragma", "no-cache");
 		response.setHeader("Expires", "0");
-		
+				
 		HttpSession session = request.getSession(false);
+		String error = (String) session.getAttribute("error");
 		if (session != null) {
 			session.invalidate();
 		}
 		session = request.getSession();
 		
-		//System.out.print("session " + session.getAttribute("error") + "\n");
 		String path = "/WEB-INF/Login.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		String error = (String) session.getAttribute("error");
 		ctx.setVariable("error", error);
-		session.removeAttribute("error");
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
@@ -94,7 +90,6 @@ public class GoToLogin extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 	

@@ -9,22 +9,20 @@
     <h1>Home page</h1>
     
     <div  id = "homeMain" class="compartment">
-	    <div class ="content">
 	    	<h2>Select playlist</h2>
-	    	<div>
+	    	<div class ="content">
 	            <div class="card wide" th:each="playlist : ${playlists}">
 	                <a class="interactable" th:href="@{/GoToPlaylist(playlistId=${playlist.id})}" th:text="${playlist.title}"></a>
 	                <br>
 	            </div>
 	    	</div>
-	    </div>
     
 	    <h2>Add new song from existing album</h2>
 	    <form action="#" th:action="@{/AddSongExistingAlbum}" method="post"	enctype="multipart/form-data">
 	    	<div class ="content">
 	    		<p> Title: <input type="text" name="song_title" required /></p>
-	    		<p><select id="genre" name="song_genre" required>
-	            	<option value="">-- Choose genre --</option>
+	    		<p> Genre: <select id="genre" name="song_genre" required>
+	            	<option value="" disabled>-- Choose genre --</option>
 	            	<option value="Rock"> Rock </option>
 	            	<option value="Pop"> Pop </option>
 	            	<option value="Country"> Country </option>
@@ -32,8 +30,8 @@
 	            	<option value="Classical"> Classical </option>
 	        	</select></p>
 	    		<p> Audio file: <input type="file" name="audioFile" accept="audio/*" required></p>
-	    		<p><select id="existingAlbum" name="albumId" required>
-	            	<option value="">-- Choose Existing Album --</option>
+	    		<p> Album: <select id="existingAlbum" name="albumId" required>
+	            	<option value="" disabled>-- Choose Existing Album --</option>
 	            	<option th:each="album : ${albums}" th:text="${album.title}" th:value="${album.id}"></option>
 	        	</select></p>
 	            <button class="submit right" type="submit">Add song</button>
@@ -43,9 +41,9 @@
     	<h2>Add new song and new album</h2>
 	    <form action="#" th:action="@{/AddSongNewAlbum}" method="post" enctype="multipart/form-data">
 	    	<div class ="content">
-	    		<p> Song title: <input type="text" name="song_title" required /></p>
-	    		<p><select id="genre" name="song_genre" required>
-	            	<option value="">-- Choose genre --</option>
+	    		<p> Title: <input type="text" name="song_title" required /></p>
+	    		<p> Genre: <select id="genre" name="song_genre" required>
+	            	<option value="" disabled>-- Choose genre --</option>
 	            	<option value="Rock"> Rock </option>
 	            	<option value="Pop"> Pop </option>
 	            	<option value="Country"> Country </option>

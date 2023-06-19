@@ -70,7 +70,10 @@ public class AddSongsToPlaylist extends HttpServlet {
 		SongPlaylistDAO songPlaylistDAO = new SongPlaylistDAO(connection);
 		Boolean foundUser;
 		Boolean foundPlaylist;
+		
+		// guaranteeing expected behavior for valid songs only
 		for (Integer songId : songIds) {
+			// preventing malicious user from adding someone else's songs to its playlist
 			try {
 				foundUser = songDAO.doesSongBelongToUser(songId, userId);
 			} catch (SQLException e) {
@@ -82,6 +85,7 @@ public class AddSongsToPlaylist extends HttpServlet {
 				foundInvalidId = true;
 				continue;
 			}
+			// preventing malicious user from adding the same song multiple times to a playlist
 			try {
 				foundPlaylist = songPlaylistDAO.doesSongBelongToPlaylist(songId, playlistId);
 			} catch (SQLException e) {

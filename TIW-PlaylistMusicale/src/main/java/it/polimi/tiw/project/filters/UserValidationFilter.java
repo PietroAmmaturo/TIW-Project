@@ -16,6 +16,8 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 
 
 /**
@@ -38,7 +40,7 @@ public class UserValidationFilter implements Filter {
         String password = null;
 
         try {
-        	username = request.getParameter("username");
+        	username = StringEscapeUtils.escapeJava(request.getParameter("username"));
         }catch(NullPointerException e) {
         	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The username is not valid");
 			return;
@@ -53,7 +55,7 @@ public class UserValidationFilter implements Filter {
         }
         
         try {
-        	password = request.getParameter("password");
+        	password = StringEscapeUtils.escapeJava(request.getParameter("password"));
         }catch(NullPointerException e) {
         	httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "The password is not valid");
 			return;

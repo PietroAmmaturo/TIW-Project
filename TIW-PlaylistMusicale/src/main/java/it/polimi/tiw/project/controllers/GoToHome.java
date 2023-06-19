@@ -75,9 +75,7 @@ public class GoToHome extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Redirect to the Home page and add missions to the parameters
-		
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		//to prevent older pages to be reloaded
 		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		response.setHeader("Pragma", "no-cache");
@@ -85,7 +83,6 @@ public class GoToHome extends HttpServlet {
 		
 		HttpSession session = request.getSession(false);
 		int userId = ((User) session.getAttribute("currentUser")).getId();
-		//se serve l'id dell'utente è questo
 		
 		AlbumDAO albumDao = new AlbumDAO(connection);
 		PlaylistDAO playlistDao = new PlaylistDAO(connection);
@@ -113,15 +110,12 @@ public class GoToHome extends HttpServlet {
 		ctx.setVariable("error", session.getAttribute("error"));
 		session.removeAttribute("error");
 		templateEngine.process(path, ctx, response.getWriter());
-		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

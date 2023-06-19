@@ -69,7 +69,9 @@ public class AddSongsToPlaylist extends HttpServlet {
 		Boolean foundUser;
 		Boolean foundPlaylist;
 		
+		// guaranteeing expected behavior for valid songs only
 		for (Integer songId : songIds) {
+			// preventing malicious user from adding someone else's songs to its playlist
 			try {
 				foundUser = songDAO.doesSongBelongToUser(songId, userId);
 			} catch (SQLException e) {
@@ -81,6 +83,7 @@ public class AddSongsToPlaylist extends HttpServlet {
 				foundInvalidId = true;
 				continue;
 			}
+			// preventing malicious user from adding the same song multiple times to a playlist
 			try {
 				foundPlaylist = songPlaylistDAO.doesSongBelongToPlaylist(songId, playlistId);
 			} catch (SQLException e) {
@@ -102,7 +105,7 @@ public class AddSongsToPlaylist extends HttpServlet {
 			return;
 		}
 		if (foundInvalidId) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Some of the selected songs could not be found, did not belong to the user  or were already in the playlist, the valid songs were added successfully.");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Some of the selected songs could not be found, did not belong to the user or were already in the playlist, the valid songs were added successfully.");
 			return;
 		}
 		String path = getServletContext().getContextPath() + "/GoToPlaylist?playlistId=" + playlistId + "&playlistPage=1";

@@ -110,7 +110,7 @@ public class AddSongNewAlbum extends HttpServlet {
 				FileService.saveFile(getServletContext(), albumCover,  userId.toString(), imageFileName);
 				albumDao.addAlbum(albumTitle, imageFileName, albumArtist, (int)albumYear, (int)userId);
 			}else {
-			//titolo dell'album già in uso per l'utente
+				//titolo dell'album già in uso per l'utente
 				session.setAttribute("error", "Album title already in use");
 		       	String path = getServletContext().getContextPath() + "/GoToHome";
 				response.sendRedirect(path);

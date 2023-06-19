@@ -66,7 +66,10 @@ public class RemoveSongsFromPlaylist extends HttpServlet{
         Boolean foundInvalidId = false;
 		SongPlaylistDAO songPlaylistDAO = new SongPlaylistDAO(connection);
 		Boolean foundPlaylist;
+		
+		// guaranteeing expected behavior for valid songs only
 		for (Integer songId : songIds) {
+			// preventing user from deleting a song already not belonging to playlist
 			try {
 				foundPlaylist = songPlaylistDAO.doesSongBelongToPlaylist(songId, playlistId);
 			} catch (SQLException e) {

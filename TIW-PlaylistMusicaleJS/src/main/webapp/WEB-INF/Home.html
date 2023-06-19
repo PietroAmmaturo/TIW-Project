@@ -28,9 +28,9 @@
 					<p> Title:
 						<input type="text" name="song_title" required />
 					</p>
-					<p>
+					<p> Genre: 
 						<select id="genre" name="song_genre" required>
-							<option value="">-- Choose genre --</option>
+							<option value="" disabled>-- Choose genre --</option>
 		            		<option value="Rock"> Rock </option>
 		            		<option value="Pop"> Pop </option>
 		            		<option value="Country"> Country </option>
@@ -41,9 +41,9 @@
 					<p> Audio file:
 						<input type="file" name="audioFile" accept="audio/*" required>
 					</p>
-					<p>
+					<p> Album: 
 					<select id="existingAlbum" name="albumId" required>
-	            		<option value="">-- Choose Existing Album --</option>
+	            		<option value="" disabled>-- Choose Existing Album --</option>
 	            		<!-- qua vengono appesi gli album esistenti -->
 	            	</select>
 	            	</p>
@@ -56,12 +56,12 @@
 		<h2> Add new song and new album </h2>
 			<form id= "newSongNewAlbum" action="#" th:action="@{/AddSongNewAlbum}" method="post" enctype="multipart/form-data">
 				<div class ="content">
-					<p> Song title:
+					<p> Title:
 						<input type="text" name="song_title" required />
 					</p>
-		    		<p>
+		    		<p> Genre: 
 			    		<select id="genre" name="song_genre" required>
-			            	<option value="">-- Choose genre --</option>
+			            	<option value="" disabled>-- Choose genre --</option>
 			            	<option value="Rock"> Rock </option>
 			            	<option value="Pop"> Pop </option>
 			            	<option value="Country"> Country </option>
