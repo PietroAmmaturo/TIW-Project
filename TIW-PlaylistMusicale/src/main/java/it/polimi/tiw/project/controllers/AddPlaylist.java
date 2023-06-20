@@ -104,7 +104,7 @@ public class AddPlaylist extends HttpServlet {
 		}
 		
 		if(!oneSongBelongToUser) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "None of the songs belonged to the user");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "None of the songs belong to the user");
 			return;
 		}
 		
